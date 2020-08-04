@@ -1,0 +1,5 @@
+/venv/
+/logs/
+*.log
+/bin/
+/.idea/
