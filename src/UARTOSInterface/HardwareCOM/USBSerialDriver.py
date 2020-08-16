@@ -1,6 +1,6 @@
 import serial
 from serial.tools import list_ports
-from logging import getLogger
+from logging import getLogger as Log
 from serial.serialutil import SerialException
 
 
@@ -13,14 +13,14 @@ class NPCSerialPort:
         port = NPCSerialPort.check_port_exists(device)
         if port is None:
             return
-        getLogger(__name__).debug(f"{port} located")
+        Log(__name__).debug(f"{port} located")
         try:
             self.__con = serial.Serial(device, 115200)
-            getLogger(__name__).debug(f"{port.device} opened successfully")
+            Log(__name__).debug(f"{port.device} opened successfully")
         except SerialException as e:
-            getLogger(__name__).error(f"Opening {port.device} threw error {e.strerror}")
+            Log(__name__).error(f"Opening {port.device} threw error {e.strerror}")
             if e.errno == 13:  # permission denied another connection open to this device.
-                getLogger(__name__).error(f"Cannot open connection, account has insufficient permissions.")
+                Log(__name__).error(f"Cannot open connection, account has insufficient permissions.")
             self.__con = None
             return
         return

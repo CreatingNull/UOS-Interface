@@ -1,5 +1,5 @@
 from pathlib import Path
-from UARTOSInterface.WebApp import load_config
+from UARTOSInterface.util import load_config
 
 
 def test_load_config():

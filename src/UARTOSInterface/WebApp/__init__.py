@@ -14,15 +14,6 @@ def register_blueprints(app):
             app.register_blueprint(module.blueprint)
 
 
-def load_config(path: Path):
-    Log(__name__).debug(f"Loading config from {path}")
-    parser = configparser.ConfigParser()
-    parser.read(str(path.resolve()))
-    if len(parser.sections()) > 0:  # config was located
-        return parser
-    return None
-
-
 def register_logs(level, base_path: Path):
     configure_logs(__name__, level=level, base_path=base_path)
 
