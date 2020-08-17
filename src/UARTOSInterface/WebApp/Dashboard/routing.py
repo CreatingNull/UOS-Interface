@@ -1,4 +1,4 @@
-from flask import url_for, redirect, render_template
+from flask import redirect, render_template
 from UARTOSInterface.WebApp.Dashboard import blueprint
 from UARTOSInterface.HardwareCOM import UOSDevice
 from logging import getLogger as Log

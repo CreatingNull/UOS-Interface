@@ -21,11 +21,13 @@ class UOSDevice:
     identity = ""
     connection = ""
     system_lut = {}
+    __kwargs = {}
 
-    def __init__(self, identity: str, connection: str = ""):
+    def __init__(self, identity: str, connection: str = "", **kwargs):
         self.identity = identity
         self.connection = connection
         self.system_lut = self._locate_device_definition(identity)
+        self.__kwargs = kwargs
         for key in self.system_lut:
             Log(__name__).debug(f"sys lut = {key}: {self.system_lut[key]}")
         if len(self.system_lut) == 0:
