@@ -31,20 +31,26 @@ class UOSDevice:
         if len(self.system_lut) == 0:
             raise NotImplementedError(f"'{self.identity}' does not have a valid look up table")
 
-    def set_gpio_output(self, pin: int, level: int, volatility: int = SUPER_VOLATILE):
-        raise NotImplementedError(f"set_gpio_output has not been implemented for {self.identity}")  # todo stub
+    def set_gpio_output(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> bool:
+        self.__check_compatibility(UOSDevice.set_gpio_output.__name__)
+        return True
 
     def get_gpio_input(self, pin: int, level: int, volatility: int = SUPER_VOLATILE):
-        return  # todo stub
+        self.__check_compatibility(UOSDevice.get_gpio_input.__name__)
 
     def get_adc_input(self, pin: int, level: int, volatility: int = SUPER_VOLATILE):
-        return  # todo stub
+        self.__check_compatibility(UOSDevice.get_adc_input.__name__)
 
     def reset_all_io(self, volatility: int = NON_VOLATILE):
-        return  # todo stub
+        self.__check_compatibility(UOSDevice.reset_all_io.__name__)
 
     def close(self):
         return  # todo stub
+
+    # Raises not implemented error if device does not support action
+    def __check_compatibility(self, function_name: str):
+        if function_name not in self.system_lut:
+            raise NotImplementedError(f"{function_name} has not been implemented for {self.identity}")
 
     @staticmethod
     def _locate_device_definition(identity: str):
