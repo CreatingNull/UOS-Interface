@@ -2,9 +2,10 @@ import serial
 from serial.tools import list_ports
 from logging import getLogger as Log
 from serial.serialutil import SerialException
+from UARTOSInterface.HardwareCOM.UOSInterface import UOSInterface
 
 
-class NPCSerialPort:
+class NPCSerialPort(UOSInterface):
 
     __con = None
 
@@ -30,6 +31,10 @@ class NPCSerialPort:
         if self.__con is None:
             return False
         return True
+
+    # High level function that executes a UOS instruction
+    def execute_instruction(self, address, payload, lazy_loaded=False):
+        return False  # todo stub
 
     # Closes the serial connection, must be run when finished with the instance.
     def close(self):

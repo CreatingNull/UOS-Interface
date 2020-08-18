@@ -4,6 +4,7 @@ from pathlib import Path
 from logging import getLogger as Log
 from configparser import ConfigParser
 from UARTOSInterface.util import configure_logs
+from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
 
 
 SUPER_VOLATILE = 0
@@ -18,41 +19,50 @@ def register_logs(level, base_path: Path):
 # object orientated control of the UOS system.
 class UOSDevice:
 
-    identity = ""
-    connection = ""
-    system_lut = {}
-    __kwargs = {}
+    identity = ""  # The type of device, this is must have a valid section in the system_lut
+    connection = ""  # Compliant connection string for identifying the device
+    system_lut = {}  # Device definitions as parsed from a compatible ini
+    __kwargs = {}  # Connection specific / optional parameters
+    __device_interface = None  # Lower level communication protocol layer
 
     def __init__(self, identity: str, connection: str = "", **kwargs):
         self.identity = identity
         self.connection = connection
         self.system_lut = self._locate_device_definition(identity)
         self.__kwargs = kwargs
+        self.__device_interface = None
         for key in self.system_lut:
             Log(__name__).debug(f"sys lut = {key}: {self.system_lut[key]}")
         if len(self.system_lut) == 0:
             raise NotImplementedError(f"'{self.identity}' does not have a valid look up table")
 
     def set_gpio_output(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> bool:
-        self.__check_compatibility(UOSDevice.set_gpio_output.__name__)
+        self.__check_compatibility(UOSDevice.set_gpio_output.__name__, volatility)
+        # todo figure out the best way to define the schema / address lut this should be looked up
+        response = self.__device_interface.execute_instruction(
+        )
         return True
 
     def get_gpio_input(self, pin: int, level: int, volatility: int = SUPER_VOLATILE):
-        self.__check_compatibility(UOSDevice.get_gpio_input.__name__)
+        self.__check_compatibility(UOSDevice.get_gpio_input.__name__, volatility)
 
     def get_adc_input(self, pin: int, level: int, volatility: int = SUPER_VOLATILE):
-        self.__check_compatibility(UOSDevice.get_adc_input.__name__)
+        self.__check_compatibility(UOSDevice.get_adc_input.__name__, volatility)
 
     def reset_all_io(self, volatility: int = NON_VOLATILE):
-        self.__check_compatibility(UOSDevice.reset_all_io.__name__)
+        self.__check_compatibility(UOSDevice.reset_all_io.__name__, volatility)
 
     def close(self):
         return  # todo stub
 
     # Raises not implemented error if device does not support action
-    def __check_compatibility(self, function_name: str):
+    # Raises Value Error if commands are attempted on a None object.
+    def __check_compatibility(self, function_name: str, volatility: int):
+        # todo check volatility level on function supported
         if function_name not in self.system_lut:
             raise NotImplementedError(f"{function_name} has not been implemented for {self.identity}")
+        elif self.__device_interface is None:  # Invalid connection object
+            raise ValueError(f"{self.identity} object was not instantiated before command executed.")
 
     @staticmethod
     def _locate_device_definition(identity: str):
