@@ -14,7 +14,7 @@ Describe the wrapper interface
 At a high level the HardwareCOM package contains the UOSDevice class that creates an communication instance to a single UOS device. 
 ##### Connection Creation:
 The user instantiates this class with the identity (device type) and connection string. 
-This UOSDevice object is 'lazy loaded' and no connection is made to the device until an explict operation function call is made. 
+By default the UOSDevice object is 'lazy loaded' and no connection is made to the device until an explict operation function call is made. 
 ##### Function Calls
 Supported function calls may be made to the UOS device through the applicable wrapper functions. 
 Where applicable wrapper functions use a volatility constant in accordance with UOS. 

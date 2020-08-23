@@ -32,7 +32,7 @@ class NPCSerialPort(UOSInterface):
             return False
         return True
 
-    # High level function that executes a UOS instruction
+    # High level function that executes a UOS instruction, inherited prototype from abstract class
     def execute_instruction(self, address, payload, lazy_loaded=False):
         return False  # todo stub
 
