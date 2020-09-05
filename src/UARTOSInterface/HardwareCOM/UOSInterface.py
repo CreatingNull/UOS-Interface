@@ -6,7 +6,7 @@ class UOSInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def execute_instruction(self, address: int, payload: [int], lazy_loaded=True) -> (bool, {}):
-        pass
+        raise NotImplementedError("UOSInterfaces must over-ride execute_instruction prototype.")
 
     # function builds a static bytes object containing all the bytes to be transmitted in sequential order
     # in an npc compliant packet.

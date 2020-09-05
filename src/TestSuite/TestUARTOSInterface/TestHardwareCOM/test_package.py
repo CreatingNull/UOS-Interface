@@ -36,6 +36,13 @@ class TestHardwareCOMAbstractions:
          "binary": b""}
     ]
 
+    # Checks the base class correctly triggers an exception when the abstract method is called directly
+    # This indicates the abstract class is correctly configured to warn inherited classes.
+    def test_execute_instruction(self):
+        with pytest.raises(NotImplementedError):
+            # noinspection PyCallByClass,PyTypeChecker
+            UOSInterface.UOSInterface.execute_instruction(10, 10, [])
+
     # Checks the static function correctly computes the LRC checksums for some known packets.
     @pytest.mark.parametrize(
         "test_packet_data, expected_lrc",
@@ -57,14 +64,14 @@ class TestHardwareCOMAbstractions:
         ]
     )
     def test_get_npc_checksum(self, test_packet_data: [], expected_lrc: int):
-        print(f"packet: {test_packet_data}, lrc:{expected_lrc}")
+        print(f"\n -> packet: {test_packet_data}, lrc:{expected_lrc}")
         assert UOSInterface.UOSInterface.get_npc_checksum(test_packet_data) == expected_lrc
 
     # Checks the static function correctly forms packets using some known examples
     @pytest.mark.parametrize("test_packet", [TEST_PACKETS[0], TEST_PACKETS[1], TEST_PACKETS[2]])
     def test_get_npc_packet(self, test_packet: {}):
         print(
-            f"addr_to: {test_packet['addr_to']}, addr_from: {test_packet['addr_from']}, "
+            f"\n -> addr_to: {test_packet['addr_to']}, addr_from: {test_packet['addr_from']}, "
             f"payload: {test_packet['payload']}, packet: {test_packet['binary']}"
         )
         assert UOSInterface.UOSInterface.get_npc_packet(
