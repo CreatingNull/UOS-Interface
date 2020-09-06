@@ -30,39 +30,65 @@ class UOSDevice:
         self.connection = connection
         self.system_lut = self._locate_device_definition(identity)
         self.__kwargs = kwargs
-        self.__device_interface = None
         for key in self.system_lut:
             Log(__name__).debug(f"sys lut = {key}: {self.system_lut[key]}")
+            # Select the low level backend-interface based on interface key
+        if "loading" in self.__kwargs and self.__kwargs["loading"].upper() == "EAGER":
+            self.open()
         if len(self.system_lut) == 0:
             raise NotImplementedError(f"'{self.identity}' does not have a valid look up table")
 
     def set_gpio_output(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> bool:
-        self.__check_compatibility(UOSDevice.set_gpio_output.__name__, volatility)
-        # todo figure out the best way to define the schema / address lut this should be looked up
-        response = self.__device_interface.execute_instruction(
+        response = self.__execute_instruction(
+            UOSDevice.set_gpio_output.__name__,
+            volatility,
+            {
+                "addr_to": self.system_lut["functions"][UOSDevice.set_gpio_output.__name__][volatility],
+                "payload": [pin, 0, level],
+            },
         )
-        return True
+        return response[0]
 
     def get_gpio_input(self, pin: int, level: int, volatility: int = SUPER_VOLATILE):
-        self.__check_compatibility(UOSDevice.get_gpio_input.__name__, volatility)
+        self.__execute_instruction(UOSDevice.get_gpio_input.__name__, volatility)
 
     def get_adc_input(self, pin: int, level: int, volatility: int = SUPER_VOLATILE):
-        self.__check_compatibility(UOSDevice.get_adc_input.__name__, volatility)
+        self.__execute_instruction(UOSDevice.get_adc_input.__name__, volatility)
 
     def reset_all_io(self, volatility: int = NON_VOLATILE):
-        self.__check_compatibility(UOSDevice.reset_all_io.__name__, volatility)
+        self.__execute_instruction(UOSDevice.reset_all_io.__name__, volatility)
+
+    def open(self):
+        if self.connection.upper().split('|')[0] == "USB":
+            self.__device_interface = NPCSerialPort(self.connection)
+        else:
+            raise AttributeError(f"Could not correctly open a connection to {self.identity} - {self.connection}")
 
     def close(self):
+        if self.__device_interface is not None:
+            self.__device_interface.close()
         return  # todo stub
 
     # Raises not implemented error if device does not support action
-    # Raises Value Error if commands are attempted on a None object.
-    def __check_compatibility(self, function_name: str, volatility: int):
+    # If lazy loaded will open connection
+    # todo this should also wrap the execute instruction (1 common call that also handles the lazy loading)
+    def __execute_instruction(self, function_name: str, volatility, instruction_data: {}) -> (bool, {}):
         # todo check volatility level on function supported
-        if function_name not in self.system_lut:
-            raise NotImplementedError(f"{function_name} has not been implemented for {self.identity}")
-        elif self.__device_interface is None:  # Invalid connection object
-            raise ValueError(f"{self.identity} object was not instantiated before command executed.")
+        if function_name not in self.system_lut["functions"] or volatility not in \
+                self.system_lut["functions"][function_name]:
+            raise NotImplementedError(
+                f"{function_name} at volatility:{volatility} has not been implemented for {self.identity}"
+            )
+        if self.__device_interface is None:  # Lazy loaded
+            self.open()
+        return_data = self.__device_interface.execute_instruction(
+            instruction_data["addr_to"],
+            instruction_data["payload"],
+        )
+        if self.__device_interface is None:  # Lazy loaded
+            self.close()
+        return return_data
+
 
     @staticmethod
     def _locate_device_definition(identity: str):
@@ -86,10 +112,14 @@ class UOSDevice:
                         output["functions"][function_name] = literal_eval(
                             config[section][f"function - {function_name}"]
                         )
+                        output["functions"][function_name] = {  # populate as address lookup using the schema
+                            volatility: literal_eval(config["UOS SCHEMA"][function_name])[volatility] for
+                            volatility in output["functions"][function_name] if
+                            output["functions"][function_name][volatility] is True
+                        }
                 output["default_baudrate"] = config[section]["default_baudrate"]
                 output["interfaces"] = [interface.strip() for interface in config[section]["interfaces"].split(",")]
                 return output
             except (KeyError, SyntaxError, ValueError) as e:
                 Log(__name__).error(f"Parsing the hardware ini threw an error {e.__str__()}")
-                pass
         return {}

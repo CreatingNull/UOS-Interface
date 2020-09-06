@@ -13,6 +13,16 @@ class TestHardwareCOMInterface:
         with pytest.raises(NotImplementedError):
             UOSDevice(identity="Not Implemented", connection="")
 
+    # Checks instruction correctly behaves on hardware interface.
+    # Note to run this configured hardware must be present on the system.
+    def test_set_gpio_output(self, uos_device):
+        for volatility in [0, 1, 2]:
+            if volatility in uos_device.system_lut["functions"]["set_gpio_output"]:
+                assert uos_device.set_gpio_output(pin=1, level=1, volatility=volatility)
+            else:  # not implemented check error raised correctly
+                with pytest.raises(NotImplementedError):
+                    uos_device.set_gpio_output(pin=1, level=1, volatility=0)
+
 
 class TestHardwareCOMAbstractions:
     TEST_PACKETS = [
@@ -41,7 +51,7 @@ class TestHardwareCOMAbstractions:
     def test_execute_instruction(self):
         with pytest.raises(NotImplementedError):
             # noinspection PyCallByClass,PyTypeChecker
-            UOSInterface.UOSInterface.execute_instruction(10, 10, [])
+            UOSInterface.UOSInterface.execute_instruction(self=None, address=10, payload=[])
 
     # Checks the static function correctly computes the LRC checksums for some known packets.
     @pytest.mark.parametrize(

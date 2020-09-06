@@ -8,9 +8,11 @@ from UARTOSInterface.HardwareCOM.UOSInterface import UOSInterface
 class NPCSerialPort(UOSInterface):
 
     _con = None
+    _port = ""
 
     # Constructor also opens the connection, must call close to release resource.
     def __init__(self, device: str):
+        self._port = device
         port = NPCSerialPort.check_port_exists(device)
         if port is None:
             return
@@ -33,8 +35,8 @@ class NPCSerialPort(UOSInterface):
         return True
 
     # High level function that executes a UOS instruction, inherited prototype from abstract class
-    def execute_instruction(self, address, payload, lazy_loaded=False):
-        return False  # todo stub
+    def execute_instruction(self, address, payload) -> (bool, {}):
+        return False, {}  # todo stub
 
     # Closes the serial connection, must be run when finished with the instance.
     def close(self):

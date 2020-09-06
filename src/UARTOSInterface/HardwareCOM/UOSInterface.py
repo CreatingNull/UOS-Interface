@@ -5,7 +5,7 @@ from abc import abstractmethod, ABCMeta
 class UOSInterface(metaclass=ABCMeta):
 
     @abstractmethod
-    def execute_instruction(self, address: int, payload: [int], lazy_loaded=True) -> (bool, {}):
+    def execute_instruction(self, address: int, payload: [int]) -> (bool, {}):
         raise NotImplementedError("UOSInterfaces must over-ride execute_instruction prototype.")
 
     # function builds a static bytes object containing all the bytes to be transmitted in sequential order

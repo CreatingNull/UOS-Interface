@@ -3,7 +3,7 @@ from pathlib import Path
 from UARTOSInterface.HardwareCOM import UOSDevice
 from UARTOSInterface.util import load_config
 
-devices = {"Arduino Nano 3": "/dev/ttyUSB0"}
+devices = {"Arduino Nano 3": "USB|/dev/ttyUSB0"}
 
 
 @pytest.fixture(scope="session", params=list(devices.keys()))
