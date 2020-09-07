@@ -43,7 +43,7 @@ class UOSDevice:
             UOSDevice.set_gpio_output.__name__,
             volatility,
             {
-                "addr_to": self.system_lut["functions"][UOSDevice.set_gpio_output.__name__][volatility],
+                "device_functions": self.system_lut["functions"],
                 "payload": [pin, 0, level],
             },
         )
@@ -67,28 +67,29 @@ class UOSDevice:
     def close(self):
         if self.__device_interface is not None:
             self.__device_interface.close()
-        return  # todo stub
 
     # Raises not implemented error if device does not support action
     # If lazy loaded will open connection
-    # todo this should also wrap the execute instruction (1 common call that also handles the lazy loading)
     def __execute_instruction(self, function_name: str, volatility, instruction_data: {}) -> (bool, {}):
-        # todo check volatility level on function supported
         if function_name not in self.system_lut["functions"] or volatility not in \
                 self.system_lut["functions"][function_name]:
             raise NotImplementedError(
                 f"{function_name} at volatility:{volatility} has not been implemented for {self.identity}"
             )
-        if self.__device_interface is None:  # Lazy loaded
+        if self.check_lazy():  # Lazy loaded
             self.open()
         return_data = self.__device_interface.execute_instruction(
-            instruction_data["addr_to"],
+            instruction_data["device_functions"][function_name][volatility],
             instruction_data["payload"],
         )
-        if self.__device_interface is None:  # Lazy loaded
+        if self.check_lazy():  # Lazy loaded
             self.close()
         return return_data
 
+    def check_lazy(self) -> bool:
+        if "loading" not in self.__kwargs or self.__kwargs["loading"].upper() == "LAZY":
+            return True
+        return False
 
     @staticmethod
     def _locate_device_definition(identity: str):

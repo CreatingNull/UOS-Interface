@@ -34,9 +34,18 @@ class NPCSerialPort(UOSInterface):
             return False
         return True
 
-    # High level function that executes a UOS instruction, inherited prototype from abstract class
+    # High level function that executes a UOS instruction.
+    # Inherited prototype from abstract class.
     def execute_instruction(self, address, payload) -> (bool, {}):
-        return False, {}  # todo stub
+        # Assemble the packet using the static functions from the abstract class.
+        if not self.check_open():
+            return False, {}
+        packet = self.get_npc_packet(to_addr=address, from_addr=0, payload=payload)
+        # Send the packet.
+        self._con.write(packet)
+        self._con.flush()
+        # Do the response shiz later.
+        return True, {}  # todo stub
 
     # Closes the serial connection, must be run when finished with the instance.
     def close(self):

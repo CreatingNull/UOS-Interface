@@ -3,19 +3,34 @@ from pathlib import Path
 from UARTOSInterface.HardwareCOM import UOSDevice
 from UARTOSInterface.util import load_config
 
-devices = {"Arduino Nano 3": "USB|/dev/ttyUSB0"}
+devices = {
+    "Arduino Nano 3 LAZY": {
+        "identity": "Arduino Nano 3",
+        "connection": "USB|/dev/ttyUSB0",
+        "loading": "LAZY",
+    },
+    "Arduino Nano 3 EAGER": {
+        "identity": "Arduino Nano 3",
+        "connection": "USB|/dev/ttyUSB0",
+        "loading": "EAGER",
+    },
+}
 
 
 @pytest.fixture(scope="session", params=list(devices.keys()))
 def uos_device(request):
-    device = UOSDevice(request.param, devices[request.param])
+    device = UOSDevice(
+        devices[request.param]["identity"],
+        devices[request.param]["connection"],
+        loading=devices[request.param]["loading"]
+    )
     yield device
     device.close()
 
 
 @pytest.fixture(scope="session", params=list(devices.keys()))
 def uos_identities(request):
-    return request.param, devices[request.param]
+    return devices[request.param]["identity"], devices[request.param]["connection"]
 
 
 @pytest.fixture(scope="session")
