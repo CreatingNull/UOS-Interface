@@ -59,8 +59,11 @@ class UOSDevice:
         self.__execute_instruction(UOSDevice.reset_all_io.__name__, volatility)
 
     def open(self):
-        if self.connection.upper().split('|')[0] == "USB":
-            self.__device_interface = NPCSerialPort(self.connection)
+        connection_params = self.connection.split('|')
+        if len(connection_params) != 2:
+            raise ValueError(f"NPC connection string was incorrectly formatted")
+        if connection_params[0].upper == "USB":
+            self.__device_interface = NPCSerialPort(connection_params[1])
         else:
             raise AttributeError(f"Could not correctly open a connection to {self.identity} - {self.connection}")
 
@@ -90,6 +93,11 @@ class UOSDevice:
         if "loading" not in self.__kwargs or self.__kwargs["loading"].upper() == "LAZY":
             return True
         return False
+
+    def __repr__(self):
+        return f"<UOSDevice(connection='{self.connection}', identity='{self.identity}', " \
+               f"system_lut={self.system_lut}, __device_interface='{self.__device_interface}', " \
+               f"__kwargs={self.__kwargs})>"
 
     @staticmethod
     def _locate_device_definition(identity: str):

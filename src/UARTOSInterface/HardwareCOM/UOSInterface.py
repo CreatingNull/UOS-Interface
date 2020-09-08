@@ -6,7 +6,21 @@ class UOSInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def execute_instruction(self, address: int, payload: [int]) -> (bool, {}):
-        raise NotImplementedError("UOSInterfaces must over-ride execute_instruction prototype.")
+        raise NotImplementedError(
+            f"UOSInterfaces must over-ride {UOSInterface.execute_instruction.__name__} prototype."
+        )
+
+    @abstractmethod
+    def open(self) -> bool:
+        raise NotImplementedError(
+            f"UOSInterfaces must over-ride {UOSInterface.open.__name__} prototype."
+        )
+
+    @abstractmethod
+    def close(self) -> bool:
+        raise NotImplementedError(
+            f"UOSInterfaces must over-ride {UOSInterface.close.__name__} prototype."
+        )
 
     # function builds a static bytes object containing all the bytes to be transmitted in sequential order
     # in an npc compliant packet.
