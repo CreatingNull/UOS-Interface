@@ -33,10 +33,17 @@ class UOSDevice:
         for key in self.system_lut:
             Log(__name__).debug(f"sys lut = {key}: {self.system_lut[key]}")
             # Select the low level backend-interface based on interface key
-        if "loading" in self.__kwargs and self.__kwargs["loading"].upper() == "EAGER":
-            self.open()
         if len(self.system_lut) == 0:
             raise NotImplementedError(f"'{self.identity}' does not have a valid look up table")
+        connection_params = self.connection.split('|')
+        if len(connection_params) != 2:
+            raise ValueError(f"NPC connection string was incorrectly formatted, length={len(connection_params)}")
+        if connection_params[0].upper() == "USB":
+            self.__device_interface = NPCSerialPort(connection_params[1])
+        else:
+            raise AttributeError(f"Could not correctly open a connection to {self.identity} - {self.connection}")
+        if "loading" in self.__kwargs and self.__kwargs["loading"].upper() == "EAGER":
+            self.open()
 
     def set_gpio_output(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> bool:
         response = self.__execute_instruction(
@@ -59,17 +66,16 @@ class UOSDevice:
         self.__execute_instruction(UOSDevice.reset_all_io.__name__, volatility)
 
     def open(self):
-        connection_params = self.connection.split('|')
-        if len(connection_params) != 2:
-            raise ValueError(f"NPC connection string was incorrectly formatted")
-        if connection_params[0].upper == "USB":
-            self.__device_interface = NPCSerialPort(connection_params[1])
+        if self.__device_interface is not None:
+            if not self.__device_interface.open():
+                raise RuntimeError("There was an error opening a connection to the device.")
         else:
-            raise AttributeError(f"Could not correctly open a connection to {self.identity} - {self.connection}")
+            raise AttributeError("You can't open a connection on a empty device.")
 
     def close(self):
         if self.__device_interface is not None:
-            self.__device_interface.close()
+            if not self.__device_interface.close():
+                raise RuntimeError("There was an error closing a connection to the device")
 
     # Raises not implemented error if device does not support action
     # If lazy loaded will open connection
