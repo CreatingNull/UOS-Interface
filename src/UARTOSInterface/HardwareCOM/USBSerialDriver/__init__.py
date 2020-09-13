@@ -52,6 +52,7 @@ class NPCSerialPort(UOSInterface):
         if not self.check_open():
             return False, {}
         packet = self.get_npc_packet(to_addr=address, from_addr=0, payload=payload)
+        Log(__name__).debug(f"packet formed {packet}")
         # Send the packet.
         self._device.write(packet)
         self._device.flush()

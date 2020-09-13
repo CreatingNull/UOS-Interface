@@ -29,20 +29,20 @@ class TestHardwareCOMAbstractions:
     TEST_PACKETS = [
         {"addr_to": 0,
          "addr_from": 1,
-         "payload": [1],
+         "payload": tuple([1]),
          "checksum": 253,
          "binary": b">\x00\x01\x01\x01\xfd<"
          },
         {"addr_to": 64,
          "addr_from": 0,
-         "payload": [13, 0, 1, 12, 1, 0],
+         "payload": (13, 0, 1, 12, 1, 0),
          "checksum": 159,
          "binary": b">\x40\x00\x06\x0d\x00\x01\x0c\x01\x00\x9f<"
          },
         # Bad packet
         {"addr_to": 256,
          "addr_from": 256,
-         "payload": [],
+         "payload": tuple(),
          "checksum": 0,
          "binary": b""}
     ]
@@ -52,7 +52,7 @@ class TestHardwareCOMAbstractions:
     def test_execute_instruction(self):
         with pytest.raises(NotImplementedError):
             # noinspection PyCallByClass,PyTypeChecker
-            UOSInterface.UOSInterface.execute_instruction(self=None, address=10, payload=[])
+            UOSInterface.UOSInterface.execute_instruction(self=None, address=10, payload=())
 
     # Checks the static function correctly computes the LRC checksums for some known packets.
     @pytest.mark.parametrize(
@@ -62,15 +62,15 @@ class TestHardwareCOMAbstractions:
             [[0], 0],  # base case
             [(  # simple NPC packet case
                 [TEST_PACKETS[0]["addr_to"], TEST_PACKETS[0]["addr_from"],
-                 len(TEST_PACKETS[0]["payload"])] + TEST_PACKETS[0]["payload"]
+                 len(TEST_PACKETS[0]["payload"])] + list(TEST_PACKETS[0]["payload"])
             ), TEST_PACKETS[0]["checksum"]],
             [(  # simple NPC packet case
                 [TEST_PACKETS[1]["addr_to"], TEST_PACKETS[1]["addr_from"],
-                 len(TEST_PACKETS[1]["payload"])] + TEST_PACKETS[1]["payload"]
+                 len(TEST_PACKETS[1]["payload"])] + list(TEST_PACKETS[1]["payload"])
             ), TEST_PACKETS[1]["checksum"]],
             [(  # simple NPC packet case
                     [TEST_PACKETS[2]["addr_to"], TEST_PACKETS[2]["addr_from"],
-                     len(TEST_PACKETS[2]["payload"])] + TEST_PACKETS[2]["payload"]
+                     len(TEST_PACKETS[2]["payload"])] + list(TEST_PACKETS[2]["payload"])
             ), TEST_PACKETS[2]["checksum"]],
         ]
     )
@@ -88,5 +88,5 @@ class TestHardwareCOMAbstractions:
         assert UOSInterface.UOSInterface.get_npc_packet(
             test_packet["addr_to"],
             test_packet["addr_from"],
-            test_packet["payload"]
+            test_packet["payload"],
         ) == test_packet["binary"]

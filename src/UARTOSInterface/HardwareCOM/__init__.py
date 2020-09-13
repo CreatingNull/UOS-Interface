@@ -51,7 +51,7 @@ class UOSDevice:
             volatility,
             {
                 "device_functions": self.system_lut["functions"],
-                "payload": [pin, 0, level],
+                "payload": (pin, 0, level),
             },
         )
         return response[0]

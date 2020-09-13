@@ -1,4 +1,6 @@
 from abc import abstractmethod, ABCMeta
+from functools import lru_cache
+from typing import Tuple
 
 
 # base class inherited by all low level connection objects
@@ -25,11 +27,12 @@ class UOSInterface(metaclass=ABCMeta):
     # function builds a static bytes object containing all the bytes to be transmitted in sequential order
     # in an npc compliant packet.
     @staticmethod
-    def get_npc_packet(to_addr: int, from_addr: int, payload: [int]) -> bytes:
+    @lru_cache(maxsize=100)
+    def get_npc_packet(to_addr: int, from_addr: int, payload: Tuple[int]) -> bytes:
         if to_addr < 256 and from_addr < 256 and len(payload) < 256:  # check input is possible to parse
-            packet_data = [to_addr, from_addr, len(payload)] + payload
+            packet_data = [to_addr, from_addr, len(payload)] + list(payload)
             lrc = UOSInterface.get_npc_checksum(packet_data)
-            return bytes([0x3e, packet_data[0], packet_data[1], len(payload)] + payload + [lrc, 0x3c])
+            return bytes([0x3e, packet_data[0], packet_data[1], len(payload)] + list(payload) + [lrc, 0x3c])
         return bytes([])
 
     # Computes the LRC checksum based on applicable bytes in a npc formed packet.
