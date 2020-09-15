@@ -1,3 +1,4 @@
+""" Module containing the high level hardware interface for communicating with UOS devices. """
 import sys
 from ast import literal_eval
 from pathlib import Path
@@ -13,19 +14,33 @@ NON_VOLATILE = 2
 
 
 def register_logs(level, base_path: Path):
+    """ Configures the log files for the hardware COM package
+    :param level: Set the logger level, debug ect. Use the constants from logging lib.
+    :param base_path: Set the logging directory.
+    """
     configure_logs(__name__, level=level, base_path=base_path)
 
 
-# object orientated control of the UOS system.
 class UOSDevice:
-
-    identity = ""  # The type of device, this is must have a valid section in the system_lut
-    connection = ""  # Compliant connection string for identifying the device
-    system_lut = {}  # Device definitions as parsed from a compatible ini
-    __kwargs = {}  # Connection specific / optional parameters
-    __device_interface = None  # Lower level communication protocol layer
+    """ Class for high level object-orientated control of UOS devices.
+    :ivar identity: The type of device, this is must have a valid section in the system_lut.
+    :ivar connection: Compliant connection string for identifying the device and interface.
+    :ivar system_lut: Device definitions as parsed from a compatible ini.
+    :ivar __kwargs: Connection specific / optional parameters.
+    :ivar __device_interface: Lower level communication protocol layer.
+    """
+    identity = ""
+    connection = ""
+    system_lut = {}
+    __kwargs = {}
+    __device_interface = None
 
     def __init__(self, identity: str, connection: str = "", **kwargs):
+        """ Instantiate a UOS device instance for communication.
+        :param identity: Specify the type of device, this must exist in the device dictionary.
+        :param connection: Compliant connection string for identifying the device and interface.
+        :param kwargs: Additional optional connection parameters as defined in documentation.
+        """
         self.identity = identity
         self.connection = connection
         self.system_lut = self._locate_device_definition(identity)
@@ -46,6 +61,12 @@ class UOSDevice:
             self.open()
 
     def set_gpio_output(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> bool:
+        """ Sets a pin to digital output mode and sets a level on that pin.
+        :param pin: The numeric number of the pin as defined in the dictionary for that device.
+        :param level: The output level, 0 - low, 1 - High.
+        :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
+        :return: Status boolean.
+        """
         response = self.__execute_instruction(
             UOSDevice.set_gpio_output.__name__,
             volatility,
@@ -66,6 +87,10 @@ class UOSDevice:
         self.__execute_instruction(UOSDevice.reset_all_io.__name__, volatility)
 
     def open(self):
+        """ Opens a connection to the low level device, explict calls are normally not required.
+        :raises: RuntimeError - If there was an issue opening a connection.
+        :raises: Attribute Error - if bad configuration of the UOSDevice object.
+        """
         if self.__device_interface is not None:
             if not self.__device_interface.open():
                 raise RuntimeError("There was an error opening a connection to the device.")
@@ -73,6 +98,9 @@ class UOSDevice:
             raise AttributeError("You can't open a connection on a empty device.")
 
     def close(self):
+        """ Closes a connection to the low level device, must be called explicitly if loading is eager.
+        :raises: RuntimeError - If there was a problem closing the connection to an active device.
+        """
         if self.__device_interface is not None:
             if not self.__device_interface.close():
                 raise RuntimeError("There was an error closing a connection to the device")
@@ -80,6 +108,12 @@ class UOSDevice:
     # Raises not implemented error if device does not support action
     # If lazy loaded will open connection
     def __execute_instruction(self, function_name: str, volatility, instruction_data: {}) -> (bool, {}):
+        """ Helper function used to combine common functionality of the object orientated layer.
+        :param function_name: The name of the function in the OOL.
+        :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
+        :param instruction_data: device_functions from the LUT, payload ect.
+        :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
+        """
         if function_name not in self.system_lut["functions"] or volatility not in \
                 self.system_lut["functions"][function_name]:
             raise NotImplementedError(
@@ -96,6 +130,9 @@ class UOSDevice:
         return return_data
 
     def check_lazy(self) -> bool:
+        """ Checks the loading type of the device lazy or eager.
+        :return: Boolean, true is lazy.
+        """
         if "loading" not in self.__kwargs or self.__kwargs["loading"].upper() == "LAZY":
             return True
         return False
@@ -107,6 +144,10 @@ class UOSDevice:
 
     @staticmethod
     def _locate_device_definition(identity: str):
+        """ Looks up the system dictionary ini for the defined device mappings
+        :param identity: String containing the lookup key of the device in the dictionary
+        :return: Dictionary of the device lookup table. Empty if no device located.
+        """
         if getattr(sys, "frozen", False):  # running as packaged
             config_path = Path(sys.executable).resolve().parent
             config_path = config_path.joinpath("HardwareCOM.ini")
