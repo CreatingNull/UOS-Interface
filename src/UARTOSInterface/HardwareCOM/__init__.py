@@ -6,7 +6,7 @@ from logging import getLogger as Log
 from configparser import ConfigParser
 from UARTOSInterface.util import configure_logs
 from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
-
+from time import sleep
 
 SUPER_VOLATILE = 0
 VOLATILE = 1
@@ -59,6 +59,7 @@ class UOSDevice:
             raise AttributeError(f"Could not correctly open a connection to {self.identity} - {self.connection}")
         if "loading" in self.__kwargs and self.__kwargs["loading"].upper() == "EAGER":
             self.open()
+        Log(__name__).debug(f"Created device {self.__device_interface.__repr__()}")
 
     def set_gpio_output(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> bool:
         """ Sets a pin to digital output mode and sets a level on that pin.
@@ -125,6 +126,7 @@ class UOSDevice:
             instruction_data["device_functions"][function_name][volatility],
             instruction_data["payload"],
         )
+        # response = self.__device_interface.read_response(2)
         if self.check_lazy():  # Lazy loaded
             self.close()
         return return_data

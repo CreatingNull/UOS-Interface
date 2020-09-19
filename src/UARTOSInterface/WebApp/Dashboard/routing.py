@@ -9,5 +9,18 @@ def route_default():
     device = UOSDevice('Arduino Nano 3', connection='USB|/dev/ttyUSB0')
     device.set_gpio_output(13, 1)
     Log(__name__).debug(f"{device} created")
-    device.close()
     return render_template("site_template/base_site.html")
+
+
+@blueprint.route("/on")
+def route_on():
+    device = UOSDevice('Arduino Nano 3', connection='USB|/dev/ttyUSB0')
+    device.set_gpio_output(13, 1)
+    return "led on"
+
+
+@blueprint.route("/off")
+def route_off():
+    device = UOSDevice('Arduino Nano 3', connection='USB|/dev/ttyUSB0')
+    device.set_gpio_output(13, 0)
+    return "led off"
