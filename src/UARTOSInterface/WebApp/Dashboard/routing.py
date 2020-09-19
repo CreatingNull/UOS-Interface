@@ -24,3 +24,10 @@ def route_off():
     device = UOSDevice('Arduino Nano 3', connection='USB|/dev/ttyUSB0')
     device.set_gpio_output(13, 0)
     return "led off"
+
+
+@blueprint.route("/reset")
+def route_reset():
+    device = UOSDevice('Arduino Nano 3', connection='USB|/dev/ttyUSB0')
+    device.hard_reset()
+    return "reset"

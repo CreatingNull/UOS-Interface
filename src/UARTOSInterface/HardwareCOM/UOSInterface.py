@@ -31,6 +31,15 @@ class UOSInterface(metaclass=ABCMeta):
         )
 
     @abstractmethod
+    def hard_reset(self) -> (bool, {}):
+        """ Abstract method for UOS loop reset functionality should be as hard a reset as possible
+        :return: A tuple containing a success boolean at index 0 and a result-set dict at index 1.
+        """
+        raise NotImplementedError(
+            f"UOSInterfaces must over-ride {UOSInterface.hard_reset.__name__} prototype"
+        )
+
+    @abstractmethod
     def open(self) -> bool:
         """ Abstract method for opening a connection to a UOSInterface.
         :return: Success boolean.

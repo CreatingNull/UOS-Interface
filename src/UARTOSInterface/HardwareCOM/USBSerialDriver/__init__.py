@@ -37,10 +37,9 @@ class NPCSerialPort(UOSInterface):
         :return: Success boolean.
         """
         try:
-            # todo configurable parameters, baudrate dtr ect
             self._device = serial.Serial()
             self._device.port = self._connection
-            self._device.baudrate = 115200
+            self._device.baudrate = self._kwargs["baudrate"]
             if platform.system() == "Linux":
                 Log(__name__).debug("Linux platform found so using DTR workaround")
                 import termios
@@ -48,8 +47,7 @@ class NPCSerialPort(UOSInterface):
                     attrs = termios.tcgetattr(p)
                     attrs[2] = attrs[2] & ~termios.HUPCL
                     termios.tcsetattr(p, termios.TCSAFLUSH, attrs)
-            else:
-                self._device.dtr = False
+            self._device.dtr = True
             self._device.open()
             Log(__name__).debug(f"{self._port.device} opened successfully")
             return True
@@ -76,7 +74,7 @@ class NPCSerialPort(UOSInterface):
         self._device = None
         return True
 
-    def execute_instruction(self, address, payload) -> (bool, {}):
+    def execute_instruction(self, address, payload):
         """ Builds and executes a new packet.
         :param address: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
         :param payload: A tuple containing the unsigned 8 bit integer parameters of the UOS instruction.
@@ -96,7 +94,7 @@ class NPCSerialPort(UOSInterface):
             self._device.reset_output_buffer()
         return num_bytes == len(packet), {}
 
-    def read_response(self, timeout_s: float) -> (bool, {}):
+    def read_response(self, timeout_s: float):
         """ Reads ACK and response packets from the serial device.
         :param timeout_s: The maximum time this function will wait for data.
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
@@ -119,6 +117,18 @@ class NPCSerialPort(UOSInterface):
             return False, {"exception": str(e)}
         return True, {}
 
+    def hard_reset(self):
+        """ Manually drives the DTR line low to reset the device
+        :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
+        """
+        if not self.check_open():
+            return False, {"exception": "Connection must be open first."}
+        Log(__name__).debug("Resetting the device using the DTR line")
+        self._device.dtr = not self._device.dtr
+        sleep(0.2)
+        self._device.dtr = not self._device.dtr
+        return True, {}
+
     def check_open(self) -> bool:
         """ Tests if the connection is open by validating an open device.
         :return: Boolean, true if open.
@@ -130,8 +140,6 @@ class NPCSerialPort(UOSInterface):
     def __repr__(self):
         return f"<NPCSerialPort(_connection='{self._connection}', _port={self._port}, _device={self._device})>"
 
-    # Takes in a serial port identifier string and checks if the port is available on the system.
-    # Returns None type if not found or port object if found.
     @staticmethod
     def check_port_exists(device: str):
         """ Takes in a serial port connection string and checks if the port is available on the system.

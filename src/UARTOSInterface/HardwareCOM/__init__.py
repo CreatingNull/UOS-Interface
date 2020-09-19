@@ -6,7 +6,6 @@ from logging import getLogger as Log
 from configparser import ConfigParser
 from UARTOSInterface.util import configure_logs
 from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
-from time import sleep
 
 SUPER_VOLATILE = 0
 VOLATILE = 1
@@ -38,7 +37,7 @@ class UOSDevice:
     def __init__(self, identity: str, connection: str = "", **kwargs):
         """ Instantiate a UOS device instance for communication.
         :param identity: Specify the type of device, this must exist in the device dictionary.
-        :param connection: Compliant connection string for identifying the device and interface.
+        :param connection: Compliant connection string for isleepdentifying the device and interface.
         :param kwargs: Additional optional connection parameters as defined in documentation.
         """
         self.identity = identity
@@ -54,7 +53,7 @@ class UOSDevice:
         if len(connection_params) != 2:
             raise ValueError(f"NPC connection string was incorrectly formatted, length={len(connection_params)}")
         if connection_params[0].upper() == "USB":
-            self.__device_interface = NPCSerialPort(connection_params[1])
+            self.__device_interface = NPCSerialPort(connection_params[1], baudrate=self.system_lut["default_baudrate"])
         else:
             raise AttributeError(f"Could not correctly open a connection to {self.identity} - {self.connection}")
         if "loading" in self.__kwargs and self.__kwargs["loading"].upper() == "EAGER":
@@ -87,6 +86,14 @@ class UOSDevice:
     def reset_all_io(self, volatility: int = NON_VOLATILE):
         self.__execute_instruction(UOSDevice.reset_all_io.__name__, volatility)
 
+    def hard_reset(self) -> bool:
+        response = self.__execute_instruction(
+            UOSDevice.hard_reset.__name__,
+            0,
+            {"device_functions": self.system_lut["functions"]},
+        )
+        return response[0]
+
     def open(self):
         """ Opens a connection to the low level device, explict calls are normally not required.
         :raises: RuntimeError - If there was an issue opening a connection.
@@ -106,14 +113,13 @@ class UOSDevice:
             if not self.__device_interface.close():
                 raise RuntimeError("There was an error closing a connection to the device")
 
-    # Raises not implemented error if device does not support action
-    # If lazy loaded will open connection
     def __execute_instruction(self, function_name: str, volatility, instruction_data: {}) -> (bool, {}):
         """ Helper function used to combine common functionality of the object orientated layer.
         :param function_name: The name of the function in the OOL.
         :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
         :param instruction_data: device_functions from the LUT, payload ect.
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
+        :raises: NotImplementedError if function is not possible on the loaded device.
         """
         if function_name not in self.system_lut["functions"] or volatility not in \
                 self.system_lut["functions"][function_name]:
@@ -122,10 +128,13 @@ class UOSDevice:
             )
         if self.check_lazy():  # Lazy loaded
             self.open()
-        return_data = self.__device_interface.execute_instruction(
-            instruction_data["device_functions"][function_name][volatility],
-            instruction_data["payload"],
-        )
+        if instruction_data["device_functions"][function_name][volatility] >= 0:  # a normal instruction
+            return_data = self.__device_interface.execute_instruction(
+                instruction_data["device_functions"][function_name][volatility],
+                instruction_data["payload"],
+            )
+        else:  # run a special action
+            return_data = getattr(self.__device_interface, function_name)()
         # response = self.__device_interface.read_response(2)
         if self.check_lazy():  # Lazy loaded
             self.close()
@@ -165,7 +174,13 @@ class UOSDevice:
                 section = f"DEVICE - {identity.upper()}"
                 for key_name in ("digital_pins", "analogue_pins"):
                     output[key_name] = [int(pin.strip()) for pin in config[section][key_name].split(",")]
-                for function_name in ("set_gpio_output", "set_gpio_input", "get_adc_input", "reset_all_io"):
+                for function_name in (
+                        "set_gpio_output",
+                        "get_gpio_input",
+                        "get_adc_input",
+                        "reset_all_io",
+                        "hard_reset"
+                ):
                     if f"function - {function_name}" in config[section]:  # just exclude undefined functions
                         output["functions"][function_name] = literal_eval(
                             config[section][f"function - {function_name}"]
