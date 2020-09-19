@@ -3,12 +3,13 @@ from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
 
 connection = "/dev/ttyUSB0"  # populate with the connection str / COM for relevant device.
 
+
 @pytest.mark.skipif(False, reason="You need the relevant NPC Serial Hardware to test these low level functions")
 class TestNPCSerialPort:
 
     @pytest.fixture
     def npc_serial_port(self):
-        serial_port = NPCSerialPort(connection)
+        serial_port = NPCSerialPort(connection, baudrate=115200)
         yield serial_port
         serial_port.close()
 

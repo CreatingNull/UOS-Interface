@@ -126,19 +126,27 @@ class UOSDevice:
             raise NotImplementedError(
                 f"{function_name} at volatility:{volatility} has not been implemented for {self.identity}"
             )
+        rx_response = (False, {})
         if self.check_lazy():  # Lazy loaded
             self.open()
         if instruction_data["device_functions"][function_name][volatility] >= 0:  # a normal instruction
-            return_data = self.__device_interface.execute_instruction(
+            tx_response = self.__device_interface.execute_instruction(
                 instruction_data["device_functions"][function_name][volatility],
                 instruction_data["payload"],
             )
+            if tx_response[0]:
+                rx_response = self.__device_interface.read_response(2)
+                if rx_response[0]:
+                    computed_checksum = self.__device_interface.get_npc_checksum(rx_response[1]["packet"][1:-2])
+                    Log(__name__).debug(
+                        f"Ensuring Computed Checksum {computed_checksum} matches rx {rx_response[1]['packet'][-2]}"
+                    )
+                    rx_response = (computed_checksum == rx_response[1]['packet'][-2], rx_response[1])
         else:  # run a special action
-            return_data = getattr(self.__device_interface, function_name)()
-        # response = self.__device_interface.read_response(2)
+            rx_response = getattr(self.__device_interface, function_name)()
         if self.check_lazy():  # Lazy loaded
             self.close()
-        return return_data
+        return rx_response
 
     def check_lazy(self) -> bool:
         """ Checks the loading type of the device lazy or eager.

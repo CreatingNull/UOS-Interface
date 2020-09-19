@@ -99,20 +99,40 @@ class NPCSerialPort(UOSInterface):
         :param timeout_s: The maximum time this function will wait for data.
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
-        # poll serial port for data
-        # build and validate packet at the same time break if time taken > timeout_S
-        # How do I determine the start of the packet '>'
         start_ns = time_ns()
         packet = []
+        payload_len = 0  # tracks the current packet's payload length
+        byte_index = -1  # tracks the byte position index of the current packet
         try:
-            while (timeout_s*1000000000) > time_ns() - start_ns:
+            while (timeout_s*1000000000) > time_ns() - start_ns and byte_index > -2:  # read until packet or timeout
                 num_bytes = self._device.in_waiting
                 if num_bytes > 0:
-                    bytes_in = self._device.read(num_bytes)
-                    packet.append(bytes_in)
-                    break
+                    for index in range(num_bytes):
+                        byte_in = self._device.read(1)
+                        if byte_index == -1:  # start symbol
+                            if byte_in == b'>':
+                                byte_index += 1
+                        if byte_index >= 0:
+                            Log(__name__).debug(f"read {byte_in} index = {byte_index}")
+                            if byte_index == 3:  # payload len
+                                payload_len = int.from_bytes(byte_in, byteorder="little")
+                            elif byte_index == 3 + payload_len + 2:  # End packet symbol
+                                if byte_in == b'<':
+                                    byte_index = -2  # packet complete
+                                    Log(__name__).debug("Found end packet symbol")
+                                else:  # Errored data
+                                    byte_index = -1
+                                    payload_len = 0
+                                    packet = []
+                            packet.append(int.from_bytes(byte_in, byteorder="little"))
+                            if byte_index == -2:
+                                break
+                            byte_index += 1
                 sleep(0.05)  # Don't churn CPU cycles waiting for data
-            Log(__name__).debug(f"Packet recieved {packet}")
+            Log(__name__).debug(f"Packet received {packet}")
+            if len(packet) < 6 or byte_index != -2:
+                return False, {"exception": "could find a full packet"}
+            return True, {"packet": packet}
         except serial.SerialException as e:
             return False, {"exception": str(e)}
         return True, {}
