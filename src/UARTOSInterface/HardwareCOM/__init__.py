@@ -60,12 +60,12 @@ class UOSDevice:
             self.open()
         Log(__name__).debug(f"Created device {self.__device_interface.__repr__()}")
 
-    def set_gpio_output(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> bool:
+    def set_gpio_output(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> (bool, {}):
         """ Sets a pin to digital output mode and sets a level on that pin.
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: The output level, 0 - low, 1 - High.
         :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
-        :return: Status boolean.
+        :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
         response = self.__execute_instruction(
             UOSDevice.set_gpio_output.__name__,
@@ -73,12 +73,28 @@ class UOSDevice:
             {
                 "device_functions": self.system_lut["functions"],
                 "payload": (pin, 0, level),
+                "expected_packets": 1
             },
         )
-        return response[0]
+        return response
 
-    def get_gpio_input(self, pin: int, level: int, volatility: int = SUPER_VOLATILE):
-        self.__execute_instruction(UOSDevice.get_gpio_input.__name__, volatility)
+    def get_gpio_input(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> (bool, {}):
+        """ Reads a GPIO pins level from device and returns the value
+        :param pin: The numeric number of the pin as defined in the dictionary for that device.
+        :param level: Not used currently, future will define pull-up state
+        :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
+        :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
+        """
+        response = self.__execute_instruction(
+            UOSDevice.get_gpio_input.__name__,
+            volatility,
+            {
+                "device_functions": self.system_lut["functions"],
+                "payload": (pin, 1, level),
+                "expected_packets": 2
+            }
+        )
+        return response
 
     def get_adc_input(self, pin: int, level: int, volatility: int = SUPER_VOLATILE):
         self.__execute_instruction(UOSDevice.get_adc_input.__name__, volatility)
@@ -135,13 +151,19 @@ class UOSDevice:
                 instruction_data["payload"],
             )
             if tx_response[0]:
-                rx_response = self.__device_interface.read_response(2)
+                rx_response = self.__device_interface.read_response(instruction_data["expected_packets"], 2)
                 if rx_response[0]:
-                    computed_checksum = self.__device_interface.get_npc_checksum(rx_response[1]["packet"][1:-2])
-                    Log(__name__).debug(
-                        f"Ensuring Computed Checksum {computed_checksum} matches rx {rx_response[1]['packet'][-2]}"
-                    )
-                    rx_response = (computed_checksum == rx_response[1]['packet'][-2], rx_response[1])
+                    # validate checksums on all packets
+                    packet_names = ["ack_packet"] + [
+                        f"rx_packet_{i}" for i in range(instruction_data["expected_packets"]-1)
+                    ]
+                    for packet_name in packet_names:
+                        computed_checksum = self.__device_interface.get_npc_checksum(rx_response[1][packet_name][1:-2])
+                        Log(__name__).debug(
+                            f"Calculated checksum {computed_checksum} must match rx {rx_response[1][packet_name][-2]}"
+                        )
+                        rx_response = rx_response[0] & (computed_checksum == rx_response[1][packet_name][-2]), \
+                            rx_response[1]
         else:  # run a special action
             rx_response = getattr(self.__device_interface, function_name)()
         if self.check_lazy():  # Lazy loaded

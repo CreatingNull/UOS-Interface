@@ -94,8 +94,9 @@ class NPCSerialPort(UOSInterface):
             self._device.reset_output_buffer()
         return num_bytes == len(packet), {}
 
-    def read_response(self, timeout_s: float):
+    def read_response(self, expect_packets: int, timeout_s: float):
         """ Reads ACK and response packets from the serial device.
+        :param expect_packets: How many packets including ACK to expect
         :param timeout_s: The maximum time this function will wait for data.
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
@@ -103,6 +104,8 @@ class NPCSerialPort(UOSInterface):
         packet = []
         payload_len = 0  # tracks the current packet's payload length
         byte_index = -1  # tracks the byte position index of the current packet
+        packet_index = 0  # tracks the packet number being received 0 = ACK
+        response_dict = {}
         try:
             while (timeout_s*1000000000) > time_ns() - start_ns and byte_index > -2:  # read until packet or timeout
                 num_bytes = self._device.in_waiting
@@ -126,16 +129,27 @@ class NPCSerialPort(UOSInterface):
                                     packet = []
                             packet.append(int.from_bytes(byte_in, byteorder="little"))
                             if byte_index == -2:
-                                break
+                                if packet_index == 0:
+                                    response_dict["ack_packet"] = packet
+                                else:
+                                    response_dict[f"rx_packet_{packet_index-1}"] = packet
+                                packet_index += 1
+                                if expect_packets == packet_index:
+                                    break
+                                byte_index = -1
+                                packet = []
+                                payload_len = 0
                             byte_index += 1
                 sleep(0.05)  # Don't churn CPU cycles waiting for data
             Log(__name__).debug(f"Packet received {packet}")
-            if len(packet) < 6 or byte_index != -2:
-                return False, {"exception": "could find a full packet"}
-            return True, {"packet": packet}
+            if expect_packets != packet_index or len(packet) < 6 or byte_index != -2:
+                response_dict["incomplete_packet"] = packet
+                response_dict["exception"] = "did not receive all the expected data"
+                return False, response_dict
+            return True, response_dict
         except serial.SerialException as e:
-            return False, {"exception": str(e)}
-        return True, {}
+            response_dict["exception"] = str(e)
+            return False, response_dict
 
     def hard_reset(self):
         """ Manually drives the DTR line low to reset the device

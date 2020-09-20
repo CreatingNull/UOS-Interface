@@ -20,8 +20,9 @@ class UOSInterface(metaclass=ABCMeta):
         )
 
     @abstractmethod
-    def read_response(self, timeout_s: float) -> (bool, {}):
+    def read_response(self, expect_packets: int, timeout_s: float) -> (bool, {}):
         """ Abstract method for reading ACK and Data packets from a UOSInterface.
+        :param expect_packets: How many packets including ACK to expect
         :param timeout_s: The maximum time this function will wait for data.
         :return: A tuple containing a success boolean at index 0 and a result-set dict at index 1.
         :raises: NotImplementedError if the interface hasn't been built correctly.
