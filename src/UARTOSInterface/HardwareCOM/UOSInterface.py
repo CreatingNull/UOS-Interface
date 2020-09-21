@@ -8,7 +8,7 @@ class UOSInterface(metaclass=ABCMeta):
     """ Base class for low level UOS interfaces classes to inherit. """
 
     @abstractmethod
-    def execute_instruction(self, address: int, payload: Tuple[int]) -> (bool, {}):
+    def execute_instruction(self, address: int, payload: Tuple[int, ...]) -> (bool, {}):
         """ Abstract method for executing instructions on UOSInterfaces.
         :param address: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
         :param payload: A tuple containing the unsigned 8 bit integer parameters of the UOS instruction.
@@ -64,7 +64,7 @@ class UOSInterface(metaclass=ABCMeta):
     # in an npc compliant packet.
     @staticmethod
     @lru_cache(maxsize=100)
-    def get_npc_packet(to_addr: int, from_addr: int, payload: Tuple[int]) -> bytes:
+    def get_npc_packet(to_addr: int, from_addr: int, payload: Tuple[int, ...]) -> bytes:
         """ Static method to generate a standardised NPC packet.
         :param to_addr: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
         :param from_addr: An 8 bit unsigned integer of the host system, usually 0.

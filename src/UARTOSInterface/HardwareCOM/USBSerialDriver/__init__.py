@@ -15,8 +15,8 @@ class NPCSerialPort(UOSInterface):
         :ivar _port: Holds the port class, containing OS level info on the device. None if device not instantiated.
         :ivar _kwargs: Additional keyword arguments as defined in the documentation.
     """
-
     _device = None
+
     _connection = ""
     _port = None
     _kwargs = {}
@@ -39,7 +39,8 @@ class NPCSerialPort(UOSInterface):
         try:
             self._device = serial.Serial()
             self._device.port = self._connection
-            self._device.baudrate = self._kwargs["baudrate"]
+            if "baudrate" in self._kwargs:
+                self._device.baudrate = self._kwargs["baudrate"]
             if platform.system() == "Linux":
                 Log(__name__).debug("Linux platform found so using DTR workaround")
                 import termios
@@ -51,8 +52,10 @@ class NPCSerialPort(UOSInterface):
             self._device.open()
             Log(__name__).debug(f"{self._port.device} opened successfully")
             return True
-        except SerialException as e:
-            Log(__name__).error(f"Opening {self._port.device} threw error {e.__str__()}")
+        except (SerialException, FileNotFoundError) as e:
+            Log(__name__).error(
+                f"Opening {self._port.device if self._port is not None else 'None'} threw error {e.__str__()}"
+            )
             if e.errno == 13:  # permission denied another connection open to this device.
                 Log(__name__).error(f"Cannot open connection, account has insufficient permissions.")
             self._device = None
@@ -81,7 +84,7 @@ class NPCSerialPort(UOSInterface):
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
         if not self.check_open():
-            return False, {"exception": "Connection must be open first."}
+            return False, {"exception": "Connection must be opened first."}
         packet = self.get_npc_packet(to_addr=address, from_addr=0, payload=payload)
         Log(__name__).debug(f"packet formed {packet}")
         try:  # Send the packet.
@@ -100,6 +103,8 @@ class NPCSerialPort(UOSInterface):
         :param timeout_s: The maximum time this function will wait for data.
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
+        if not self.check_open():
+            return False, {"exception": "Connection must be opened first."}
         start_ns = time_ns()
         packet = []
         payload_len = 0  # tracks the current packet's payload length

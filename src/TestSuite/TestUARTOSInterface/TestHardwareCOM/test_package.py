@@ -51,8 +51,28 @@ class TestHardwareCOMAbstractions:
     # This indicates the abstract class is correctly configured to warn inherited classes.
     def test_execute_instruction(self):
         with pytest.raises(NotImplementedError):
-            # noinspection PyCallByClass,PyTypeChecker
+            # noinspection PyTypeChecker
             UOSInterface.UOSInterface.execute_instruction(self=None, address=10, payload=())
+
+    def test_read_response(self):
+        with pytest.raises(NotImplementedError):
+            # noinspection PyTypeChecker
+            UOSInterface.UOSInterface.read_response(self=None, expect_packets=1, timeout_s=2)
+
+    def test_hard_reset(self):
+        with pytest.raises(NotImplementedError):
+            # noinspection PyTypeChecker
+            UOSInterface.UOSInterface.hard_reset(self=None)
+
+    def test_open(self):
+        with pytest.raises(NotImplementedError):
+            # noinspection PyTypeChecker
+            UOSInterface.UOSInterface.open(self=None)
+
+    def test_close(self):
+        with pytest.raises(NotImplementedError):
+            # noinspection PyTypeChecker
+            UOSInterface.UOSInterface.close(self=None)
 
     # Checks the static function correctly computes the LRC checksums for some known packets.
     @pytest.mark.parametrize(
