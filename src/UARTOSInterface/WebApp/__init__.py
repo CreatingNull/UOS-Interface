@@ -7,7 +7,7 @@ from UARTOSInterface.util import configure_logs
 
 
 def register_blueprints(app):
-    project_modules = ["Dashboard"]
+    project_modules = ["API", "Dashboard"]
     for module_name in project_modules:
         module = import_module(f"UARTOSInterface.WebApp.{module_name}.routing")
         if hasattr(module, "blueprint"):
