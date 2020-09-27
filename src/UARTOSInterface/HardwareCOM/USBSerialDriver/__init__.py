@@ -5,8 +5,7 @@ from serial.tools import list_ports
 from logging import getLogger as Log
 from serial.serialutil import SerialException
 from time import time_ns, sleep
-from UARTOSInterface.HardwareCOM.UOSInterface import UOSInterface
-from UARTOSInterface.HardwareCOM.util import COMresult
+from UARTOSInterface.HardwareCOM.UOSInterface import UOSInterface, COMresult
 
 
 class NPCSerialPort(UOSInterface):
@@ -102,7 +101,7 @@ class NPCSerialPort(UOSInterface):
         """ Reads ACK and response packets from the serial device.
         :param expect_packets: How many packets including ACK to expect
         :param timeout_s: The maximum time this function will wait for data.
-        :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
+        :return: COMresult object.
         """
         if not self.check_open():
             return False, {"exception": "Connection must be opened first."}

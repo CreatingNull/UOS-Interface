@@ -1,8 +1,18 @@
-""" Module defining the base class for all UOS device interfaces. """
+""" Module defining the abstract base class and static functions for all UOS device interfaces. """
 from abc import abstractmethod, ABCMeta
 from functools import lru_cache
 from typing import Tuple
-from UARTOSInterface.HardwareCOM.util import COMresult
+from dataclasses import dataclass, field
+from typing import List
+
+
+@dataclass
+class COMresult:
+    """ Class containing the data structure used to capture the result of UOS operations. """
+    status: bool
+    exception: str = ""
+    ack_packet: List = field(default_factory=list)
+    rx_packets: List = field(default_factory=list)
 
 
 class UOSInterface(metaclass=ABCMeta):
@@ -13,7 +23,7 @@ class UOSInterface(metaclass=ABCMeta):
         """ Abstract method for executing instructions on UOSInterfaces.
         :param address: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
         :param payload: A tuple containing the unsigned 8 bit integer parameters of the UOS instruction.
-        :returns: A tuple containing a success boolean at index 0 and a result-set dict at index 1.
+        :returns: COMresult object.
         :raises: NotImplementedError if the interface hasn't been built correctly.
         """
         raise NotImplementedError(
@@ -25,7 +35,7 @@ class UOSInterface(metaclass=ABCMeta):
         """ Abstract method for reading ACK and Data packets from a UOSInterface.
         :param expect_packets: How many packets including ACK to expect
         :param timeout_s: The maximum time this function will wait for data.
-        :return: A tuple containing a success boolean at index 0 and a result-set dict at index 1.
+        :return: COMresult object.
         :raises: NotImplementedError if the interface hasn't been built correctly.
         """
         raise NotImplementedError(
@@ -35,7 +45,7 @@ class UOSInterface(metaclass=ABCMeta):
     @abstractmethod
     def hard_reset(self) -> COMresult:
         """ Abstract method for UOS loop reset functionality should be as hard a reset as possible
-        :return: A tuple containing a success boolean at index 0 and a result-set dict at index 1.
+        :return: COMresult object.
         """
         raise NotImplementedError(
             f"UOSInterfaces must over-ride {UOSInterface.hard_reset.__name__} prototype"

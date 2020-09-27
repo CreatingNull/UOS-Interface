@@ -66,7 +66,7 @@ class UOSDevice:
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: The output level, 0 - low, 1 - High.
         :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
-        :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
+        :return: COMresult object.
         """
         response = self.__execute_instruction(
             UOSDevice.set_gpio_output.__name__,
@@ -84,7 +84,7 @@ class UOSDevice:
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: Not used currently, future will define pull-up state
         :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
-        :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
+        :return: COMresult object.
         """
         response = self.__execute_instruction(
             UOSDevice.get_gpio_input.__name__,
@@ -135,7 +135,7 @@ class UOSDevice:
         :param function_name: The name of the function in the OOL.
         :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
         :param instruction_data: device_functions from the LUT, payload ect.
-        :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
+        :return: COMresult object
         :raises: NotImplementedError if function is not possible on the loaded device.
         """
         if function_name not in self.system_lut["functions"] or volatility not in \

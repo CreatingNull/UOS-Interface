@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
-from UARTOSInterface.HardwareCOM.util import COMresult
+from dataclasses import dataclass
+from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
 
 
 @dataclass
