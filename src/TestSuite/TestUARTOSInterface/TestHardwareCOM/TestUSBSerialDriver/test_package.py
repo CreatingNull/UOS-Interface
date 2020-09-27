@@ -23,9 +23,9 @@ class TestNPCSerialPort:
         assert npc_serial_port.open()
         assert npc_serial_port.check_open()
         sleep(2)  # Allow the system time to boot
-        assert npc_serial_port.execute_instruction(64, (13, 0, 1))[0]
+        assert npc_serial_port.execute_instruction(64, (13, 0, 1)).status
         response = npc_serial_port.read_response(expect_packets=1, timeout_s=2)
-        assert response[0]
+        assert response.status
         assert npc_serial_port.hard_reset()
         assert npc_serial_port.close()
         assert npc_serial_port.close()  # should be safe to close an already closed connection
@@ -36,5 +36,5 @@ class TestNPCSerialPort:
         assert not invalid_serial_port.check_open()
         assert not invalid_serial_port.open()
         assert invalid_serial_port.close()
-        assert not invalid_serial_port.execute_instruction(64, (13, 0, 1))[0]
-        assert not invalid_serial_port.read_response(expect_packets=1, timeout_s=2)[0]
+        assert not invalid_serial_port.execute_instruction(64, (13, 0, 1)).status
+        assert not invalid_serial_port.read_response(expect_packets=1, timeout_s=2).status

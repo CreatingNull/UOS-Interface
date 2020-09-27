@@ -6,7 +6,7 @@ from logging import getLogger as Log
 from configparser import ConfigParser
 from UARTOSInterface.util import configure_logs
 from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
-from UARTOSInterface.HardwareCOM.util import COMresult
+from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
 
 SUPER_VOLATILE = 0
 VOLATILE = 1
@@ -155,10 +155,9 @@ class UOSDevice:
                 rx_response = self.__device_interface.read_response(instruction_data["expected_packets"], 2)
                 if rx_response.status:
                     # validate checksums on all packets
-                    # todo need to find a new way to do this with the data objects
                     for count in range(len(rx_response.rx_packets) + 1):
                         current_packet = rx_response.ack_packet if count == 0 else rx_response.rx_packets[count-1]
-                        computed_checksum = self.__device_interface.get_npc_checksum(current_packet)
+                        computed_checksum = self.__device_interface.get_npc_checksum(current_packet[1:-2])
                         Log(__name__).debug(
                             f"Calculated checksum {computed_checksum} must match rx {current_packet[-2]}"
                         )

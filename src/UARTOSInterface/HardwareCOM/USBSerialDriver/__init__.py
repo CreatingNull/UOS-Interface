@@ -103,14 +103,14 @@ class NPCSerialPort(UOSInterface):
         :param timeout_s: The maximum time this function will wait for data.
         :return: COMresult object.
         """
+        response_object = COMresult(False)
         if not self.check_open():
-            return False, {"exception": "Connection must be opened first."}
+            return response_object
         start_ns = time_ns()
         packet = []
         payload_len = 0  # tracks the current packet's payload length
         byte_index = -1  # tracks the byte position index of the current packet
         packet_index = 0  # tracks the packet number being received 0 = ACK
-        response_object = COMresult(False)
         try:
             while (timeout_s*1000000000) > time_ns() - start_ns and byte_index > -2:  # read until packet or timeout
                 num_bytes = self._device.in_waiting

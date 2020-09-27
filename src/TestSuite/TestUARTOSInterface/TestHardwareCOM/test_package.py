@@ -19,7 +19,7 @@ class TestHardwareCOMInterface:
     def test_set_gpio_output(self, uos_device):
         for volatility in [0, 1, 2]:
             if volatility in uos_device.system_lut["functions"]["set_gpio_output"]:
-                assert uos_device.set_gpio_output(pin=1, level=1, volatility=volatility)
+                assert uos_device.set_gpio_output(pin=1, level=1, volatility=volatility).status
             else:  # not implemented check error raised correctly
                 with pytest.raises(NotImplementedError):
                     uos_device.set_gpio_output(pin=1, level=1, volatility=volatility)
