@@ -6,6 +6,7 @@ from logging import getLogger as Log
 from configparser import ConfigParser
 from UARTOSInterface.util import configure_logs
 from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
+from UARTOSInterface.HardwareCOM.util import COMresult
 
 SUPER_VOLATILE = 0
 VOLATILE = 1
@@ -60,7 +61,7 @@ class UOSDevice:
             self.open()
         Log(__name__).debug(f"Created device {self.__device_interface.__repr__()}")
 
-    def set_gpio_output(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> (bool, {}):
+    def set_gpio_output(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> COMresult:
         """ Sets a pin to digital output mode and sets a level on that pin.
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: The output level, 0 - low, 1 - High.
@@ -78,7 +79,7 @@ class UOSDevice:
         )
         return response
 
-    def get_gpio_input(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> (bool, {}):
+    def get_gpio_input(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> COMresult:
         """ Reads a GPIO pins level from device and returns the value
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: Not used currently, future will define pull-up state
@@ -129,7 +130,7 @@ class UOSDevice:
             if not self.__device_interface.close():
                 raise RuntimeError("There was an error closing a connection to the device")
 
-    def __execute_instruction(self, function_name: str, volatility, instruction_data: {}) -> (bool, {}):
+    def __execute_instruction(self, function_name: str, volatility, instruction_data: {}) -> COMresult:
         """ Helper function used to combine common functionality of the object orientated layer.
         :param function_name: The name of the function in the OOL.
         :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
@@ -142,7 +143,7 @@ class UOSDevice:
             raise NotImplementedError(
                 f"{function_name} at volatility:{volatility} has not been implemented for {self.identity}"
             )
-        rx_response = (False, {})
+        rx_response = COMresult(False)
         if self.check_lazy():  # Lazy loaded
             self.open()
         if instruction_data["device_functions"][function_name][volatility] >= 0:  # a normal instruction
@@ -150,20 +151,18 @@ class UOSDevice:
                 instruction_data["device_functions"][function_name][volatility],
                 instruction_data["payload"],
             )
-            if tx_response[0]:
+            if tx_response.status:
                 rx_response = self.__device_interface.read_response(instruction_data["expected_packets"], 2)
-                if rx_response[0]:
+                if rx_response.status:
                     # validate checksums on all packets
-                    packet_names = ["ack_packet"] + [
-                        f"rx_packet_{i}" for i in range(instruction_data["expected_packets"]-1)
-                    ]
-                    for packet_name in packet_names:
-                        computed_checksum = self.__device_interface.get_npc_checksum(rx_response[1][packet_name][1:-2])
+                    # todo need to find a new way to do this with the data objects
+                    for count in range(len(rx_response.rx_packets) + 1):
+                        current_packet = rx_response.ack_packet if count == 0 else rx_response.rx_packets[count-1]
+                        computed_checksum = self.__device_interface.get_npc_checksum(current_packet)
                         Log(__name__).debug(
-                            f"Calculated checksum {computed_checksum} must match rx {rx_response[1][packet_name][-2]}"
+                            f"Calculated checksum {computed_checksum} must match rx {current_packet[-2]}"
                         )
-                        rx_response = rx_response[0] & (computed_checksum == rx_response[1][packet_name][-2]), \
-                            rx_response[1]
+                        rx_response.status = rx_response.status & (computed_checksum == current_packet[-2])
         else:  # run a special action
             rx_response = getattr(self.__device_interface, function_name)()
         if self.check_lazy():  # Lazy loaded

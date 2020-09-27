@@ -6,6 +6,7 @@ from logging import getLogger as Log
 from serial.serialutil import SerialException
 from time import time_ns, sleep
 from UARTOSInterface.HardwareCOM.UOSInterface import UOSInterface
+from UARTOSInterface.HardwareCOM.util import COMresult
 
 
 class NPCSerialPort(UOSInterface):
@@ -84,7 +85,7 @@ class NPCSerialPort(UOSInterface):
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
         if not self.check_open():
-            return False, {"exception": "Connection must be opened first."}
+            return COMresult(False, exception="Connection must be opened first.")
         packet = self.get_npc_packet(to_addr=address, from_addr=0, payload=payload)
         Log(__name__).debug(f"packet formed {packet}")
         try:  # Send the packet.
@@ -92,10 +93,10 @@ class NPCSerialPort(UOSInterface):
             self._device.flush()
             Log(__name__).debug(f"Sent {num_bytes} bytes of data")
         except serial.SerialException as e:
-            return False, {"exception": str(e)}
+            return COMresult(False, exception=str(e))
         finally:
             self._device.reset_output_buffer()
-        return num_bytes == len(packet), {}
+        return COMresult(num_bytes == len(packet))
 
     def read_response(self, expect_packets: int, timeout_s: float):
         """ Reads ACK and response packets from the serial device.
@@ -110,7 +111,7 @@ class NPCSerialPort(UOSInterface):
         payload_len = 0  # tracks the current packet's payload length
         byte_index = -1  # tracks the byte position index of the current packet
         packet_index = 0  # tracks the packet number being received 0 = ACK
-        response_dict = {}
+        response_object = COMresult(False)
         try:
             while (timeout_s*1000000000) > time_ns() - start_ns and byte_index > -2:  # read until packet or timeout
                 num_bytes = self._device.in_waiting
@@ -135,9 +136,9 @@ class NPCSerialPort(UOSInterface):
                             packet.append(int.from_bytes(byte_in, byteorder="little"))
                             if byte_index == -2:
                                 if packet_index == 0:
-                                    response_dict["ack_packet"] = packet
+                                    response_object.ack_packet = packet
                                 else:
-                                    response_dict[f"rx_packet_{packet_index-1}"] = packet
+                                    response_object.rx_packets.append(packet)
                                 packet_index += 1
                                 if expect_packets == packet_index:
                                     break
@@ -148,25 +149,26 @@ class NPCSerialPort(UOSInterface):
                 sleep(0.05)  # Don't churn CPU cycles waiting for data
             Log(__name__).debug(f"Packet received {packet}")
             if expect_packets != packet_index or len(packet) < 6 or byte_index != -2:
-                response_dict["incomplete_packet"] = packet
-                response_dict["exception"] = "did not receive all the expected data"
-                return False, response_dict
-            return True, response_dict
+                response_object.rx_packets.append(packet)
+                response_object.exception = "did not receive all the expected data"
+                return response_object
+            response_object.status = True
+            return response_object
         except serial.SerialException as e:
-            response_dict["exception"] = str(e)
-            return False, response_dict
+            response_object.exception = str(e)
+            return response_object
 
     def hard_reset(self):
         """ Manually drives the DTR line low to reset the device
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
         if not self.check_open():
-            return False, {"exception": "Connection must be open first."}
+            return COMresult(False, exception="Connection must be open first.")
         Log(__name__).debug("Resetting the device using the DTR line")
         self._device.dtr = not self._device.dtr
         sleep(0.2)
         self._device.dtr = not self._device.dtr
-        return True, {}
+        return COMresult(True)
 
     def check_open(self) -> bool:
         """ Tests if the connection is open by validating an open device.

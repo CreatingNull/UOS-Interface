@@ -2,13 +2,14 @@
 from abc import abstractmethod, ABCMeta
 from functools import lru_cache
 from typing import Tuple
+from UARTOSInterface.HardwareCOM.util import COMresult
 
 
 class UOSInterface(metaclass=ABCMeta):
     """ Base class for low level UOS interfaces classes to inherit. """
 
     @abstractmethod
-    def execute_instruction(self, address: int, payload: Tuple[int, ...]) -> (bool, {}):
+    def execute_instruction(self, address: int, payload: Tuple[int, ...]) -> COMresult:
         """ Abstract method for executing instructions on UOSInterfaces.
         :param address: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
         :param payload: A tuple containing the unsigned 8 bit integer parameters of the UOS instruction.
@@ -20,7 +21,7 @@ class UOSInterface(metaclass=ABCMeta):
         )
 
     @abstractmethod
-    def read_response(self, expect_packets: int, timeout_s: float) -> (bool, {}):
+    def read_response(self, expect_packets: int, timeout_s: float) -> COMresult:
         """ Abstract method for reading ACK and Data packets from a UOSInterface.
         :param expect_packets: How many packets including ACK to expect
         :param timeout_s: The maximum time this function will wait for data.
@@ -32,7 +33,7 @@ class UOSInterface(metaclass=ABCMeta):
         )
 
     @abstractmethod
-    def hard_reset(self) -> (bool, {}):
+    def hard_reset(self) -> COMresult:
         """ Abstract method for UOS loop reset functionality should be as hard a reset as possible
         :return: A tuple containing a success boolean at index 0 and a result-set dict at index 1.
         """
