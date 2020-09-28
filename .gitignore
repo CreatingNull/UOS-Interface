@@ -4,4 +4,6 @@
 /bin/
 /.idea/
 /__pycache__/
+/.pytest_cache/
 *.scratch.py
+/src/UARTOSInterface/WebApp/static/lib/
