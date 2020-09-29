@@ -22,10 +22,8 @@ def route_set_gpio_output(api_version: str):
             connection=required_args["connection"].arg_value,
         )
         instr_response = device.set_gpio_output(
-            pin=required_args["pin"].arg_value,
-            level=required_args["level"].arg_value,
+            pin=required_args["pin"].arg_value, level=required_args["level"].arg_value,
         )
         response.status = instr_response.status
         response.com_data = instr_response
     return jsonify(response)
-

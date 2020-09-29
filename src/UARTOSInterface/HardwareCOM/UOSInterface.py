@@ -9,6 +9,7 @@ from typing import List
 @dataclass
 class COMresult:
     """ Class containing the data structure used to capture the result of UOS operations. """
+
     status: bool
     exception: str = ""
     ack_packet: List = field(default_factory=list)
@@ -82,10 +83,16 @@ class UOSInterface(metaclass=ABCMeta):
         :param payload: A tuple containing the unsigned 8 bit integers of the command.
         :return: NPC packet as a bytes object. No bytes returned on fault.
         """
-        if to_addr < 256 and from_addr < 256 and len(payload) < 256:  # check input is possible to parse
+        if (
+            to_addr < 256 and from_addr < 256 and len(payload) < 256
+        ):  # check input is possible to parse
             packet_data = [to_addr, from_addr, len(payload)] + list(payload)
             lrc = UOSInterface.get_npc_checksum(packet_data)
-            return bytes([0x3e, packet_data[0], packet_data[1], len(payload)] + list(payload) + [lrc, 0x3c])
+            return bytes(
+                [0x3E, packet_data[0], packet_data[1], len(payload)]
+                + list(payload)
+                + [lrc, 0x3C]
+            )
         return bytes([])
 
     @staticmethod
@@ -96,5 +103,5 @@ class UOSInterface(metaclass=ABCMeta):
         """
         lrc = 0
         for byte in packet_data:
-            lrc = (lrc + byte) & 0xff
-        return ((lrc ^ 0xff) + 1) & 0xff
+            lrc = (lrc + byte) & 0xFF
+        return ((lrc ^ 0xFF) + 1) & 0xFF

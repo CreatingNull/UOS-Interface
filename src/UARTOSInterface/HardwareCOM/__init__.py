@@ -29,6 +29,7 @@ class UOSDevice:
     :ivar __kwargs: Connection specific / optional parameters.
     :ivar __device_interface: Lower level communication protocol layer.
     """
+
     identity = ""
     connection = ""
     system_lut = {}
@@ -49,19 +50,29 @@ class UOSDevice:
             Log(__name__).debug(f"sys lut = {key}: {self.system_lut[key]}")
             # Select the low level backend-interface based on interface key
         if len(self.system_lut) == 0:
-            raise NotImplementedError(f"'{self.identity}' does not have a valid look up table")
-        connection_params = self.connection.split('|')
+            raise NotImplementedError(
+                f"'{self.identity}' does not have a valid look up table"
+            )
+        connection_params = self.connection.split("|")
         if len(connection_params) != 2:
-            raise ValueError(f"NPC connection string was incorrectly formatted, length={len(connection_params)}")
+            raise ValueError(
+                f"NPC connection string was incorrectly formatted, length={len(connection_params)}"
+            )
         if connection_params[0].upper() == "USB":
-            self.__device_interface = NPCSerialPort(connection_params[1], baudrate=self.system_lut["default_baudrate"])
+            self.__device_interface = NPCSerialPort(
+                connection_params[1], baudrate=self.system_lut["default_baudrate"]
+            )
         else:
-            raise AttributeError(f"Could not correctly open a connection to {self.identity} - {self.connection}")
+            raise AttributeError(
+                f"Could not correctly open a connection to {self.identity} - {self.connection}"
+            )
         if "loading" in self.__kwargs and self.__kwargs["loading"].upper() == "EAGER":
             self.open()
         Log(__name__).debug(f"Created device {self.__device_interface.__repr__()}")
 
-    def set_gpio_output(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> COMresult:
+    def set_gpio_output(
+        self, pin: int, level: int, volatility: int = SUPER_VOLATILE
+    ) -> COMresult:
         """ Sets a pin to digital output mode and sets a level on that pin.
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: The output level, 0 - low, 1 - High.
@@ -74,12 +85,14 @@ class UOSDevice:
             {
                 "device_functions": self.system_lut["functions"],
                 "payload": (pin, 0, level),
-                "expected_packets": 1
+                "expected_packets": 1,
             },
         )
         return response
 
-    def get_gpio_input(self, pin: int, level: int, volatility: int = SUPER_VOLATILE) -> COMresult:
+    def get_gpio_input(
+        self, pin: int, level: int, volatility: int = SUPER_VOLATILE
+    ) -> COMresult:
         """ Reads a GPIO pins level from device and returns the value
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: Not used currently, future will define pull-up state
@@ -92,8 +105,8 @@ class UOSDevice:
             {
                 "device_functions": self.system_lut["functions"],
                 "payload": (pin, 1, level),
-                "expected_packets": 2
-            }
+                "expected_packets": 2,
+            },
         )
         return response
 
@@ -118,7 +131,9 @@ class UOSDevice:
         """
         if self.__device_interface is not None:
             if not self.__device_interface.open():
-                raise RuntimeError("There was an error opening a connection to the device.")
+                raise RuntimeError(
+                    "There was an error opening a connection to the device."
+                )
         else:
             raise AttributeError("You can't open a connection on a empty device.")
 
@@ -128,9 +143,13 @@ class UOSDevice:
         """
         if self.__device_interface is not None:
             if not self.__device_interface.close():
-                raise RuntimeError("There was an error closing a connection to the device")
+                raise RuntimeError(
+                    "There was an error closing a connection to the device"
+                )
 
-    def __execute_instruction(self, function_name: str, volatility, instruction_data: {}) -> COMresult:
+    def __execute_instruction(
+        self, function_name: str, volatility, instruction_data: {}
+    ) -> COMresult:
         """ Helper function used to combine common functionality of the object orientated layer.
         :param function_name: The name of the function in the OOL.
         :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
@@ -138,30 +157,44 @@ class UOSDevice:
         :return: COMresult object
         :raises: NotImplementedError if function is not possible on the loaded device.
         """
-        if function_name not in self.system_lut["functions"] or volatility not in \
-                self.system_lut["functions"][function_name]:
+        if (
+            function_name not in self.system_lut["functions"]
+            or volatility not in self.system_lut["functions"][function_name]
+        ):
             raise NotImplementedError(
                 f"{function_name} at volatility:{volatility} has not been implemented for {self.identity}"
             )
         rx_response = COMresult(False)
         if self.check_lazy():  # Lazy loaded
             self.open()
-        if instruction_data["device_functions"][function_name][volatility] >= 0:  # a normal instruction
+        if (
+            instruction_data["device_functions"][function_name][volatility] >= 0
+        ):  # a normal instruction
             tx_response = self.__device_interface.execute_instruction(
                 instruction_data["device_functions"][function_name][volatility],
                 instruction_data["payload"],
             )
             if tx_response.status:
-                rx_response = self.__device_interface.read_response(instruction_data["expected_packets"], 2)
+                rx_response = self.__device_interface.read_response(
+                    instruction_data["expected_packets"], 2
+                )
                 if rx_response.status:
                     # validate checksums on all packets
                     for count in range(len(rx_response.rx_packets) + 1):
-                        current_packet = rx_response.ack_packet if count == 0 else rx_response.rx_packets[count-1]
-                        computed_checksum = self.__device_interface.get_npc_checksum(current_packet[1:-2])
+                        current_packet = (
+                            rx_response.ack_packet
+                            if count == 0
+                            else rx_response.rx_packets[count - 1]
+                        )
+                        computed_checksum = self.__device_interface.get_npc_checksum(
+                            current_packet[1:-2]
+                        )
                         Log(__name__).debug(
                             f"Calculated checksum {computed_checksum} must match rx {current_packet[-2]}"
                         )
-                        rx_response.status = rx_response.status & (computed_checksum == current_packet[-2])
+                        rx_response.status = rx_response.status & (
+                            computed_checksum == current_packet[-2]
+                        )
         else:  # run a special action
             rx_response = getattr(self.__device_interface, function_name)()
         if self.check_lazy():  # Lazy loaded
@@ -177,9 +210,11 @@ class UOSDevice:
         return False
 
     def __repr__(self):
-        return f"<UOSDevice(connection='{self.connection}', identity='{self.identity}', " \
-               f"system_lut={self.system_lut}, __device_interface='{self.__device_interface}', " \
-               f"__kwargs={self.__kwargs})>"
+        return (
+            f"<UOSDevice(connection='{self.connection}', identity='{self.identity}', "
+            f"system_lut={self.system_lut}, __device_interface='{self.__device_interface}', "
+            f"__kwargs={self.__kwargs})>"
+        )
 
     @staticmethod
     def _locate_device_definition(identity: str):
@@ -201,26 +236,39 @@ class UOSDevice:
                 output = {"functions": {}}
                 section = f"DEVICE - {identity.upper()}"
                 for key_name in ("digital_pins", "analogue_pins"):
-                    output[key_name] = [int(pin.strip()) for pin in config[section][key_name].split(",")]
+                    output[key_name] = [
+                        int(pin.strip()) for pin in config[section][key_name].split(",")
+                    ]
                 for function_name in (
-                        "set_gpio_output",
-                        "get_gpio_input",
-                        "get_adc_input",
-                        "reset_all_io",
-                        "hard_reset"
+                    "set_gpio_output",
+                    "get_gpio_input",
+                    "get_adc_input",
+                    "reset_all_io",
+                    "hard_reset",
                 ):
-                    if f"function - {function_name}" in config[section]:  # just exclude undefined functions
+                    if (
+                        f"function - {function_name}" in config[section]
+                    ):  # just exclude undefined functions
                         output["functions"][function_name] = literal_eval(
                             config[section][f"function - {function_name}"]
                         )
-                        output["functions"][function_name] = {  # populate as address lookup using the schema
-                            volatility: literal_eval(config["UOS SCHEMA"][function_name])[volatility] for
-                            volatility in output["functions"][function_name] if
-                            output["functions"][function_name][volatility] is True
+                        output["functions"][
+                            function_name
+                        ] = {  # populate as address lookup using the schema
+                            volatility: literal_eval(
+                                config["UOS SCHEMA"][function_name]
+                            )[volatility]
+                            for volatility in output["functions"][function_name]
+                            if output["functions"][function_name][volatility] is True
                         }
                 output["default_baudrate"] = config[section]["default_baudrate"]
-                output["interfaces"] = [interface.strip() for interface in config[section]["interfaces"].split(",")]
+                output["interfaces"] = [
+                    interface.strip()
+                    for interface in config[section]["interfaces"].split(",")
+                ]
                 return output
             except (KeyError, SyntaxError, ValueError) as e:
-                Log(__name__).error(f"Parsing the hardware ini threw an error {e.__str__()}")
+                Log(__name__).error(
+                    f"Parsing the hardware ini threw an error {e.__str__()}"
+                )
         return {}

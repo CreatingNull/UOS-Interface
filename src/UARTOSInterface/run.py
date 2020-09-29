@@ -15,6 +15,9 @@ register_hardware_logs(DEBUG, base_dir)
 
 if __name__ == "__main__":
     if os.environ.get("RUNNING_IN_CONTAINER", False):  # in deployment
-        app.run(debug=conf.getboolean("App Config", "DEBUG"), host=conf["App Config"]["HOST"])
+        app.run(
+            debug=conf.getboolean("App Config", "DEBUG"),
+            host=conf["App Config"]["HOST"],
+        )
     else:
         app.run(debug=True, host="0.0.0.0")

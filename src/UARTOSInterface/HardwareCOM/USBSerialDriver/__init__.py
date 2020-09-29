@@ -15,6 +15,7 @@ class NPCSerialPort(UOSInterface):
         :ivar _port: Holds the port class, containing OS level info on the device. None if device not instantiated.
         :ivar _kwargs: Additional keyword arguments as defined in the documentation.
     """
+
     _device = None
 
     _connection = ""
@@ -44,6 +45,7 @@ class NPCSerialPort(UOSInterface):
             if platform.system() == "Linux":
                 Log(__name__).debug("Linux platform found so using DTR workaround")
                 import termios
+
                 with open(self._connection) as p:  # DTR transient workaround for Unix
                     attrs = termios.tcgetattr(p)
                     attrs[2] = attrs[2] & ~termios.HUPCL
@@ -56,8 +58,12 @@ class NPCSerialPort(UOSInterface):
             Log(__name__).error(
                 f"Opening {self._port.device if self._port is not None else 'None'} threw error {e.__str__()}"
             )
-            if e.errno == 13:  # permission denied another connection open to this device.
-                Log(__name__).error(f"Cannot open connection, account has insufficient permissions.")
+            if (
+                e.errno == 13
+            ):  # permission denied another connection open to this device.
+                Log(__name__).error(
+                    f"Cannot open connection, account has insufficient permissions."
+                )
             self._device = None
             return False
 
@@ -112,20 +118,24 @@ class NPCSerialPort(UOSInterface):
         byte_index = -1  # tracks the byte position index of the current packet
         packet_index = 0  # tracks the packet number being received 0 = ACK
         try:
-            while (timeout_s*1000000000) > time_ns() - start_ns and byte_index > -2:  # read until packet or timeout
+            while (
+                timeout_s * 1000000000
+            ) > time_ns() - start_ns and byte_index > -2:  # read until packet or timeout
                 num_bytes = self._device.in_waiting
                 if num_bytes > 0:
                     for index in range(num_bytes):
                         byte_in = self._device.read(1)
                         if byte_index == -1:  # start symbol
-                            if byte_in == b'>':
+                            if byte_in == b">":
                                 byte_index += 1
                         if byte_index >= 0:
                             Log(__name__).debug(f"read {byte_in} index = {byte_index}")
                             if byte_index == 3:  # payload len
-                                payload_len = int.from_bytes(byte_in, byteorder="little")
+                                payload_len = int.from_bytes(
+                                    byte_in, byteorder="little"
+                                )
                             elif byte_index == 3 + payload_len + 2:  # End packet symbol
-                                if byte_in == b'<':
+                                if byte_in == b"<":
                                     byte_index = -2  # packet complete
                                     Log(__name__).debug("Found end packet symbol")
                                 else:  # Errored data
