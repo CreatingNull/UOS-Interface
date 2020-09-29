@@ -36,7 +36,7 @@ class TestNPCSerialPort:
             npc_serial_port.close()
         )  # should be safe to close an already closed connection
         assert not npc_serial_port.check_open()
-        assert type(npc_serial_port.enumerate_ports()) == list
+        assert isinstance(npc_serial_port.enumerate_ports(), list)
 
     def test_basic_fault_cases(self, invalid_serial_port, npc_serial_port):
         assert not invalid_serial_port.check_open()

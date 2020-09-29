@@ -5,7 +5,7 @@ from UARTOSInterface.HardwareCOM import UOSDevice
 API_VERSIONS = ["0.0"]
 
 
-@blueprint.route(f"<string:api_version>/set_gpio_output")
+@blueprint.route("<string:api_version>/set_gpio_output")
 def route_set_gpio_output(api_version: str):
     # todo figure out some general API vetting function
     required_args = {

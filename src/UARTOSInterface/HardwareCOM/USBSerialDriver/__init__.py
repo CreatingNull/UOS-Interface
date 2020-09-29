@@ -72,7 +72,7 @@ class NPCSerialPort(UOSInterface):
                 e.errno == 13
             ):  # permission denied another connection open to this device.
                 Log(__name__).error(
-                    f"Cannot open connection, account has insufficient permissions."
+                    "Cannot open connection, account has insufficient permissions."
                 )
             self._device = None
             return False
@@ -213,6 +213,12 @@ class NPCSerialPort(UOSInterface):
         return True
 
     def __repr__(self):
+        """
+        Over-rides the built in repr with something useful.
+
+        :return: String containing connection, port and device.
+
+        """
         return f"<NPCSerialPort(_connection='{self._connection}', _port={self._port}, _device={self._device})>"
 
     @staticmethod

@@ -26,7 +26,7 @@ def check_required_args(arguments_expected: {}, arguments_found: {}) -> APIresul
             arguments_expected[argument].arg_value = arguments_expected[
                 argument
             ].arg_type(arguments_found[argument])
-        except ValueError as e:
+        except ValueError:
             return APIresult(
                 False,
                 f"Expected '{argument}' to have type "

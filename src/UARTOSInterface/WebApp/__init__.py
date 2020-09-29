@@ -2,7 +2,7 @@ import configparser
 from pathlib import Path
 from flask import Flask
 from importlib import import_module
-from logging import getLogger as Log, DEBUG
+from logging import DEBUG
 from UARTOSInterface.util import configure_logs
 
 
