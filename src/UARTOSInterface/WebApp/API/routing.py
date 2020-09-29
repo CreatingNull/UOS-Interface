@@ -1,7 +1,6 @@
-from flask import redirect, render_template, request, jsonify
+from flask import request, jsonify
 from UARTOSInterface.WebApp.API import blueprint, util
 from UARTOSInterface.HardwareCOM import UOSDevice
-from logging import getLogger as Log
 
 API_VERSIONS = ["0.0"]
 

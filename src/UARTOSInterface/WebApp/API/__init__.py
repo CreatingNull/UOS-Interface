@@ -1,4 +1,5 @@
-"""API Package blueprint initialisations"""
+"""API Package blueprint initialisations."""
+
 from flask import Blueprint
 
 blueprint = Blueprint(

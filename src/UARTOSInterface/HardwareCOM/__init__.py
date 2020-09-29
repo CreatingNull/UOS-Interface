@@ -1,4 +1,5 @@
-""" Module containing the high level hardware interface for communicating with UOS devices. """
+"""Module containing the high level hardware interface for communicating with UOS devices."""
+
 import sys
 from ast import literal_eval
 from pathlib import Path
@@ -14,7 +15,8 @@ NON_VOLATILE = 2
 
 
 def register_logs(level, base_path: Path):
-    """ Configures the log files for the hardware COM package
+    """Configures the log files for the hardware COM package.
+
     :param level: Set the logger level, debug ect. Use the constants from logging lib.
     :param base_path: Set the logging directory.
     """
@@ -22,7 +24,8 @@ def register_logs(level, base_path: Path):
 
 
 class UOSDevice:
-    """ Class for high level object-orientated control of UOS devices.
+    """Class for high level object-orientated control of UOS devices.
+
     :ivar identity: The type of device, this is must have a valid section in the system_lut.
     :ivar connection: Compliant connection string for identifying the device and interface.
     :ivar system_lut: Device definitions as parsed from a compatible ini.
@@ -37,7 +40,8 @@ class UOSDevice:
     __device_interface = None
 
     def __init__(self, identity: str, connection: str = "", **kwargs):
-        """ Instantiate a UOS device instance for communication.
+        """Instantiate a UOS device instance for communication.
+
         :param identity: Specify the type of device, this must exist in the device dictionary.
         :param connection: Compliant connection string for isleepdentifying the device and interface.
         :param kwargs: Additional optional connection parameters as defined in documentation.
@@ -73,7 +77,8 @@ class UOSDevice:
     def set_gpio_output(
         self, pin: int, level: int, volatility: int = SUPER_VOLATILE
     ) -> COMresult:
-        """ Sets a pin to digital output mode and sets a level on that pin.
+        """Sets a pin to digital output mode and sets a level on that pin.
+
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: The output level, 0 - low, 1 - High.
         :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
@@ -93,9 +98,10 @@ class UOSDevice:
     def get_gpio_input(
         self, pin: int, level: int, volatility: int = SUPER_VOLATILE
     ) -> COMresult:
-        """ Reads a GPIO pins level from device and returns the value
+        """Reads a GPIO pins level from device and returns the value.
+
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
-        :param level: Not used currently, future will define pull-up state
+        :param level: Not used currently, future will define pull-up state.
         :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
         :return: COMresult object.
         """
@@ -125,7 +131,8 @@ class UOSDevice:
         return response[0]
 
     def open(self):
-        """ Opens a connection to the low level device, explict calls are normally not required.
+        """Opens a connection to the low level device, explict calls are normally not required.
+
         :raises: RuntimeError - If there was an issue opening a connection.
         :raises: Attribute Error - if bad configuration of the UOSDevice object.
         """
@@ -138,7 +145,8 @@ class UOSDevice:
             raise AttributeError("You can't open a connection on a empty device.")
 
     def close(self):
-        """ Closes a connection to the low level device, must be called explicitly if loading is eager.
+        """Closes a connection to the low level device, must be called explicitly if loading is eager.
+
         :raises: RuntimeError - If there was a problem closing the connection to an active device.
         """
         if self.__device_interface is not None:
@@ -150,7 +158,8 @@ class UOSDevice:
     def __execute_instruction(
         self, function_name: str, volatility, instruction_data: {}
     ) -> COMresult:
-        """ Helper function used to combine common functionality of the object orientated layer.
+        """Helper function used to combine common functionality of the object orientated layer.
+
         :param function_name: The name of the function in the OOL.
         :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
         :param instruction_data: device_functions from the LUT, payload ect.
@@ -202,7 +211,8 @@ class UOSDevice:
         return rx_response
 
     def check_lazy(self) -> bool:
-        """ Checks the loading type of the device lazy or eager.
+        """Checks the loading type of the device lazy or eager.
+
         :return: Boolean, true is lazy.
         """
         if "loading" not in self.__kwargs or self.__kwargs["loading"].upper() == "LAZY":
@@ -218,8 +228,9 @@ class UOSDevice:
 
     @staticmethod
     def _locate_device_definition(identity: str):
-        """ Looks up the system dictionary ini for the defined device mappings
-        :param identity: String containing the lookup key of the device in the dictionary
+        """Looks up the system dictionary ini for the defined device mappings.
+
+        :param identity: String containing the lookup key of the device in the dictionary.
         :return: Dictionary of the device lookup table. Empty if no device located.
         """
         if getattr(sys, "frozen", False):  # running as packaged
