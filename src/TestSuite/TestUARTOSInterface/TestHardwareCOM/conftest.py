@@ -22,7 +22,7 @@ def uos_device(request):
     device = UOSDevice(
         devices[request.param]["identity"],
         devices[request.param]["connection"],
-        loading=devices[request.param]["loading"]
+        loading=devices[request.param]["loading"],
     )
     yield device
     device.close()

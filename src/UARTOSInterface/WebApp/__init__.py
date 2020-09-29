@@ -20,7 +20,7 @@ def register_logs(level, base_path: Path):
 
 def create_app(conf: configparser.ConfigParser, base_path: Path):
     app = Flask(__name__, static_folder="static", template_folder="static/templates")
-    app.config["TESTING"] = conf.getboolean("Flask Config", "TESTING"),
+    app.config["TESTING"] = (conf.getboolean("Flask Config", "TESTING"),)
     app.config["SECRET_KEY"] = conf["Flask Config"]["SECRET_KEY"]
     register_blueprints(app)
     register_logs(DEBUG, base_path=base_path)

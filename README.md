@@ -9,6 +9,20 @@ Status: Under active development
 
 ---
 
+## Contributing
+
+If this project ever gets to any sort of usable state, it would be great to get any community additions. 
+
+Note this project uses:
+
+*   Black for Python Formatting
+
+    ``` pip install black ```
+
+*   Docformatter for Python Docstring formatting
+
+    ``` pip install docformatter ```
+
 ## Donations
 
 I just do this stuff for fun, but if you found any of my work helpful a little tip would be very much appreciated. 
@@ -20,4 +34,4 @@ I just do this stuff for fun, but if you found any of my work helpful a little t
 ## License
 
 This repo uses the MIT open-source license, for details on the current licensing see LICENSE.md or click the badge above. 
-- Copyright 2020 © <a href="https://nulltek.xyz" target="_blank">NullTek</a>.
+-   Copyright 2020 © <a href="https://nulltek.xyz" target="_blank">NullTek</a>.

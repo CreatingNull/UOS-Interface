@@ -1,4 +1,4 @@
-""" Module defining the low level UOSImplementation for serial port devices. """
+"""Module defining the low level UOSImplementation for serial port devices."""
 import serial
 import platform
 from serial.tools import list_ports
@@ -9,12 +9,15 @@ from UARTOSInterface.HardwareCOM.UOSInterface import UOSInterface, COMresult
 
 
 class NPCSerialPort(UOSInterface):
-    """ Low level pyserial class that handles reading / writing to the serial port.
-        :ivar _device: Holds the pyserial device once opened. None if not opened.
-        :ivar _connection: Holds the standard connection string 'Interface'|'OS Connection String.
-        :ivar _port: Holds the port class, containing OS level info on the device. None if device not instantiated.
-        :ivar _kwargs: Additional keyword arguments as defined in the documentation.
+    """Low level pyserial class that handles reading / writing to the serial
+    port.
+
+    :ivar _device: Holds the pyserial device once opened. None if not opened.
+    :ivar _connection: Holds the standard connection string 'Interface'|'OS Connection String.
+    :ivar _port: Holds the port class, containing OS level info on the device. None if device not instantiated.
+    :ivar _kwargs: Additional keyword arguments as defined in the documentation.
     """
+
     _device = None
 
     _connection = ""
@@ -22,7 +25,8 @@ class NPCSerialPort(UOSInterface):
     _kwargs = {}
 
     def __init__(self, connection: str, **kwargs):
-        """ Constructor for a NPCSerialPort device.
+        """Constructor for a NPCSerialPort device.
+
         :param connection: OS connection string for the serial port.
         """
         self._connection = connection
@@ -33,7 +37,9 @@ class NPCSerialPort(UOSInterface):
         Log(__name__).debug(f"{self._port} located")
 
     def open(self):
-        """ Opens a connection to the the defined port and creates the device object.
+        """Opens a connection to the the defined port and creates the device
+        object.
+
         :return: Success boolean.
         """
         try:
@@ -44,6 +50,7 @@ class NPCSerialPort(UOSInterface):
             if platform.system() == "Linux":
                 Log(__name__).debug("Linux platform found so using DTR workaround")
                 import termios
+
                 with open(self._connection) as p:  # DTR transient workaround for Unix
                     attrs = termios.tcgetattr(p)
                     attrs[2] = attrs[2] & ~termios.HUPCL
@@ -56,13 +63,18 @@ class NPCSerialPort(UOSInterface):
             Log(__name__).error(
                 f"Opening {self._port.device if self._port is not None else 'None'} threw error {e.__str__()}"
             )
-            if e.errno == 13:  # permission denied another connection open to this device.
-                Log(__name__).error(f"Cannot open connection, account has insufficient permissions.")
+            if (
+                e.errno == 13
+            ):  # permission denied another connection open to this device.
+                Log(__name__).error(
+                    f"Cannot open connection, account has insufficient permissions."
+                )
             self._device = None
             return False
 
     def close(self):
-        """ Closes the serial connection and clears the device.
+        """Closes the serial connection and clears the device.
+
         :return: Success boolean.
         """
         if not self.check_open():
@@ -78,7 +90,8 @@ class NPCSerialPort(UOSInterface):
         return True
 
     def execute_instruction(self, address, payload):
-        """ Builds and executes a new packet.
+        """Builds and executes a new packet.
+
         :param address: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
         :param payload: A tuple containing the unsigned 8 bit integer parameters of the UOS instruction.
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
@@ -98,8 +111,9 @@ class NPCSerialPort(UOSInterface):
         return COMresult(num_bytes == len(packet))
 
     def read_response(self, expect_packets: int, timeout_s: float):
-        """ Reads ACK and response packets from the serial device.
-        :param expect_packets: How many packets including ACK to expect
+        """Reads ACK and response packets from the serial device.
+
+        :param expect_packets: How many packets including ACK to expect.
         :param timeout_s: The maximum time this function will wait for data.
         :return: COMresult object.
         """
@@ -112,20 +126,24 @@ class NPCSerialPort(UOSInterface):
         byte_index = -1  # tracks the byte position index of the current packet
         packet_index = 0  # tracks the packet number being received 0 = ACK
         try:
-            while (timeout_s*1000000000) > time_ns() - start_ns and byte_index > -2:  # read until packet or timeout
+            while (
+                timeout_s * 1000000000
+            ) > time_ns() - start_ns and byte_index > -2:  # read until packet or timeout
                 num_bytes = self._device.in_waiting
                 if num_bytes > 0:
                     for index in range(num_bytes):
                         byte_in = self._device.read(1)
                         if byte_index == -1:  # start symbol
-                            if byte_in == b'>':
+                            if byte_in == b">":
                                 byte_index += 1
                         if byte_index >= 0:
                             Log(__name__).debug(f"read {byte_in} index = {byte_index}")
                             if byte_index == 3:  # payload len
-                                payload_len = int.from_bytes(byte_in, byteorder="little")
+                                payload_len = int.from_bytes(
+                                    byte_in, byteorder="little"
+                                )
                             elif byte_index == 3 + payload_len + 2:  # End packet symbol
-                                if byte_in == b'<':
+                                if byte_in == b"<":
                                     byte_index = -2  # packet complete
                                     Log(__name__).debug("Found end packet symbol")
                                 else:  # Errored data
@@ -158,7 +176,8 @@ class NPCSerialPort(UOSInterface):
             return response_object
 
     def hard_reset(self):
-        """ Manually drives the DTR line low to reset the device
+        """Manually drives the DTR line low to reset the device.
+
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
         if not self.check_open():
@@ -170,7 +189,8 @@ class NPCSerialPort(UOSInterface):
         return COMresult(True)
 
     def check_open(self) -> bool:
-        """ Tests if the connection is open by validating an open device.
+        """Tests if the connection is open by validating an open device.
+
         :return: Boolean, true if open.
         """
         if self._device is None:
@@ -182,7 +202,9 @@ class NPCSerialPort(UOSInterface):
 
     @staticmethod
     def check_port_exists(device: str):
-        """ Takes in a serial port connection string and checks if the port is available on the system.
+        """Takes in a serial port connection string and checks if the port is
+        available on the system.
+
         :param device: OS connection string for the serial port.
         :return: The port device class if it exists, else None.
         """
@@ -194,7 +216,8 @@ class NPCSerialPort(UOSInterface):
 
     @staticmethod
     def enumerate_ports() -> ():
-        """ Get the available ports on the system.
+        """Get the available ports on the system.
+
         :return: Tuple of ports visible to the OS as port objects.
         """
         return list_ports.comports()
