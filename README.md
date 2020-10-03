@@ -13,7 +13,7 @@ Status: Under active development
 
 If this project ever gets to any sort of usable state, it would be great to get any community additions. 
 
-Note this project uses:
+This project uses:
 
 *   Black for Python Formatting
 
@@ -22,6 +22,14 @@ Note this project uses:
 *   Docformatter for Python Docstring formatting
 
     ``` pip install docformatter ```
+    
+    ``` docformatter --in-place --blank --pre-summary-newline ```
+
+*   Prettier for js/html/css formatting
+
+    ``` npm install --save-dev --save-exact prettier ```
+
+To make life easy these should be hooked on commits or just run a 'on save' file-watcher.
 
 ## Donations
 

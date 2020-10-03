@@ -1,3 +1,4 @@
+"""Module for testing the routing of the web-app excluding API."""
 from UARTOSInterface.WebApp import create_app
 from configparser import ConfigParser
 from pathlib import Path

@@ -1,3 +1,5 @@
+"""Package is used to start a simple web-server as an alternate interface to
+UOS devices."""
 import configparser
 from pathlib import Path
 from flask import Flask

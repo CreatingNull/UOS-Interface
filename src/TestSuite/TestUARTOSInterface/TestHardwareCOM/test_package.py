@@ -3,6 +3,11 @@ from UARTOSInterface.HardwareCOM import UOSDevice
 from UARTOSInterface.HardwareCOM import UOSInterface
 
 
+# Checks instruction correctly behaves on hardware interface.
+# Note to run this configured hardware must be present on the system.
+@pytest.mark.skipif(
+    False, reason="You must have low level hardware to test low level interfaces"
+)
 class TestHardwareCOMInterface:
     # Checks to ensure all defined devices can init correctly on the UOSDevice class, makes sure no error is thrown
     def test_implemented_devices(self, uos_identities: ()):
@@ -16,11 +21,6 @@ class TestHardwareCOMInterface:
         with pytest.raises(NotImplementedError):
             UOSDevice(identity="Not Implemented", connection="")
 
-    # Checks instruction correctly behaves on hardware interface.
-    # Note to run this configured hardware must be present on the system.
-    @pytest.mark.skipif(
-        False, reason="You must have low level hardware to test low level interfaces"
-    )
     def test_set_gpio_output(self, uos_device):
         for volatility in [0, 1, 2]:
             if volatility in uos_device.system_lut["functions"]["set_gpio_output"]:
