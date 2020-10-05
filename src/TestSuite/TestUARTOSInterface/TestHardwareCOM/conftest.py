@@ -1,4 +1,4 @@
-"""Module is used to initialise pytest fixtures for the hardware com tests.."""
+"""Module is used to initialise pytest fixtures for the hardware com tests."""
 import pytest
 from pathlib import Path
 from UARTOSInterface.HardwareCOM import UOSDevice

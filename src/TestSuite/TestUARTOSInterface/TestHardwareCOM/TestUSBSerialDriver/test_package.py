@@ -1,5 +1,4 @@
-"""Module for testing the top level of the USB serial package hardware
-interface."""
+"""Module for testing the the USB serial package hardware interface."""
 import pytest
 from time import sleep
 from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort

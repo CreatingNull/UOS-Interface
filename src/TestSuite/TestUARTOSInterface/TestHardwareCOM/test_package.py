@@ -21,15 +21,20 @@ class TestHardwareCOMInterface:
         with pytest.raises(NotImplementedError):
             UOSDevice(identity="Not Implemented", connection="")
 
-    def test_set_gpio_output(self, uos_device):
+    @pytest.mark.parametrize(
+        "function_name", ["set_gpio_output", "get_gpio_input", "get_adc_input"]
+    )
+    def test_device_function(self, uos_device, function_name):
         for volatility in [0, 1, 2]:
-            if volatility in uos_device.system_lut["functions"]["set_gpio_output"]:
-                assert uos_device.set_gpio_output(
+            if volatility in uos_device.system_lut["functions"][function_name]:
+                assert getattr(uos_device, function_name)(
                     pin=1, level=1, volatility=volatility
                 ).status
             else:  # not implemented check error raised correctly
                 with pytest.raises(NotImplementedError):
-                    uos_device.set_gpio_output(pin=1, level=1, volatility=volatility)
+                    getattr(uos_device, function_name)(
+                        pin=1, level=1, volatility=volatility
+                    )
 
 
 class TestHardwareCOMAbstractions:

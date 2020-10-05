@@ -5,7 +5,7 @@ from abc import abstractmethod, ABCMeta
 from functools import lru_cache
 from typing import Tuple
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Dict
 
 
 @dataclass
@@ -18,6 +18,7 @@ class COMresult:
     exception: str = ""
     ack_packet: List = field(default_factory=list)
     rx_packets: List = field(default_factory=list)
+    aux_data: Dict = field(default_factory=dict)
 
 
 class UOSInterface(metaclass=ABCMeta):

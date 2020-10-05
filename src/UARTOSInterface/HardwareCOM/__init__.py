@@ -127,8 +127,30 @@ class UOSDevice:
         )
         return response
 
-    def get_adc_input(self, pin: int, level: int, volatility: int = SUPER_VOLATILE):
-        self.__execute_instruction(UOSDevice.get_adc_input.__name__, volatility)
+    def get_adc_input(
+        self, pin: int, level: int, volatility: int = SUPER_VOLATILE
+    ) -> COMresult:
+        """
+        Reads the current 10 bit ADC value.
+
+        :param pin: The index of the analogue pin to read
+        :param level: Reserved for future use.
+        :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
+        :return: COMresult object containing the ADC readings.
+
+        """
+        # execute instructuion
+        # take the response packet and convert it to voltage and ADC int and ratio.
+        response = self.__execute_instruction(
+            UOSDevice.get_adc_input.__name__,
+            volatility,
+            {
+                "device_functions": self.system_lut["functions"],
+                "payload": tuple([pin]),
+                "expected_packets": 2,
+            },
+        )
+        return response
 
     def reset_all_io(self, volatility: int = NON_VOLATILE):
         self.__execute_instruction(UOSDevice.reset_all_io.__name__, volatility)
