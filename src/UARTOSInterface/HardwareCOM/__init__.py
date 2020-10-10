@@ -8,7 +8,7 @@ from logging import getLogger as Log
 from configparser import ConfigParser
 from UARTOSInterface.util import configure_logs
 from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
-from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
+from UARTOSInterface.HardwareCOM.UOSInterface import COMresult, InstructionArguments
 
 SUPER_VOLATILE = 0
 VOLATILE = 1
@@ -96,11 +96,10 @@ class UOSDevice:
         response = self.__execute_instruction(
             UOSDevice.set_gpio_output.__name__,
             volatility,
-            {
-                "device_functions": self.system_lut["functions"],
-                "payload": (pin, 0, level),
-                "expected_packets": 1,
-            },
+            InstructionArguments(
+                device_function_lut=self.system_lut["functions"],
+                payload=(pin, 0, level),
+            ),
         )
         return response
 
@@ -119,16 +118,16 @@ class UOSDevice:
         response = self.__execute_instruction(
             UOSDevice.get_gpio_input.__name__,
             volatility,
-            {
-                "device_functions": self.system_lut["functions"],
-                "payload": (pin, 1, level),
-                "expected_packets": 2,
-            },
+            InstructionArguments(
+                device_function_lut=self.system_lut["functions"],
+                payload=(pin, 1, level),
+                expected_rx_packets=2,
+            ),
         )
         return response
 
     def get_adc_input(
-        self, pin: int, level: int, volatility: int = SUPER_VOLATILE
+        self, pin: int, level: int, volatility: int = SUPER_VOLATILE,
     ) -> COMresult:
         """
         Reads the current 10 bit ADC value.
@@ -139,29 +138,47 @@ class UOSDevice:
         :return: COMresult object containing the ADC readings.
 
         """
-        # execute instructuion
-        # take the response packet and convert it to voltage and ADC int and ratio.
         response = self.__execute_instruction(
             UOSDevice.get_adc_input.__name__,
             volatility,
-            {
-                "device_functions": self.system_lut["functions"],
-                "payload": tuple([pin]),
-                "expected_packets": 2,
-            },
+            InstructionArguments(
+                device_function_lut=self.system_lut["functions"],
+                payload=tuple([pin]),
+                expected_rx_packets=2,
+            ),
+        )
+        return response
+
+    def get_system_info(self, **kwargs) -> COMresult:
+        """
+        Reads the UOS version and device type.
+
+        :return: COMResult object containing the system information
+
+        """
+        response = self.__execute_instruction(
+            UOSDevice.get_system_info.__name__,
+            SUPER_VOLATILE,
+            InstructionArguments(
+                device_function_lut=self.system_lut["functions"], expected_rx_packets=2,
+            ),
         )
         return response
 
     def reset_all_io(self, volatility: int = NON_VOLATILE):
-        self.__execute_instruction(UOSDevice.reset_all_io.__name__, volatility)
+        self.__execute_instruction(
+            UOSDevice.reset_all_io.__name__,
+            volatility,
+            InstructionArguments(device_function_lut=self.system_lut["functions"]),
+        )
 
-    def hard_reset(self) -> bool:
+    def hard_reset(self) -> COMresult:
         response = self.__execute_instruction(
             UOSDevice.hard_reset.__name__,
             0,
-            {"device_functions": self.system_lut["functions"]},
+            InstructionArguments(device_function_lut=self.system_lut["functions"]),
         )
-        return response[0]
+        return response
 
     def open(self):
         """
@@ -195,7 +212,7 @@ class UOSDevice:
                 )
 
     def __execute_instruction(
-        self, function_name: str, volatility, instruction_data: {}
+        self, function_name: str, volatility, instruction_data: InstructionArguments
     ) -> COMresult:
         """
         Helper function used to combine common functionality of the object
@@ -212,6 +229,9 @@ class UOSDevice:
             function_name not in self.system_lut["functions"]
             or volatility not in self.system_lut["functions"][function_name]
         ):
+            Log(__name__).debug(
+                f"Known functions {self.system_lut['functions'].keys().__str__()}"
+            )
             raise NotImplementedError(
                 f"{function_name} at volatility:{volatility} has not been implemented for {self.identity}"
             )
@@ -219,15 +239,15 @@ class UOSDevice:
         if self.check_lazy():  # Lazy loaded
             self.open()
         if (
-            instruction_data["device_functions"][function_name][volatility] >= 0
+            instruction_data.device_function_lut[function_name][volatility] >= 0
         ):  # a normal instruction
             tx_response = self.__device_interface.execute_instruction(
-                instruction_data["device_functions"][function_name][volatility],
-                instruction_data["payload"],
+                instruction_data.device_function_lut[function_name][volatility],
+                instruction_data.payload,
             )
             if tx_response.status:
                 rx_response = self.__device_interface.read_response(
-                    instruction_data["expected_packets"], 2
+                    instruction_data.expected_rx_packets, 2
                 )
                 if rx_response.status:
                     # validate checksums on all packets
@@ -302,12 +322,13 @@ class UOSDevice:
                     output[key_name] = [
                         int(pin.strip()) for pin in config[section][key_name].split(",")
                     ]
-                for function_name in (
+                for function_name in (  # todo find a better way to do this
                     "set_gpio_output",
                     "get_gpio_input",
                     "get_adc_input",
                     "reset_all_io",
                     "hard_reset",
+                    "get_system_info",
                 ):
                     if (
                         f"function - {function_name}" in config[section]
@@ -332,6 +353,6 @@ class UOSDevice:
                 return output
             except (KeyError, SyntaxError, ValueError) as e:
                 Log(__name__).error(
-                    f"Parsing the hardware ini threw an error {e.__str__()}"
+                    f"Parsing the hardware ini threw an error {e.__repr__()}"
                 )
         return {}

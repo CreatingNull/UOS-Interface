@@ -1,7 +1,8 @@
 """Web RESTful API layer for automation."""
 from flask import request, jsonify
 from UARTOSInterface.WebApp.API import blueprint, util
-from UARTOSInterface.HardwareCOM import UOSDevice
+from UARTOSInterface.HardwareCOM import UOSDevice, UOSInterface
+from logging import getLogger as Log
 
 API_VERSIONS = ["0.0"]
 
@@ -20,7 +21,11 @@ def route_io_function(api_version: str, function: str):
             identity=required_args["identity"].arg_value,
             connection=required_args["connection"].arg_value,
         )
-        if function in ("set_gpio_output", "get_gpio_input", "get_adc_input"):
+        if function in [
+            function
+            for function in dir(UOSDevice)
+            if "get_" in function or "set_" in function
+        ]:
             instr_response = getattr(device, function)(
                 pin=required_args["pin"].arg_value,
                 level=required_args["level"].arg_value,

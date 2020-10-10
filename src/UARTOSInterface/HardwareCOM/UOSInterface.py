@@ -10,7 +10,6 @@ from typing import List, Dict
 
 @dataclass
 class COMresult:
-
     """Class containing the data structure used to capture the result of UOS
     operations."""
 
@@ -19,6 +18,16 @@ class COMresult:
     ack_packet: List = field(default_factory=list)
     rx_packets: List = field(default_factory=list)
     aux_data: Dict = field(default_factory=dict)
+
+
+@dataclass
+class InstructionArguments:
+    """Class containing the data structure used to generalise UOS instruction
+    arguments."""
+
+    device_function_lut: Dict = field(default_factory=dict)
+    payload: tuple = ()
+    expected_rx_packets: int = 1
 
 
 class UOSInterface(metaclass=ABCMeta):

@@ -31,17 +31,23 @@ def check_required_args(
     Log(__name__).debug(f"Required arguments {required_arguments.__str__()}")
     for argument in required_arguments:
         if argument not in arguments_found:
-            return APIresult(
-                False, f"Expected argument '{argument}' not found in request."
+            return (
+                APIresult(
+                    False, f"Expected argument '{argument}' not found in request."
+                ),
+                required_arguments,
             )
         try:
             required_arguments[argument].arg_value = required_arguments[
                 argument
             ].arg_type(arguments_found[argument])
         except ValueError:
-            return APIresult(
-                False,
-                f"Expected '{argument}' to have type "
-                f"{required_arguments[argument].arg_type} not {type(arguments_found[argument])}.",
+            return (
+                APIresult(
+                    False,
+                    f"Expected '{argument}' to have type "
+                    f"{required_arguments[argument].arg_type} not {type(arguments_found[argument])}.",
+                ),
+                required_arguments,
             )
     return APIresult(True), required_arguments
