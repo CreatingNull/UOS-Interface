@@ -9,6 +9,7 @@ from typing import List, Dict
 
 @dataclass
 class COMresult:
+
     """Class containing the data structure used to capture the result of UOS
     operations."""
 
@@ -21,6 +22,7 @@ class COMresult:
 
 @dataclass
 class InstructionArguments:
+
     """Class containing the data structure used to generalise UOS instruction
     arguments."""
 
