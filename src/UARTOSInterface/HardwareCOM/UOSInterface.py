@@ -1,5 +1,4 @@
-"""Module defining the abstract base class and static functions for all UOS
-device interfaces."""
+"""Module defining the base class and static func for interfaces."""
 
 from abc import abstractmethod, ABCMeta
 from functools import lru_cache
