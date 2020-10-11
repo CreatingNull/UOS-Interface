@@ -1,3 +1,4 @@
+"""General utility functions for the API layer of the web-server."""
 from dataclasses import dataclass
 from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
 from logging import getLogger as Log
@@ -5,6 +6,8 @@ from logging import getLogger as Log
 
 @dataclass
 class APIargument:
+    """API request argument datatype."""
+
     required: bool
     arg_type: type
     arg_value: None
@@ -12,6 +15,8 @@ class APIargument:
 
 @dataclass
 class APIresult:
+    """The response from an API request to be returned as JSON."""
+
     status: bool
     exception: str = ""
     com_data: COMresult = None

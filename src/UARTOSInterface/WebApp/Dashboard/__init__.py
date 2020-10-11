@@ -1,3 +1,4 @@
+"""For providing a human-friendly UOS interface."""
 from flask import Blueprint
 
 blueprint = Blueprint(

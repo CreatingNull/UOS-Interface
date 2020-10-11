@@ -7,6 +7,11 @@ from serial.serialutil import SerialException
 from time import time_ns, sleep
 from UARTOSInterface.HardwareCOM.UOSInterface import UOSInterface, COMresult
 
+if platform.system() == "Linux":
+    import termios
+else:
+    pass
+
 
 class NPCSerialPort(UOSInterface):
     """
@@ -41,8 +46,7 @@ class NPCSerialPort(UOSInterface):
 
     def open(self):
         """
-        Opens a connection to the the defined port and creates the device
-        object.
+        Opens a connection to the the port and creates the device object.
 
         :return: Success boolean.
 
@@ -54,8 +58,6 @@ class NPCSerialPort(UOSInterface):
                 self._device.baudrate = self._kwargs["baudrate"]
             if platform.system() == "Linux":
                 Log(__name__).debug("Linux platform found so using DTR workaround")
-                import termios
-
                 with open(self._connection) as p:  # DTR transient workaround for Unix
                     attrs = termios.tcgetattr(p)
                     attrs[2] = attrs[2] & ~termios.HUPCL
@@ -151,7 +153,10 @@ class NPCSerialPort(UOSInterface):
                                 byte_index += 1
                         if byte_index >= 0:
                             Log(__name__).debug(
-                                "read %s index = %s", byte_in, byte_index
+                                "read %s byte index = %s at index %s",
+                                byte_in,
+                                byte_index,
+                                index,
                             )
                             if byte_index == 3:  # payload len
                                 payload_len = int.from_bytes(
@@ -228,8 +233,7 @@ class NPCSerialPort(UOSInterface):
     @staticmethod
     def check_port_exists(device: str):
         """
-        Takes in a serial port connection string and checks if the port is
-        available on the system.
+        Checks if serial device is available on system.
 
         :param device: OS connection string for the serial port.
         :return: The port device class if it exists, else None.

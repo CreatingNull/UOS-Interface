@@ -1,9 +1,16 @@
 strictness: medium
-doc-warnings: false
+doc-warnings: true
 test-warnings: false
 autodetect: true
 member-warnings: false
 
 pep257:
   disable:
+    # Disable mutually exclusive class-docstrings should have leading new line (clash)
     - D203
+    - D212
+
+pylint:
+    disable:
+      - missing-function-docstring
+      - import-error

@@ -1,3 +1,4 @@
+"""Unit tests for the web-app package functionality."""
 from pathlib import Path
 from UARTOSInterface.util import load_config
 

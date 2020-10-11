@@ -1,3 +1,4 @@
+"""Possible routes for the dashboard functionality of the web-app."""
 from flask import render_template
 from UARTOSInterface.WebApp.Dashboard import blueprint
 from UARTOSInterface.HardwareCOM import UOSDevice

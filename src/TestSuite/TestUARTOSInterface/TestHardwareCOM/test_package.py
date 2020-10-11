@@ -1,3 +1,4 @@
+"""Unit tests for the HardwareCOM package."""
 import pytest
 from UARTOSInterface.HardwareCOM import UOSDevice
 from UARTOSInterface.HardwareCOM import UOSInterface

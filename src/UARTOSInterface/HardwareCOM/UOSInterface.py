@@ -63,8 +63,7 @@ class UOSInterface(metaclass=ABCMeta):
     @abstractmethod
     def hard_reset(self) -> COMresult:
         """
-        Abstract method for UOS loop reset functionality should be as hard a
-        reset as possible.
+        UOS loop reset functionality should be as hard a reset as possible.
 
         :return: COMresult object.
 

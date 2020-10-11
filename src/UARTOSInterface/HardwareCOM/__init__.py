@@ -1,5 +1,4 @@
-"""Module containing the high level hardware interface for communicating with
-UOS devices."""
+"""The high level interface for communicating with UOS devices."""
 
 import sys
 from ast import literal_eval
@@ -186,8 +185,7 @@ class UOSDevice:
 
     def open(self):
         """
-        Opens a connection to the low level device, explict calls are normally
-        not required.
+        Connects to the device, explict calls are normally not required.
 
         :raises: RuntimeError - If there was an issue opening a connection.
         :raises: Attribute Error - if bad configuration of the UOSDevice object.
@@ -203,8 +201,7 @@ class UOSDevice:
 
     def close(self):
         """
-        Closes a connection to the low level device, must be called explicitly
-        if loading is eager.
+        Releases connection, must be called explicitly if loading is eager.
 
         :raises: RuntimeError - If there was a problem closing the connection to an active device.
 
@@ -219,8 +216,7 @@ class UOSDevice:
         self, function_name: str, volatility, instruction_data: InstructionArguments
     ) -> COMresult:
         """
-        Helper function used to combine common functionality of the object
-        orientated layer.
+        Common functionality for execution of all UOS instructions.
 
         :param function_name: The name of the function in the OOL.
         :param volatility: How volatile should the command be, use constant values from HardwareCOM package.

@@ -1,3 +1,4 @@
+"""General utility functions for all packages in UOSInterfaces."""
 from logging import getLogger, FileHandler, Formatter
 from configparser import ConfigParser
 from pathlib import Path
