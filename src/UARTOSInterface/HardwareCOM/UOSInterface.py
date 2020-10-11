@@ -9,9 +9,7 @@ from typing import List, Dict
 
 @dataclass
 class COMresult:
-
-    """Class containing the data structure used to capture the result of UOS
-    operations."""
+    """Containing the data structure used to capture UOS results."""
 
     status: bool
     exception: str = ""
@@ -22,9 +20,7 @@ class COMresult:
 
 @dataclass
 class InstructionArguments:
-
-    """Class containing the data structure used to generalise UOS instruction
-    arguments."""
+    """Containing the data structure used to generalise UOS arguments."""
 
     device_function_lut: Dict = field(default_factory=dict)
     payload: tuple = ()

@@ -58,7 +58,7 @@ class UOSDevice:
         self.system_lut = self._locate_device_definition(identity)
         self.__kwargs = kwargs
         for key in self.system_lut:
-            Log(__name__).debug(f"sys lut = {key}: {self.system_lut[key]}")
+            Log(__name__).debug("sys lut = %s: %s", key, self.system_lut[key])
             # Select the low level backend-interface based on interface key
         if len(self.system_lut) == 0:
             raise NotImplementedError(
@@ -79,7 +79,7 @@ class UOSDevice:
             )
         if "loading" in self.__kwargs and self.__kwargs["loading"].upper() == "EAGER":
             self.open()
-        Log(__name__).debug(f"Created device {self.__device_interface.__repr__()}")
+        Log(__name__).debug("Created device %s", self.__device_interface.__repr__())
 
     def set_gpio_output(
         self, pin: int, level: int, volatility: int = SUPER_VOLATILE
@@ -127,7 +127,10 @@ class UOSDevice:
         return response
 
     def get_adc_input(
-        self, pin: int, level: int, volatility: int = SUPER_VOLATILE,
+        self,
+        pin: int,
+        level: int,
+        volatility: int = SUPER_VOLATILE,
     ) -> COMresult:
         """
         Reads the current 10 bit ADC value.
@@ -160,7 +163,8 @@ class UOSDevice:
             UOSDevice.get_system_info.__name__,
             SUPER_VOLATILE,
             InstructionArguments(
-                device_function_lut=self.system_lut["functions"], expected_rx_packets=2,
+                device_function_lut=self.system_lut["functions"],
+                expected_rx_packets=2,
             ),
         )
         return response
@@ -230,7 +234,7 @@ class UOSDevice:
             or volatility not in self.system_lut["functions"][function_name]
         ):
             Log(__name__).debug(
-                f"Known functions {self.system_lut['functions'].keys().__str__()}"
+                "Known functions %s", self.system_lut["functions"].keys().__str__()
             )
             raise NotImplementedError(
                 f"{function_name} at volatility:{volatility} has not been implemented for {self.identity}"
@@ -261,7 +265,9 @@ class UOSDevice:
                             current_packet[1:-2]
                         )
                         Log(__name__).debug(
-                            f"Calculated checksum {computed_checksum} must match rx {current_packet[-2]}"
+                            "Calculated checksum %s must match rx %s",
+                            computed_checksum,
+                            current_packet[-2],
                         )
                         rx_response.status = rx_response.status & (
                             computed_checksum == current_packet[-2]
@@ -311,7 +317,7 @@ class UOSDevice:
         else:  # running from source
             config_path = Path(__file__).resolve().parents[3]
             config_path = config_path.joinpath("resources/HardwareCOM.ini")
-        Log(__name__).debug(f"Hardware config path resolved to {config_path}")
+        Log(__name__).debug("Hardware config path resolved to %s", config_path)
         if config_path.is_file():
             config = ConfigParser()
             config.read(config_path)
@@ -353,6 +359,6 @@ class UOSDevice:
                 return output
             except (KeyError, SyntaxError, ValueError) as e:
                 Log(__name__).error(
-                    f"Parsing the hardware ini threw an error {e.__repr__()}"
+                    "Parsing the hardware ini threw an error %s", e.__repr__()
                 )
         return {}

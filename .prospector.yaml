@@ -1,0 +1,9 @@
+strictness: medium
+doc-warnings: false
+test-warnings: false
+autodetect: true
+member-warnings: false
+
+pep257:
+  disable:
+    - D203

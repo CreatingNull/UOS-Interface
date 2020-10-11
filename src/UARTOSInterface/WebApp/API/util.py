@@ -28,7 +28,7 @@ def check_required_args(
                 "connection": APIargument(False, str, None),
             },
         )
-    Log(__name__).debug(f"Required arguments {required_arguments.__str__()}")
+    Log(__name__).debug("Required arguments %s", required_arguments.__str__())
     for argument in required_arguments:
         if argument not in arguments_found:
             return (

@@ -16,7 +16,7 @@ def configure_logs(name: str, level: int, base_path: Path):
 
 
 def load_config(path: Path):
-    getLogger(__name__).debug(f"Loading config from {path}")
+    getLogger(__name__).debug("Loading config from %s", path)
     parser = ConfigParser()
     parser.read(str(path.resolve()))
     if len(parser.sections()) > 0:  # config was located

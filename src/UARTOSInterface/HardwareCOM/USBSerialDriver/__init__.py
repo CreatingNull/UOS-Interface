@@ -37,7 +37,7 @@ class NPCSerialPort(UOSInterface):
         self._kwargs = kwargs
         if self._port is None:
             return
-        Log(__name__).debug(f"{self._port} located")
+        Log(__name__).debug("%s located", self._port)
 
     def open(self):
         """
@@ -62,11 +62,13 @@ class NPCSerialPort(UOSInterface):
                     termios.tcsetattr(p, termios.TCSAFLUSH, attrs)
             self._device.dtr = True
             self._device.open()
-            Log(__name__).debug(f"{self._port.device} opened successfully")
+            Log(__name__).debug("%s opened successfully", self._port.device)
             return True
         except (SerialException, FileNotFoundError) as e:
             Log(__name__).error(
-                f"Opening {self._port.device if self._port is not None else 'None'} threw error {e.__str__()}"
+                "Opening %s threw error %s",
+                self._port.device if self._port is not None else "None",
+                e.__str__(),
             )
             if (
                 e.errno == 13
@@ -89,7 +91,7 @@ class NPCSerialPort(UOSInterface):
         try:
             self._device.close()
         except SerialException as e:
-            Log(__name__).debug(f"Closing the connection threw error {e.__str__()}")
+            Log(__name__).debug("Closing the connection threw error %s", e.__str__())
             self._device = None
             return False
         Log(__name__).debug("Connection closed successfully")
@@ -108,11 +110,11 @@ class NPCSerialPort(UOSInterface):
         if not self.check_open():
             return COMresult(False, exception="Connection must be opened first.")
         packet = self.get_npc_packet(to_addr=address, from_addr=0, payload=payload)
-        Log(__name__).debug(f"packet formed {packet}")
+        Log(__name__).debug("packet formed %s", packet)
         try:  # Send the packet.
             num_bytes = self._device.write(packet)
             self._device.flush()
-            Log(__name__).debug(f"Sent {num_bytes} bytes of data")
+            Log(__name__).debug("Sent %s bytes of data", num_bytes)
         except serial.SerialException as e:
             return COMresult(False, exception=str(e))
         finally:
@@ -148,7 +150,9 @@ class NPCSerialPort(UOSInterface):
                             if byte_in == b">":
                                 byte_index += 1
                         if byte_index >= 0:
-                            Log(__name__).debug(f"read {byte_in} index = {byte_index}")
+                            Log(__name__).debug(
+                                "read %s index = %s", byte_in, byte_index
+                            )
                             if byte_index == 3:  # payload len
                                 payload_len = int.from_bytes(
                                     byte_in, byteorder="little"
@@ -175,7 +179,7 @@ class NPCSerialPort(UOSInterface):
                                 payload_len = 0
                             byte_index += 1
                 sleep(0.05)  # Don't churn CPU cycles waiting for data
-            Log(__name__).debug(f"Packet received {packet}")
+            Log(__name__).debug("Packet received %s", packet)
             if expect_packets != packet_index or len(packet) < 6 or byte_index != -2:
                 response_object.rx_packets.append(packet)
                 response_object.exception = "did not receive all the expected data"

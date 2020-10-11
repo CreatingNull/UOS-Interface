@@ -8,5 +8,5 @@ from logging import getLogger as Log
 def route_default():
     device = UOSDevice("Arduino Nano 3", connection="USB|/dev/ttyUSB0")
     device.set_gpio_output(13, 1)
-    Log(__name__).debug(f"{device} created")
+    Log(__name__).debug("%s created", device)
     return render_template("site_template/base_site.html")
