@@ -1,3 +1,4 @@
+"""Root class for starting the flask webapp."""
 from pathlib import Path
 from logging import DEBUG
 import os

@@ -144,7 +144,7 @@ class NPCSerialPort(UOSInterface):
                 timeout_s * 1000000000
             ) > time_ns() - start_ns and byte_index > -2:  # read until packet or timeout
                 num_bytes = self._device.in_waiting
-                for index in range(num_bytes):
+                for _ in range(num_bytes):
                     byte_in = self._device.read(1)
                     byte_index, packet = self.decode_and_capture(
                         byte_index, byte_in, packet

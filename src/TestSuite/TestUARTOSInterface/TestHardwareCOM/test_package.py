@@ -10,6 +10,8 @@ from UARTOSInterface.HardwareCOM import UOSInterface
     False, reason="You must have low level hardware to test low level interfaces"
 )
 class TestHardwareCOMInterface:
+    """Tests for the object orientated abstraction layer."""
+
     # Checks to ensure all defined devices can init correctly on the UOSDevice class, makes sure no error is thrown
     def test_implemented_devices(self, uos_identities: ()):
         assert (
@@ -39,6 +41,8 @@ class TestHardwareCOMInterface:
 
 
 class TestHardwareCOMAbstractions:
+    """Test for the UOSInterface abstraction layer and helper functions."""
+
     TEST_PACKETS = [
         {
             "addr_to": 0,

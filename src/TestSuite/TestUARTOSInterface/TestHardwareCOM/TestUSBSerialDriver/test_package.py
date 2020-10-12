@@ -13,6 +13,8 @@ connection = (
     reason="You need the relevant NPC Serial Hardware to test these low level functions",
 )
 class TestNPCSerialPort:
+    """Test suite for the low level serial backend."""
+
     @pytest.fixture
     def npc_serial_port(self):
         serial_port = NPCSerialPort(connection, baudrate=115200)
@@ -39,7 +41,7 @@ class TestNPCSerialPort:
         assert not npc_serial_port.check_open()
         assert isinstance(npc_serial_port.enumerate_ports(), list)
 
-    def test_basic_fault_cases(self, invalid_serial_port, npc_serial_port):
+    def test_basic_fault_cases(self, invalid_serial_port):
         assert not invalid_serial_port.check_open()
         assert not invalid_serial_port.open()
         assert invalid_serial_port.close()
