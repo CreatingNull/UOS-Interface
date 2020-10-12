@@ -137,7 +137,6 @@ class NPCSerialPort(UOSInterface):
             return response_object
         start_ns = time_ns()
         packet = []
-        payload_len = 0  # tracks the current packet's payload length
         byte_index = -1  # tracks the byte position index of the current packet
         packet_index = 0  # tracks the packet number being received 0 = ACK
         try:
@@ -145,44 +144,22 @@ class NPCSerialPort(UOSInterface):
                 timeout_s * 1000000000
             ) > time_ns() - start_ns and byte_index > -2:  # read until packet or timeout
                 num_bytes = self._device.in_waiting
-                if num_bytes > 0:
-                    for index in range(num_bytes):
-                        byte_in = self._device.read(1)
-                        if byte_index == -1:  # start symbol
-                            if byte_in == b">":
-                                byte_index += 1
-                        if byte_index >= 0:
-                            Log(__name__).debug(
-                                "read %s byte index = %s at index %s",
-                                byte_in,
-                                byte_index,
-                                index,
-                            )
-                            if byte_index == 3:  # payload len
-                                payload_len = int.from_bytes(
-                                    byte_in, byteorder="little"
-                                )
-                            elif byte_index == 3 + payload_len + 2:  # End packet symbol
-                                if byte_in == b"<":
-                                    byte_index = -2  # packet complete
-                                    Log(__name__).debug("Found end packet symbol")
-                                else:  # Errored data
-                                    byte_index = -1
-                                    payload_len = 0
-                                    packet = []
-                            packet.append(int.from_bytes(byte_in, byteorder="little"))
-                            if byte_index == -2:
-                                if packet_index == 0:
-                                    response_object.ack_packet = packet
-                                else:
-                                    response_object.rx_packets.append(packet)
-                                packet_index += 1
-                                if expect_packets == packet_index:
-                                    break
-                                byte_index = -1
-                                packet = []
-                                payload_len = 0
-                            byte_index += 1
+                for index in range(num_bytes):
+                    byte_in = self._device.read(1)
+                    byte_index, packet = self.decode_and_capture(
+                        byte_index, byte_in, packet
+                    )
+                    if byte_index == -2:
+                        if packet_index == 0:
+                            response_object.ack_packet = packet
+                        else:
+                            response_object.rx_packets.append(packet)
+                        packet_index += 1
+                        if expect_packets == packet_index:
+                            break
+                        byte_index = -1
+                        packet = []
+                    byte_index += 1
                 sleep(0.05)  # Don't churn CPU cycles waiting for data
             Log(__name__).debug("Packet received %s", packet)
             if expect_packets != packet_index or len(packet) < 6 or byte_index != -2:
@@ -229,6 +206,37 @@ class NPCSerialPort(UOSInterface):
 
         """
         return f"<NPCSerialPort(_connection='{self._connection}', _port={self._port}, _device={self._device})>"
+
+    @staticmethod
+    def decode_and_capture(byte_index: int, byte_in: bytes, packet: []) -> (int, []):
+        """
+        Parser takes in a byte and vets it against UOS packet.
+
+        :param byte_index: The index of the last 'valid' byte found.
+        :param byte_in: The current byte for inspection.
+        :param packet: The current packet of validated bytes.
+        :return: Tuple containing the updated byte index and updated packet.
+
+        """
+        if byte_index == -1:  # start symbol
+            if byte_in == b">":
+                byte_index += 1
+        if byte_index >= 0:
+            Log(__name__).debug(
+                "read %s byte index = %s",
+                byte_in,
+                byte_index,
+            )
+            payload_len = packet[3] if len(packet) > 3 else 0
+            if byte_index == 3 + 2 + payload_len:  # End packet symbol
+                if byte_in == b"<":
+                    byte_index = -2  # packet complete
+                    Log(__name__).debug("Found end packet symbol")
+                else:  # Errored data
+                    byte_index = -1
+                    packet = []
+            packet.append(int.from_bytes(byte_in, byteorder="little"))
+        return byte_index, packet
 
     @staticmethod
     def check_port_exists(device: str):
