@@ -1,13 +1,10 @@
 """The high level interface for communicating with UOS devices."""
-
-import sys
-from ast import literal_eval
 from pathlib import Path
 from logging import getLogger as Log
-from configparser import ConfigParser
 from UARTOSInterface.util import configure_logs
 from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
 from UARTOSInterface.HardwareCOM.UOSInterface import COMresult, InstructionArguments
+from UARTOSInterface.HardwareCOM.config import DEVICES, UOS_SCHEMA, Device
 
 SUPER_VOLATILE = 0
 VOLATILE = 1
@@ -56,10 +53,7 @@ class UOSDevice:
         self.connection = connection
         self.system_lut = self._locate_device_definition(identity)
         self.__kwargs = kwargs
-        for key in self.system_lut:
-            Log(__name__).debug("sys lut = %s: %s", key, self.system_lut[key])
-            # Select the low level backend-interface based on interface key
-        if len(self.system_lut) == 0:
+        if self.system_lut is None:
             raise NotImplementedError(
                 f"'{self.identity}' does not have a valid look up table"
             )
@@ -68,9 +62,13 @@ class UOSDevice:
             raise ValueError(
                 f"NPC connection string was incorrectly formatted, length={len(connection_params)}"
             )
-        if connection_params[0].upper() == "USB":
+        if (
+            connection_params[0].upper() == "USB"
+            and "USB" in self.system_lut.interfaces
+        ):
             self.__device_interface = NPCSerialPort(
-                connection_params[1], baudrate=self.system_lut["default_baudrate"]
+                connection_params[1],
+                baudrate=self.system_lut.aux_params["default_baudrate"],
             )
         else:
             raise AttributeError(
@@ -96,7 +94,7 @@ class UOSDevice:
             UOSDevice.set_gpio_output.__name__,
             volatility,
             InstructionArguments(
-                device_function_lut=self.system_lut["functions"],
+                device_function_lut=self.system_lut.functions_enabled,
                 payload=(pin, 0, level),
             ),
         )
@@ -118,7 +116,7 @@ class UOSDevice:
             UOSDevice.get_gpio_input.__name__,
             volatility,
             InstructionArguments(
-                device_function_lut=self.system_lut["functions"],
+                device_function_lut=self.system_lut.functions_enabled,
                 payload=(pin, 1, level),
                 expected_rx_packets=2,
             ),
@@ -144,7 +142,7 @@ class UOSDevice:
             UOSDevice.get_adc_input.__name__,
             volatility,
             InstructionArguments(
-                device_function_lut=self.system_lut["functions"],
+                device_function_lut=self.system_lut.functions_enabled,
                 payload=tuple([pin]),
                 expected_rx_packets=2,
             ),
@@ -162,7 +160,7 @@ class UOSDevice:
             UOSDevice.get_system_info.__name__,
             SUPER_VOLATILE,
             InstructionArguments(
-                device_function_lut=self.system_lut["functions"],
+                device_function_lut=self.system_lut.functions_enabled,
                 expected_rx_packets=2,
             ),
         )
@@ -172,14 +170,14 @@ class UOSDevice:
         self.__execute_instruction(
             UOSDevice.reset_all_io.__name__,
             volatility,
-            InstructionArguments(device_function_lut=self.system_lut["functions"]),
+            InstructionArguments(device_function_lut=self.system_lut.functions_enabled),
         )
 
     def hard_reset(self) -> COMresult:
         response = self.__execute_instruction(
             UOSDevice.hard_reset.__name__,
             0,
-            InstructionArguments(device_function_lut=self.system_lut["functions"]),
+            InstructionArguments(device_function_lut=self.system_lut.functions_enabled),
         )
         return response
 
@@ -226,11 +224,11 @@ class UOSDevice:
 
         """
         if (
-            function_name not in self.system_lut["functions"]
-            or volatility not in self.system_lut["functions"][function_name]
+            function_name not in self.system_lut.functions_enabled
+            or volatility not in self.system_lut.functions_enabled[function_name]
         ):
             Log(__name__).debug(
-                "Known functions %s", self.system_lut["functions"].keys().__str__()
+                "Known functions %s", self.system_lut.functions_enabled.keys().__str__()
             )
             raise NotImplementedError(
                 f"{function_name} at volatility:{volatility} has not been implemented for {self.identity}"
@@ -299,62 +297,21 @@ class UOSDevice:
         )
 
     @staticmethod
-    def _locate_device_definition(identity: str):
+    def _locate_device_definition(identity: str) -> Device:
         """
-        Looks up the system dictionary ini for the defined device mappings.
+        Looks up the system config dictionary for the defined device mappings.
 
         :param identity: String containing the lookup key of the device in the dictionary.
-        :return: Dictionary of the device lookup table. Empty if no device located.
+        :return: Device Object or None if not found
 
         """
-        if getattr(sys, "frozen", False):  # running as packaged
-            config_path = Path(sys.executable).resolve().parent
-            config_path = config_path.joinpath("HardwareCOM.ini")
-        else:  # running from source
-            config_path = Path(__file__).resolve().parents[3]
-            config_path = config_path.joinpath("resources/HardwareCOM.ini")
-        Log(__name__).debug("Hardware config path resolved to %s", config_path)
-        if config_path.is_file():
-            config = ConfigParser()
-            config.read(config_path)
-            try:
-                output = {"functions": {}}
-                section = f"DEVICE - {identity.upper()}"
-                for key_name in ("digital_pins", "analogue_pins"):
-                    output[key_name] = [
-                        int(pin.strip()) for pin in config[section][key_name].split(",")
-                    ]
-                for function_name in (  # todo find a better way to do this
-                    "set_gpio_output",
-                    "get_gpio_input",
-                    "get_adc_input",
-                    "reset_all_io",
-                    "hard_reset",
-                    "get_system_info",
-                ):
-                    if (
-                        f"function - {function_name}" in config[section]
-                    ):  # just exclude undefined functions
-                        output["functions"][function_name] = literal_eval(
-                            config[section][f"function - {function_name}"]
-                        )
-                        output["functions"][
-                            function_name
-                        ] = {  # populate as address lookup using the schema
-                            volatility: literal_eval(
-                                config["UOS SCHEMA"][function_name]
-                            )[volatility]
-                            for volatility in output["functions"][function_name]
-                            if output["functions"][function_name][volatility] is True
-                        }
-                output["default_baudrate"] = config[section]["default_baudrate"]
-                output["interfaces"] = [
-                    interface.strip()
-                    for interface in config[section]["interfaces"].split(",")
-                ]
-                return output
-            except (KeyError, SyntaxError, ValueError) as e:
-                Log(__name__).error(
-                    "Parsing the hardware ini threw an error %s", e.__repr__()
-                )
-        return {}
+        if identity.upper() in DEVICES:
+            device = DEVICES[identity.upper()]
+            for function_enabled in device.functions_enabled:
+                device.functions_enabled[function_enabled] = {
+                    vol: UOS_SCHEMA[function_enabled].address_lut[vol]
+                    for vol in device.functions_enabled[function_enabled]
+                }
+        else:
+            device = None
+        return device

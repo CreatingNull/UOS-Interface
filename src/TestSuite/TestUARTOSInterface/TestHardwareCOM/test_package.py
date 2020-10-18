@@ -29,7 +29,7 @@ class TestHardwareCOMInterface:
     )
     def test_device_function(self, uos_device, function_name):
         for volatility in [0, 1, 2]:
-            if volatility in uos_device.system_lut["functions"][function_name]:
+            if volatility in uos_device.system_lut.functions_enabled[function_name]:
                 assert getattr(uos_device, function_name)(
                     pin=1, level=1, volatility=volatility
                 ).status
