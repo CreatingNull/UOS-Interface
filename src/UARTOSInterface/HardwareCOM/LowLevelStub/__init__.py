@@ -9,6 +9,7 @@ class NPCStub(UOSInterface):
     """Class can be used as a low level test endpoint."""
 
     def __init__(self):
+        """Instantiate an instance of the test stub."""
         self.__packet_buffer = []
         self.__open = False
 
