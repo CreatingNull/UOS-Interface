@@ -7,12 +7,12 @@ from UARTOSInterface.util import load_config
 devices = {
     "Arduino Nano 3 LAZY": {
         "identity": "Arduino Nano 3",
-        "connection": "USB|/dev/ttyUSB0",
+        "connection": "STUB|/dev/ttyUSB0",
         "loading": "LAZY",
     },
     "Arduino Nano 3 EAGER": {
         "identity": "Arduino Nano 3",
-        "connection": "USB|/dev/ttyUSB0",
+        "connection": "STUB|/dev/ttyUSB0",
         "loading": "EAGER",
     },
 }

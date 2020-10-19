@@ -3,8 +3,15 @@ from pathlib import Path
 from logging import getLogger as Log
 from UARTOSInterface.util import configure_logs
 from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
+from UARTOSInterface.HardwareCOM.LowLevelStub import NPCStub
 from UARTOSInterface.HardwareCOM.UOSInterface import COMresult, InstructionArguments
-from UARTOSInterface.HardwareCOM.config import DEVICES, UOS_SCHEMA, Device
+from UARTOSInterface.HardwareCOM.config import (
+    DEVICES,
+    UOS_SCHEMA,
+    Device,
+    INTERFACE_STUB,
+    INTERFACE_USB,
+)
 
 SUPER_VOLATILE = 0
 VOLATILE = 1
@@ -63,13 +70,18 @@ class UOSDevice:
                 f"NPC connection string was incorrectly formatted, length={len(connection_params)}"
             )
         if (
-            connection_params[0].upper() == "USB"
-            and "USB" in self.system_lut.interfaces
+            connection_params[0].upper() == INTERFACE_USB
+            and INTERFACE_USB in self.system_lut.interfaces
         ):
             self.__device_interface = NPCSerialPort(
                 connection_params[1],
                 baudrate=self.system_lut.aux_params["default_baudrate"],
             )
+        elif (
+            connection_params[0].upper() == INTERFACE_STUB
+            and INTERFACE_STUB in self.system_lut.interfaces
+        ):
+            self.__device_interface = NPCStub()
         else:
             raise AttributeError(
                 f"Could not correctly open a connection to {self.identity} - {self.connection}"

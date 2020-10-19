@@ -2,9 +2,14 @@
 from dataclasses import dataclass, field
 from typing import List, Dict
 
+INTERFACE_USB = "USB"
+INTERFACE_STUB = "STUB"
+
 
 @dataclass
 class Device:
+    """Define an implemented UOS device dictionary."""
+
     interfaces: list
     functions_enabled: Dict
     digital_pins: List = field(default_factory=list)
@@ -14,6 +19,8 @@ class Device:
 
 @dataclass
 class UOSFunction:
+    """Defines auxiliary information for UOS commands in the schema."""
+
     address_lut: Dict
     ack: bool
     rx_packets_expected: List = field(default_factory=list)
@@ -36,7 +43,7 @@ UOS_SCHEMA = {
 
 
 ARDUINO_NANO_3 = Device(
-    interfaces=["USB"],
+    interfaces=[INTERFACE_USB, INTERFACE_STUB],
     functions_enabled={
         "set_gpio_output": {0: True},
         "get_gpio_input": {0: True},
@@ -45,9 +52,12 @@ ARDUINO_NANO_3 = Device(
         "hard_reset": {0: True},
         "get_system_info": {0: True},
     },
-    digital_pins=[i for i in range(2, 14)],
-    analogue_pins=[i for i in range(0, 8)],
+    digital_pins=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+    analogue_pins=[0, 1, 2, 3, 4, 5, 6, 7, 8],
     aux_params={"default_baudrate": 115200},
 )
 
-DEVICES = {"ARDUINO NANO 3": ARDUINO_NANO_3}  # define aliases
+DEVICES = {
+    "ARDUINO NANO 3": ARDUINO_NANO_3,
+    "ARDUNIO NANO": ARDUINO_NANO_3,
+}  # define aliases
