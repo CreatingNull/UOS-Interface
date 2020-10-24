@@ -1,11 +1,14 @@
 """Module defining the low level UOSImplementation for serial port devices."""
-import serial
 import platform
-from serial.tools import list_ports
 from logging import getLogger as Log
+from time import sleep
+from time import time_ns
+
+import serial
 from serial.serialutil import SerialException
-from time import time_ns, sleep
-from UARTOSInterface.HardwareCOM.UOSInterface import UOSInterface, COMresult
+from serial.tools import list_ports
+from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
+from UARTOSInterface.HardwareCOM.UOSInterface import UOSInterface
 
 if platform.system() == "Linux":
     import termios
@@ -19,7 +22,7 @@ class NPCSerialPort(UOSInterface):
 
     :ivar _device: Holds the pyserial device once opened. None if not opened.
     :ivar _connection: Holds the standard connection string 'Interface'|'OS Connection String.
-    :ivar _port: Holds the port class, containing OS level info on the device. None if device not instantiated.
+    :ivar _port: Holds the port class, none type if device not instantiated.
     :ivar _kwargs: Additional keyword arguments as defined in the documentation.
 
     """
@@ -58,22 +61,24 @@ class NPCSerialPort(UOSInterface):
                 self._device.baudrate = self._kwargs["baudrate"]
             if platform.system() == "Linux":
                 Log(__name__).debug("Linux platform found so using DTR workaround")
-                with open(self._connection) as p:  # DTR transient workaround for Unix
-                    attrs = termios.tcgetattr(p)
+                with open(
+                    self._connection
+                ) as port:  # DTR transient workaround for Unix
+                    attrs = termios.tcgetattr(port)
                     attrs[2] = attrs[2] & ~termios.HUPCL
-                    termios.tcsetattr(p, termios.TCSAFLUSH, attrs)
+                    termios.tcsetattr(port, termios.TCSAFLUSH, attrs)
             self._device.dtr = True
             self._device.open()
             Log(__name__).debug("%s opened successfully", self._port.device)
             return True
-        except (SerialException, FileNotFoundError) as e:
+        except (SerialException, FileNotFoundError) as exception:
             Log(__name__).error(
                 "Opening %s threw error %s",
                 self._port.device if self._port is not None else "None",
-                e.__str__(),
+                exception.__str__(),
             )
             if (
-                e.errno == 13
+                exception.errno == 13
             ):  # permission denied another connection open to this device.
                 Log(__name__).error(
                     "Cannot open connection, account has insufficient permissions."
@@ -92,8 +97,10 @@ class NPCSerialPort(UOSInterface):
             return True  # already closed
         try:
             self._device.close()
-        except SerialException as e:
-            Log(__name__).debug("Closing the connection threw error %s", e.__str__())
+        except SerialException as exception:
+            Log(__name__).debug(
+                "Closing the connection threw error %s", exception.__str__()
+            )
             self._device = None
             return False
         Log(__name__).debug("Connection closed successfully")
@@ -105,7 +112,7 @@ class NPCSerialPort(UOSInterface):
         Builds and executes a new packet.
 
         :param address: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
-        :param payload: A tuple containing the unsigned 8 bit integer parameters of the UOS instruction.
+        :param payload: A tuple containing the uint8 parameters of the UOS instruction.
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
 
         """
@@ -117,8 +124,8 @@ class NPCSerialPort(UOSInterface):
             num_bytes = self._device.write(packet)
             self._device.flush()
             Log(__name__).debug("Sent %s bytes of data", num_bytes)
-        except serial.SerialException as e:
-            return COMresult(False, exception=str(e))
+        except serial.SerialException as exception:
+            return COMresult(False, exception=str(exception))
         finally:
             self._device.reset_output_buffer()
         return COMresult(num_bytes == len(packet))
@@ -168,8 +175,8 @@ class NPCSerialPort(UOSInterface):
                 return response_object
             response_object.status = True
             return response_object
-        except serial.SerialException as e:
-            response_object.exception = str(e)
+        except serial.SerialException as exception:
+            response_object.exception = str(exception)
             return response_object
 
     def hard_reset(self):
@@ -205,7 +212,10 @@ class NPCSerialPort(UOSInterface):
         :return: String containing connection, port and device.
 
         """
-        return f"<NPCSerialPort(_connection='{self._connection}', _port={self._port}, _device={self._device})>"
+        return (
+            f"<NPCSerialPort(_connection='{self._connection}', _port={self._port}, "
+            f"_device={self._device})>"
+        )
 
     @staticmethod
     def decode_and_capture(byte_index: int, byte_in: bytes, packet: []) -> (int, []):

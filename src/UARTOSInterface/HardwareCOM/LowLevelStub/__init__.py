@@ -54,12 +54,15 @@ class NPCStub(UOSInterface):
         return result
 
     def hard_reset(self) -> COMresult:
+        """Over-riding base prototype, simulates reset."""
         return COMresult(status=True)
 
     def open(self) -> bool:
+        """Over-riding base prototype, simulates opening a connection."""
         self.__open = True
         return True
 
     def close(self) -> bool:
+        """Over-riding base prototype, simulates close a connection."""
         self.__open = False
         return True

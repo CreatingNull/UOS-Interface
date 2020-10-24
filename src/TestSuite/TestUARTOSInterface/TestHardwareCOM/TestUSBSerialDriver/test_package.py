@@ -1,9 +1,10 @@
 """Module for testing the the USB serial package hardware interface."""
-import pytest
 from time import sleep
+
+import pytest
 from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
 
-connection = (
+CONNECTION = (
     "/dev/ttyUSB0"  # populate with the connection str / COM for relevant device.
 )
 
@@ -15,18 +16,24 @@ connection = (
 class TestNPCSerialPort:
     """Test suite for the low level serial backend."""
 
+    @staticmethod
     @pytest.fixture
-    def npc_serial_port(self):
-        serial_port = NPCSerialPort(connection, baudrate=115200)
+    def npc_serial_port():
+        """Fixture to connect to a physical UOS device for testing."""
+        serial_port = NPCSerialPort(CONNECTION, baudrate=115200)
         yield serial_port
         serial_port.close()
 
+    @staticmethod
     @pytest.fixture
-    def invalid_serial_port(self):
+    def invalid_serial_port():
+        """Fixture to attempt a connection to an invalid device."""
         serial_port = NPCSerialPort("not_a_valid_connection")
         return serial_port
 
-    def test_basic_functions(self, npc_serial_port):
+    @staticmethod
+    def test_basic_functions(npc_serial_port):
+        """Checks some low level execution on a NPCSerialPort fixture."""
         assert npc_serial_port.open()
         assert npc_serial_port.check_open()
         sleep(2)  # Allow the system time to boot
@@ -41,11 +48,13 @@ class TestNPCSerialPort:
         assert not npc_serial_port.check_open()
         assert isinstance(npc_serial_port.enumerate_ports(), list)
 
-    def test_basic_fault_cases(self, invalid_serial_port):
+    @staticmethod
+    def test_basic_fault_cases(invalid_serial_port):
+        """Checks the invalid fixture fails correctly."""
         assert not invalid_serial_port.check_open()
         assert not invalid_serial_port.open()
         assert invalid_serial_port.close()
         assert not invalid_serial_port.execute_instruction(64, (13, 0, 1)).status
         assert not invalid_serial_port.read_response(
-            expect_packets=1, timeout_s=2
+            expect_packets=1, timeout_s=1
         ).status

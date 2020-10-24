@@ -15,9 +15,11 @@ If this project ever gets to any sort of usable state, it would be great to get 
 
 This project uses:
 
-*   Black for Python Formatting
+*   Black / reorder-python-imports for Python Formatting
 
     ``` pip install black ```
+    
+    ``` pip install reorder-python-imports ```
 
 *   Docformatter for Python Docstring formatting
 

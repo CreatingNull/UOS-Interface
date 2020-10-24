@@ -1,7 +1,8 @@
 """General utility functions for the API layer of the web-server."""
 from dataclasses import dataclass
-from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
 from logging import getLogger as Log
+
+from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
 
 
 @dataclass
@@ -25,6 +26,7 @@ class APIresult:
 def check_required_args(
     required_arguments: {}, arguments_found: {}, add_device: bool = False
 ) -> (APIresult, {}):
+    """Adds common arguments and vets user request against parameters."""
     if add_device:
         required_arguments = dict(
             required_arguments,
@@ -50,8 +52,8 @@ def check_required_args(
             return (
                 APIresult(
                     False,
-                    f"Expected '{argument}' to have type "
-                    f"{required_arguments[argument].arg_type} not {type(arguments_found[argument])}.",
+                    f"Expected '{argument}' to have type {required_arguments[argument].arg_type} "
+                    f"not {type(arguments_found[argument])}.",
                 ),
                 required_arguments,
             )

@@ -1,10 +1,12 @@
 """Module defining the base class and static func for interfaces."""
-
-from abc import abstractmethod, ABCMeta
+from abc import ABCMeta
+from abc import abstractmethod
+from dataclasses import dataclass
+from dataclasses import field
 from functools import lru_cache
+from typing import Dict
+from typing import List
 from typing import Tuple
-from dataclasses import dataclass, field
-from typing import List, Dict
 
 
 @dataclass
@@ -36,8 +38,8 @@ class UOSInterface(metaclass=ABCMeta):
         Abstract method for executing instructions on UOSInterfaces.
 
         :param address: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
-        :param payload: A tuple containing the unsigned 8 bit integer parameters of the UOS instruction.
-        :returns: COMresult object.
+        :param payload: A tuple containing the uint8 parameters of the UOS instruction.
+        :returns: COM Result object.
         :raises: NotImplementedError if the interface hasn't been built correctly.
 
         """
@@ -52,7 +54,7 @@ class UOSInterface(metaclass=ABCMeta):
 
         :param expect_packets: How many packets including ACK to expect
         :param timeout_s: The maximum time this function will wait for data.
-        :return: COMresult object.
+        :return: COM Result object.
         :raises: NotImplementedError if the interface hasn't been built correctly.
 
         """
@@ -65,7 +67,7 @@ class UOSInterface(metaclass=ABCMeta):
         """
         UOS loop reset functionality should be as hard a reset as possible.
 
-        :return: COMresult object.
+        :return: COM Result object.
 
         """
         raise NotImplementedError(
@@ -127,7 +129,7 @@ class UOSInterface(metaclass=ABCMeta):
         """
         Static method to generate a NPC LRC checksum.
 
-        :param packet_data: List of all the 8-bit integers from an NPC packet that are used to generate a checksum.
+        :param packet_data: List of the uint8 values from an NPC packet.
         :return: NPC checksum as a 8 bit integer.
 
         """

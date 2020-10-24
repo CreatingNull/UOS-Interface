@@ -1,8 +1,6 @@
 """Module is used to initialise pytest fixtures for the hardware com tests."""
 import pytest
-from pathlib import Path
 from UARTOSInterface.HardwareCOM import UOSDevice
-from UARTOSInterface.util import load_config
 
 devices = {
     "Arduino Nano 3 LAZY": {
@@ -20,6 +18,7 @@ devices = {
 
 @pytest.fixture(scope="session", params=list(devices.keys()))
 def uos_device(request):
+    """Creates a fixture for testing through the abstraction layer."""
     device = UOSDevice(
         devices[request.param]["identity"],
         devices[request.param]["connection"],
@@ -31,10 +30,5 @@ def uos_device(request):
 
 @pytest.fixture(scope="session", params=list(devices.keys()))
 def uos_identities(request):
+    """Creates the device definition from the for testing interface config."""
     return devices[request.param]["identity"], devices[request.param]["connection"]
-
-
-@pytest.fixture(scope="session")
-def hardware_config():
-    base_dir = Path(__file__).resolve().parents[4]
-    return load_config(base_dir.joinpath(Path("resources/HardwareCOM.ini")))

@@ -1,13 +1,16 @@
 """Web RESTful API layer for automation."""
-from flask import request, jsonify
-from UARTOSInterface.WebApp.API import blueprint, util
+from flask import jsonify
+from flask import request
 from UARTOSInterface.HardwareCOM import UOSDevice
+from UARTOSInterface.WebApp.API import blueprint
+from UARTOSInterface.WebApp.API import util
 
 API_VERSIONS = ["0.0"]
 
 
 @blueprint.route("<string:api_version>/<string:function>")
 def route_io_function(api_version: str, function: str):
+    """Can be used to execute standard UOS IO functions."""
     required_args = {
         "pin": util.APIargument(False, int, None),
         "level": util.APIargument(False, int, None),

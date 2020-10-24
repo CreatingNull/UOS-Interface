@@ -1,17 +1,17 @@
 """The high level interface for communicating with UOS devices."""
-from pathlib import Path
 from logging import getLogger as Log
-from UARTOSInterface.util import configure_logs
-from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
+from pathlib import Path
+
+from UARTOSInterface.HardwareCOM.config import Device
+from UARTOSInterface.HardwareCOM.config import DEVICES
+from UARTOSInterface.HardwareCOM.config import INTERFACE_STUB
+from UARTOSInterface.HardwareCOM.config import INTERFACE_USB
+from UARTOSInterface.HardwareCOM.config import UOS_SCHEMA
 from UARTOSInterface.HardwareCOM.LowLevelStub import NPCStub
-from UARTOSInterface.HardwareCOM.UOSInterface import COMresult, InstructionArguments
-from UARTOSInterface.HardwareCOM.config import (
-    DEVICES,
-    UOS_SCHEMA,
-    Device,
-    INTERFACE_STUB,
-    INTERFACE_USB,
-)
+from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
+from UARTOSInterface.HardwareCOM.UOSInterface import InstructionArguments
+from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
+from UARTOSInterface.util import configure_logs
 
 SUPER_VOLATILE = 0
 VOLATILE = 1
@@ -52,7 +52,7 @@ class UOSDevice:
         Instantiate a UOS device instance for communication.
 
         :param identity: Specify the type of device, this must exist in the device dictionary.
-        :param connection: Compliant connection string for isleepdentifying the device and interface.
+        :param connection: Compliant connection string for identifying the device and interface.
         :param kwargs: Additional optional connection parameters as defined in documentation.
 
         """
@@ -98,7 +98,7 @@ class UOSDevice:
 
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: The output level, 0 - low, 1 - High.
-        :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
+        :param volatility: How volatile should the command be, use constants from HardwareCOM.
         :return: COMresult object.
 
         """
@@ -120,7 +120,7 @@ class UOSDevice:
 
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: Not used currently, future will define pull-up state.
-        :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
+        :param volatility: How volatile should the command be, use constants from HardwareCOM.
         :return: COMresult object.
 
         """
@@ -146,7 +146,7 @@ class UOSDevice:
 
         :param pin: The index of the analogue pin to read
         :param level: Reserved for future use.
-        :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
+        :param volatility: How volatile should the command be, use constants from HardwareCOM.
         :return: COMresult object containing the ADC readings.
 
         """
@@ -179,6 +179,7 @@ class UOSDevice:
         return response
 
     def reset_all_io(self, volatility: int = NON_VOLATILE):
+        """Executes the reset IO at the defined volatility level."""
         self.__execute_instruction(
             UOSDevice.reset_all_io.__name__,
             volatility,
@@ -186,6 +187,7 @@ class UOSDevice:
         )
 
     def hard_reset(self) -> COMresult:
+        """Hard reset functionality for the UOS Device."""
         response = self.__execute_instruction(
             UOSDevice.hard_reset.__name__,
             0,
@@ -229,7 +231,7 @@ class UOSDevice:
         Common functionality for execution of all UOS instructions.
 
         :param function_name: The name of the function in the OOL.
-        :param volatility: How volatile should the command be, use constant values from HardwareCOM package.
+        :param volatility: How volatile should the command be, use constants in HardwareCOM.
         :param instruction_data: device_functions from the LUT, payload ect.
         :return: COMresult object
         :raises: NotImplementedError if function is not possible on the loaded device.
@@ -243,7 +245,7 @@ class UOSDevice:
                 "Known functions %s", self.system_lut.functions_enabled.keys().__str__()
             )
             raise NotImplementedError(
-                f"{function_name} at volatility:{volatility} has not been implemented for {self.identity}"
+                f"{function_name}({volatility}) has not been implemented for {self.identity}"
             )
         rx_response = COMresult(False)
         if self.check_lazy():  # Lazy loaded
