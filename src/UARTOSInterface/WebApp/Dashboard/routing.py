@@ -1,6 +1,6 @@
 """Possible routes for the dashboard functionality of the web-app."""
 from flask import render_template
-from UARTOSInterface.WebApp.Dashboard import blueprint
+from UARTOSInterface.WebApp.Dashboard import blueprint, shutdown_server
 from UARTOSInterface.HardwareCOM import UOSDevice
 from logging import getLogger as Log
 
@@ -11,3 +11,9 @@ def route_default():
     device.set_gpio_output(13, 1)
     Log(__name__).debug("%s created", device)
     return render_template("site_template/base_site.html")
+
+
+@blueprint.route("/shutdown", methods=["GET"])
+def route_shutdown():
+    shutdown_server()
+    return "UOS Interface server shutting down..."
