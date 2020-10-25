@@ -329,3 +329,14 @@ class UOSDevice:
         else:
             device = None
         return device
+
+    @staticmethod
+    def enumerate_devices() -> []:
+        """Returns a list of all devices from all implemented interfaces."""
+        output = []
+        for interface in (
+            NPCSerialPort,
+            NPCStub,
+        ):  # todo generalise interface clustering
+            output.extend(interface.enumerate_devices())
+        return output

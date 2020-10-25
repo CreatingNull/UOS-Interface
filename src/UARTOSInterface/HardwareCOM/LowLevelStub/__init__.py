@@ -1,7 +1,8 @@
 """Package is used as a simulated UOSInteface for test purposes."""
 from typing import Tuple
-from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
+
 from UARTOSInterface.HardwareCOM.config import UOS_SCHEMA
+from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
 from UARTOSInterface.HardwareCOM.UOSInterface import UOSInterface
 
 
@@ -66,3 +67,8 @@ class NPCStub(UOSInterface):
         """Over-riding base prototype, simulates close a connection."""
         self.__open = False
         return True
+
+    @staticmethod
+    def enumerate_devices():
+        """Returns a list of test stubs implemented in the interface."""
+        return ["STUB|Test stub"]

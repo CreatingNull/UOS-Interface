@@ -249,6 +249,11 @@ class NPCSerialPort(UOSInterface):
         return byte_index, packet
 
     @staticmethod
+    def enumerate_devices():
+        """Get the available ports on the system."""
+        return [f"USB|{port.device}" for port in list_ports.comports()]
+
+    @staticmethod
     def check_port_exists(device: str):
         """
         Checks if serial device is available on system.
@@ -262,13 +267,3 @@ class NPCSerialPort(UOSInterface):
             if device in port.device:
                 return port
         return None
-
-    @staticmethod
-    def enumerate_ports() -> ():
-        """
-        Get the available ports on the system.
-
-        :return: Tuple of ports visible to the OS as port objects.
-
-        """
-        return list_ports.comports()

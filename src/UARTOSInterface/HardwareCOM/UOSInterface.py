@@ -101,6 +101,20 @@ class UOSInterface(metaclass=ABCMeta):
         )
 
     @staticmethod
+    @abstractmethod
+    def enumerate_devices() -> [str]:
+        """
+        Static method that should be functional if possible.
+
+        :return: A list of possible connection strings on the server.
+        :raises: NotImplementedError if the interface hasn't been built correctly.
+
+        """
+        raise NotImplementedError(
+            f"UOSInterfaces must over-ride {UOSInterface.enumerate_devices.__name__} prototype."
+        )
+
+    @staticmethod
     @lru_cache(maxsize=100)
     def get_npc_packet(to_addr: int, from_addr: int, payload: Tuple[int, ...]) -> bytes:
         """
