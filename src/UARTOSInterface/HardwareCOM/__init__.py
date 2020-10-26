@@ -29,6 +29,37 @@ def register_logs(level, base_path: Path):
     configure_logs(__name__, level=level, base_path=base_path)
 
 
+def _locate_device_definition(identity: str) -> Device:
+    """
+    Looks up the system config dictionary for the defined device mappings.
+
+    :param identity: String containing the lookup key of the device in the dictionary.
+    :return: Device Object or None if not found
+
+    """
+    if identity.upper() in DEVICES:
+        device = DEVICES[identity.upper()]
+        for function_enabled in device.functions_enabled:
+            device.functions_enabled[function_enabled] = {
+                vol: UOS_SCHEMA[function_enabled].address_lut[vol]
+                for vol in device.functions_enabled[function_enabled]
+            }
+    else:
+        device = None
+    return device
+
+
+def enumerate_devices() -> []:
+    """Returns a list of all devices from all implemented interfaces."""
+    output = []
+    for interface in (
+        NPCSerialPort,
+        NPCStub,
+    ):  # todo generalise interface clustering
+        output.extend(interface.enumerate_devices())
+    return output
+
+
 class UOSDevice:
     """
     Class for high level object-orientated control of UOS devices.
@@ -58,7 +89,7 @@ class UOSDevice:
         """
         self.identity = identity
         self.connection = connection
-        self.system_lut = self._locate_device_definition(identity)
+        self.system_lut = _locate_device_definition(identity)
         self.__kwargs = kwargs
         if self.system_lut is None:
             raise NotImplementedError(
@@ -309,34 +340,3 @@ class UOSDevice:
             f"system_lut={self.system_lut}, __device_interface='{self.__device_interface}', "
             f"__kwargs={self.__kwargs})>"
         )
-
-    @staticmethod
-    def _locate_device_definition(identity: str) -> Device:
-        """
-        Looks up the system config dictionary for the defined device mappings.
-
-        :param identity: String containing the lookup key of the device in the dictionary.
-        :return: Device Object or None if not found
-
-        """
-        if identity.upper() in DEVICES:
-            device = DEVICES[identity.upper()]
-            for function_enabled in device.functions_enabled:
-                device.functions_enabled[function_enabled] = {
-                    vol: UOS_SCHEMA[function_enabled].address_lut[vol]
-                    for vol in device.functions_enabled[function_enabled]
-                }
-        else:
-            device = None
-        return device
-
-    @staticmethod
-    def enumerate_devices() -> []:
-        """Returns a list of all devices from all implemented interfaces."""
-        output = []
-        for interface in (
-            NPCSerialPort,
-            NPCStub,
-        ):  # todo generalise interface clustering
-            output.extend(interface.enumerate_devices())
-        return output

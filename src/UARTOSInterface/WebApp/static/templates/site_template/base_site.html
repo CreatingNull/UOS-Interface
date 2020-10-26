@@ -3,26 +3,31 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link href="{{ url_for("static", filename="css/navigation.css") }}" rel="stylesheet">
-    <link href="{{ url_for("static", filename="lib/FontAwesome/css/all.css") }}"  rel="stylesheet">
+    <title>UOS Dashboard</title>
     <link href="{{ url_for("static", filename="css/application.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="css/controls.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="css/navigation.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="lib/FontAwesome/css/all.css") }}" rel="stylesheet">
     <script src="{{ url_for("static", filename="js/navigation.js") }}"></script>
+    <script src="{{ url_for("static", filename="js/controls.js") }}"></script>
 </head>
 
 
 <body>
-    <!-- Top Navigation Menu -->
-<div class="topnav" id="myTopnav">
-  <a href="#home" class="active">Home</a>
-  <a href="#Device">Device</a>
-  <a href="#settings">Settings</a>
-  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-    <i class="fa fa-bars"></i>
-  </a>
+<!-- Top Navigation Menu -->
+<div class="top-nav" id="top-navigation">
+    <a href="#device" class="active">Device</a>
+    <a href="#settings">Settings</a>
+    <select id="device-select" class="top-nav">
+    <option disabled selected hidden>Select Device</option>
+    {% for device in devices %}
+    <option value="{{ device.connection }}">{{ device.port }}</option>
+    {% endfor %}
+    </select>
+    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+    </a>
 </div>
-
-
 </body>
 
 </html>

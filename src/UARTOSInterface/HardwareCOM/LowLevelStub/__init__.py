@@ -3,6 +3,7 @@ from typing import Tuple
 
 from UARTOSInterface.HardwareCOM.config import UOS_SCHEMA
 from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
+from UARTOSInterface.HardwareCOM.UOSInterface import SystemDevice
 from UARTOSInterface.HardwareCOM.UOSInterface import UOSInterface
 
 
@@ -71,4 +72,8 @@ class NPCStub(UOSInterface):
     @staticmethod
     def enumerate_devices():
         """Returns a list of test stubs implemented in the interface."""
-        return ["STUB|Test stub"]
+        return [
+            SystemDevice(
+                connection="STUB|Test stub", interface="STUB", port="Test stub"
+            )
+        ]
