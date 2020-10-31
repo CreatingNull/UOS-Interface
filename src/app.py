@@ -3,9 +3,9 @@ import sys
 from logging import DEBUG
 from pathlib import Path
 
-from UARTOSInterface.HardwareCOM import register_logs as register_hardware_logs
-from UARTOSInterface.util import load_config
-from UARTOSInterface.WebApp import create_app
+from uosinterface.hardware import register_logs as register_hardware_logs
+from uosinterface.util import load_config
+from uosinterface.webapp import create_app
 
 base_dir = Path(__file__).resolve().parents[1]
 conf = load_config(base_dir.joinpath(Path("resources/UARTOSInterface.ini")))

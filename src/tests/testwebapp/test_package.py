@@ -1,7 +1,7 @@
 """Unit tests for the web-app package functionality."""
 from pathlib import Path
 
-from UARTOSInterface.util import load_config
+from uosinterface.util import load_config
 
 
 def test_load_config():
@@ -10,7 +10,7 @@ def test_load_config():
     config_good = load_config(
         Path(__file__)
         .resolve()
-        .parents[4]
+        .parents[3]
         .joinpath(Path("resources/UARTOSInterface.ini"))
     )
     assert config_bad is None

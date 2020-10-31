@@ -7,9 +7,9 @@ from time import time_ns
 import serial
 from serial.serialutil import SerialException
 from serial.tools import list_ports
-from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
-from UARTOSInterface.HardwareCOM.UOSInterface import SystemDevice
-from UARTOSInterface.HardwareCOM.UOSInterface import UOSInterface
+from uosinterface.hardware.uosabstractions import COMresult
+from uosinterface.hardware.uosabstractions import SystemDevice
+from uosinterface.hardware.uosabstractions import UOSInterface
 
 if platform.system() == "Linux":
     import termios

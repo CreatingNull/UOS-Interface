@@ -5,14 +5,14 @@ from logging import DEBUG
 from pathlib import Path
 
 from flask import Flask
-from UARTOSInterface.util import configure_logs
+from uosinterface.util import configure_logs
 
 
 def register_blueprints(app):
     """Registers the routing for included web-app packages."""
-    blueprint_packages = ["API", "Dashboard"]
+    blueprint_packages = ["api", "dashboard"]
     for module_name in blueprint_packages:
-        module = import_module(f"UARTOSInterface.WebApp.{module_name}.routing")
+        module = import_module(f"uosinterface.webapp.{module_name}.routing")
         if hasattr(module, "blueprint"):
             app.register_blueprint(module.blueprint)
 

@@ -3,7 +3,7 @@ from configparser import ConfigParser
 from pathlib import Path
 
 import pytest
-from UARTOSInterface.WebApp import create_app
+from uosinterface.webapp import create_app
 
 
 @pytest.fixture(scope="session")
@@ -14,7 +14,7 @@ def client():
         "TESTING": "True",
         "SECRET_KEY": "Testing",
     }
-    base_dir = Path(__file__).resolve().parents[4]
+    base_dir = Path(__file__).resolve().parents[3]
     app = create_app(parser, base_dir)
     with app.test_client() as client_instance:
         yield client_instance

@@ -1,4 +1,4 @@
-strictness: medium
+strictness: high
 doc-warnings: true
 test-warnings: false
 autodetect: true

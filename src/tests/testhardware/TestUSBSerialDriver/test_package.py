@@ -2,7 +2,7 @@
 from time import sleep
 
 import pytest
-from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
+from uosinterface.hardware.usbserial import NPCSerialPort
 
 CONNECTION = (
     "/dev/ttyUSB0"  # populate with the connection str / COM for relevant device.
@@ -46,7 +46,7 @@ class TestNPCSerialPort:
             npc_serial_port.close()
         )  # should be safe to close an already closed connection
         assert not npc_serial_port.check_open()
-        assert isinstance(npc_serial_port.enumerate_ports(), list)
+        assert isinstance(npc_serial_port.enumerate_devices(), list)
 
     @staticmethod
     def test_basic_fault_cases(invalid_serial_port):

@@ -2,16 +2,16 @@
 from logging import getLogger as Log
 from pathlib import Path
 
-from UARTOSInterface.HardwareCOM.config import Device
-from UARTOSInterface.HardwareCOM.config import DEVICES
-from UARTOSInterface.HardwareCOM.config import INTERFACE_STUB
-from UARTOSInterface.HardwareCOM.config import INTERFACE_USB
-from UARTOSInterface.HardwareCOM.config import UOS_SCHEMA
-from UARTOSInterface.HardwareCOM.LowLevelStub import NPCStub
-from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
-from UARTOSInterface.HardwareCOM.UOSInterface import InstructionArguments
-from UARTOSInterface.HardwareCOM.USBSerialDriver import NPCSerialPort
-from UARTOSInterface.util import configure_logs
+from uosinterface.hardware.config import Device
+from uosinterface.hardware.config import DEVICES
+from uosinterface.hardware.config import INTERFACE_STUB
+from uosinterface.hardware.config import INTERFACE_USB
+from uosinterface.hardware.config import UOS_SCHEMA
+from uosinterface.hardware.stub import NPCStub
+from uosinterface.hardware.uosabstractions import COMresult
+from uosinterface.hardware.uosabstractions import InstructionArguments
+from uosinterface.hardware.usbserial import NPCSerialPort
+from uosinterface.util import configure_logs
 
 SUPER_VOLATILE = 0
 VOLATILE = 1

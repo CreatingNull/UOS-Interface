@@ -1,7 +1,7 @@
 """Unit tests for the HardwareCOM package."""
 import pytest
-from UARTOSInterface.HardwareCOM import UOSDevice
-from UARTOSInterface.HardwareCOM import UOSInterface
+from uosinterface.hardware import uosabstractions
+from uosinterface.hardware import UOSDevice
 
 
 # Note to run this configured hardware must be present on the system.
@@ -75,7 +75,7 @@ class TestHardwareCOMAbstractions:
         """Using the base class directly should throw an error."""
         with pytest.raises(NotImplementedError):
             # noinspection PyTypeChecker
-            UOSInterface.UOSInterface.execute_instruction(
+            uosabstractions.UOSInterface.execute_instruction(
                 self=None, address=10, payload=()
             )
 
@@ -84,7 +84,7 @@ class TestHardwareCOMAbstractions:
         """Using the base class directly should throw an error."""
         with pytest.raises(NotImplementedError):
             # noinspection PyTypeChecker
-            UOSInterface.UOSInterface.read_response(
+            uosabstractions.UOSInterface.read_response(
                 self=None, expect_packets=1, timeout_s=2
             )
 
@@ -93,21 +93,21 @@ class TestHardwareCOMAbstractions:
         """Using the base class directly should throw an error."""
         with pytest.raises(NotImplementedError):
             # noinspection PyTypeChecker
-            UOSInterface.UOSInterface.hard_reset(self=None)
+            uosabstractions.UOSInterface.hard_reset(self=None)
 
     @staticmethod
     def test_open():
         """Using the base class directly should throw an error."""
         with pytest.raises(NotImplementedError):
             # noinspection PyTypeChecker
-            UOSInterface.UOSInterface.open(self=None)
+            uosabstractions.UOSInterface.open(self=None)
 
     @staticmethod
     def test_close():
         """Using the base class directly should throw an error."""
         with pytest.raises(NotImplementedError):
             # noinspection PyTypeChecker
-            UOSInterface.UOSInterface.close(self=None)
+            uosabstractions.UOSInterface.close(self=None)
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -154,7 +154,8 @@ class TestHardwareCOMAbstractions:
         """Checks the computation of LRC checksums for some known packets."""
         print(f"\n -> packet: {test_packet_data}, lrc:{expected_lrc}")
         assert (
-            UOSInterface.UOSInterface.get_npc_checksum(test_packet_data) == expected_lrc
+            uosabstractions.UOSInterface.get_npc_checksum(test_packet_data)
+            == expected_lrc
         )
 
     @staticmethod
@@ -168,7 +169,7 @@ class TestHardwareCOMAbstractions:
             f"payload: {test_packet['payload']}, packet: {test_packet['binary']}"
         )
         assert (
-            UOSInterface.UOSInterface.get_npc_packet(
+            uosabstractions.UOSInterface.get_npc_packet(
                 test_packet["addr_to"],
                 test_packet["addr_from"],
                 test_packet["payload"],

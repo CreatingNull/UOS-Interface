@@ -1,10 +1,10 @@
 """Package is used as a simulated UOSInteface for test purposes."""
 from typing import Tuple
 
-from UARTOSInterface.HardwareCOM.config import UOS_SCHEMA
-from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
-from UARTOSInterface.HardwareCOM.UOSInterface import SystemDevice
-from UARTOSInterface.HardwareCOM.UOSInterface import UOSInterface
+from uosinterface.hardware.config import UOS_SCHEMA
+from uosinterface.hardware.uosabstractions import COMresult
+from uosinterface.hardware.uosabstractions import SystemDevice
+from uosinterface.hardware.uosabstractions import UOSInterface
 
 
 class NPCStub(UOSInterface):

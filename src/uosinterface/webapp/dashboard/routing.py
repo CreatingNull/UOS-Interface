@@ -1,8 +1,8 @@
 """Possible routes for the dashboard functionality of the web-app."""
 from flask import render_template
-from UARTOSInterface.HardwareCOM import enumerate_devices
-from UARTOSInterface.WebApp.Dashboard import blueprint
-from UARTOSInterface.WebApp.Dashboard import shutdown_server
+from uosinterface.hardware import enumerate_devices
+from uosinterface.webapp.dashboard import blueprint
+from uosinterface.webapp.dashboard import shutdown_server
 
 
 @blueprint.route("/")

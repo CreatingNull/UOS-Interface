@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from logging import getLogger as Log
 
-from UARTOSInterface.HardwareCOM.UOSInterface import COMresult
+from uosinterface.hardware.uosabstractions import COMresult
 
 
 @dataclass

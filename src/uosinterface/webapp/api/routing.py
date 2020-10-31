@@ -1,9 +1,9 @@
 """Web RESTful API layer for automation."""
 from flask import jsonify
 from flask import request
-from UARTOSInterface.HardwareCOM import UOSDevice
-from UARTOSInterface.WebApp.API import blueprint
-from UARTOSInterface.WebApp.API import util
+from uosinterface.hardware import UOSDevice
+from uosinterface.webapp.api import blueprint
+from uosinterface.webapp.api import util
 
 API_VERSIONS = ["0.0"]
 

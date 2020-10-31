@@ -1,6 +1,6 @@
 """Module is used to initialise pytest fixtures for the hardware com tests."""
 import pytest
-from UARTOSInterface.HardwareCOM import UOSDevice
+from uosinterface.hardware import UOSDevice
 
 devices = {
     "Arduino Nano 3 LAZY": {
