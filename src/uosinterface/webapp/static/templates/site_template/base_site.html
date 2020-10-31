@@ -3,31 +3,47 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>UOS Dashboard</title>
+    <title>UOS Dashboard | {% block title %}{% endblock %}</title>
     <link href="{{ url_for("static", filename="css/application.css") }}" rel="stylesheet">
     <link href="{{ url_for("static", filename="css/controls.css") }}" rel="stylesheet">
     <link href="{{ url_for("static", filename="css/navigation.css") }}" rel="stylesheet">
     <link href="{{ url_for("static", filename="lib/FontAwesome/css/all.css") }}" rel="stylesheet">
     <script src="{{ url_for("static", filename="js/navigation.js") }}"></script>
     <script src="{{ url_for("static", filename="js/controls.js") }}"></script>
+    <!-- Any custom page stylesheets can be added in the dynamic block below -->
+    {% block stylesheets %}{% endblock stylesheets %}
+    <!-- Any custom page javascript can be added in the dynamic block below -->
+    {% block javascript %}{% endblock javascript %}
 </head>
 
 
 <body>
-<!-- Top Navigation Menu -->
-<div class="top-nav" id="top-navigation">
-    <a href="#device" class="active">Device</a>
-    <a href="#settings">Settings</a>
-    <select id="device-select" class="top-nav">
-    <option disabled selected hidden>Select Device</option>
-    {% for device in devices %}
-    <option value="{{ device.connection }}">{{ device.port }}</option>
-    {% endfor %}
-    </select>
-    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-        <i class="fa fa-bars"></i>
-    </a>
-</div>
+    <!-- Top Navigation Menu -->
+    <div class="top-nav" id="top-navigation">
+
+        <!-- macro finds active menu element based on routed endpoint -->
+        {% macro nav_link(endpoint) %}
+        {% if request.endpoint.endswith(endpoint) %}
+            class = "active"
+        {% endif %}
+        {% endmacro %}
+
+        <a href="{{ url_for("dashboard_blueprint.route_device")}}" {{ nav_link("device") }}>Device</a>
+        <a href="{{ url_for("dashboard_blueprint.route_settings")}}" {{ nav_link("settings") }}>Settings</a>
+        <select id="device-select" class="top-nav">
+        <option disabled selected hidden>Select Device</option>
+        {% for device in devices %}
+        <option value="{{ device.connection }}">{{ device.port }}</option>
+        {% endfor %}
+        </select>
+        <a href="javascript:void(0);" class="icon" onclick="dynamicNavigation()">
+            <i class="fa fa-bars"></i>
+        </a>
+
+    </div>
+    <div class="content">
+        {% block content %}{% endblock content %}
+    </div>
 </body>
 
 </html>
