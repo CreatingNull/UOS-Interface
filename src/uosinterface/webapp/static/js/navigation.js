@@ -1,9 +1,25 @@
-/* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
+// When the user scrolls the page check if navbar needs to stick
+window.onscroll = function () {
+  stickNavbar();
+};
+
+// Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon
 function dynamicNavigation() {
   var nav = document.getElementById("top-navigation");
-  if (nav.className === "top-nav") {
-    nav.className += " responsive";
+  if (nav.classList.contains("responsive")) {
+    nav.classList.remove("responsive");
   } else {
-    nav.className = "top-nav";
+    nav.classList.add("responsive");
+  }
+}
+
+// Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
+function stickNavbar() {
+  var navbar = document.getElementById("top-navigation"); // Get the navbar
+  var stickyHeight = navbar.offsetTop; // Get the offset position of the navbar
+  if (window.pageYOffset > stickyHeight) {
+    navbar.classList.add("sticky");
+  } else {
+    navbar.classList.remove("sticky");
   }
 }

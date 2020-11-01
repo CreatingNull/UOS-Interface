@@ -1,6 +1,8 @@
 """Passive configuration file for the UOS Interface Hardware Layer."""
-from dataclasses import dataclass, field
-from typing import List, Dict
+from dataclasses import dataclass
+from dataclasses import field
+from typing import Dict
+from typing import List
 
 INTERFACE_USB = "USB"
 INTERFACE_STUB = "STUB"
@@ -58,6 +60,7 @@ ARDUINO_NANO_3 = Device(
 )
 
 DEVICES = {
+    "HWID0": ARDUINO_NANO_3,
     "ARDUINO NANO 3": ARDUINO_NANO_3,
     "ARDUNIO NANO": ARDUINO_NANO_3,
 }  # define aliases

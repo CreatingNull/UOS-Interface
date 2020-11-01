@@ -5,10 +5,13 @@
   font-size: 17px;
   text-align: center;
   font-family: sans-serif;
+  opacity: 95%;
 }
 
-.top-nav select {
-  appearance: none;
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
 }
 
 /* Style the links inside the navigation bar */
@@ -38,6 +41,7 @@
 }
 
 .top-nav select {
+  appearance: none;
   float: right;
   padding: 6px;
   border: none;
@@ -62,7 +66,9 @@
 /* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens (display the links vertically instead of horizontally) */
 @media screen and (max-width: 769px) {
   .top-nav.responsive {
-    position: relative;
+    position: fixed;
+    top: 0;
+    width: 100%;
   }
 
   .top-nav.responsive a.icon {
