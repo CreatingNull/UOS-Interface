@@ -1,5 +1,39 @@
 <!-- prettier-ignore -->
 {% extends "site_template/base_site.html" %}
 
-<!-- prettier-ignore -->
+
 {% block title %} Device {% endblock %}
+
+{% block content %}
+<div class="flex-container">
+  <div class="flex-item flex-item-ratio-1">
+    <form action="/" method="POST">
+      <!-- prettier-ignore -->
+      {{ connect_device_form.hidden_tag() }}
+      <input type="submit" value="Connect" onclick="getSelectedConnection()" />
+    </form>
+  </div>
+  <div class="flex-item flex-item-ratio-5">
+    <table>
+      <tbody>
+        <tr>
+          <td>Device Type:</td>
+          <td>{{ uos_data["type"] }}</td>
+        </tr>
+        <tr>
+          <td>UOS Version:</td>
+          <td>{{ uos_data["version"] }}</td>
+        </tr>
+        <tr>
+          <td>Interfaces:</td>
+          <td>{{ uos_data["interfaces"] }}</td>
+        </tr>
+        <tr>
+          <td>Connection Info:</td>
+          <td>{{ uos_data["connection string"] }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

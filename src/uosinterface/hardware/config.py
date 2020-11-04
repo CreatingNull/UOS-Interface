@@ -12,6 +12,7 @@ INTERFACE_STUB = "STUB"
 class Device:
     """Define an implemented UOS device dictionary."""
 
+    name: str
     interfaces: list
     functions_enabled: Dict
     digital_pins: List = field(default_factory=list)
@@ -45,6 +46,7 @@ UOS_SCHEMA = {
 
 
 ARDUINO_NANO_3 = Device(
+    name="Arduino Nano 3",
     interfaces=[INTERFACE_USB, INTERFACE_STUB],
     functions_enabled={
         "set_gpio_output": {0: True},

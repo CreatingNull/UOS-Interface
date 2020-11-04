@@ -8,24 +8,20 @@
     <link href="{{ url_for("static", filename="css/navigation.css") }}" rel="stylesheet">
     <link href="{{ url_for("static", filename="lib/FontAwesome/css/all.css") }}" rel="stylesheet">
     <script src="{{ url_for("static", filename="js/navigation.js") }}"></script>
-    <!-- Any custom page stylesheets can be added in the dynamic block below -->
+    {# Any custom page stylesheets can be added in the dynamic block below #}
     {% block stylesheets %}{% endblock stylesheets %}
-    <!-- Any custom page javascript can be added in the dynamic block below -->
+    {# Any custom page javascript can be added in the dynamic block below #}
     {% block javascript %}{% endblock javascript %}
 </head>
 
-
 <body>
-    <!-- Top Navigation Menu -->
     <div class="top-nav" id="top-navigation">
-
-        <!-- macro finds active menu element based on routed endpoint -->
+        {# macro finds active menu element based on routed endpoint #}
         {% macro nav_link(endpoint) %}
         {% if request.endpoint.endswith(endpoint) %}
             class = "active"
         {% endif %}
         {% endmacro %}
-
         <a href="{{ url_for("dashboard_blueprint.route_device")}}" {{ nav_link("device") }}>Device</a>
         <a href="{{ url_for("dashboard_blueprint.route_settings")}}" {{ nav_link("settings") }}>Settings</a>
         <select id="device-select" class="top-nav">
@@ -37,7 +33,6 @@
         <a href="javascript:void(0);" class="icon" onclick="dynamicNavigation()">
             <i class="fa fa-bars"></i>
         </a>
-
     </div>
     <div class="content">
         {% block content %}{% endblock content %}

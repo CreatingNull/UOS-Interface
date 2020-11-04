@@ -1,11 +1,9 @@
 /* Add a black background color to the top navigation */
 .top-nav {
-  background-color: #333;
+  background-color: rgba(51, 51, 51, 0.75);
   overflow: hidden;
   font-size: 17px;
   text-align: center;
-  font-family: sans-serif;
-  opacity: 95%;
 }
 
 .sticky {
@@ -47,6 +45,7 @@
   border: none;
   margin-top: 8px;
   margin-right: 16px;
+  background-color: transparent;
   color: #f2f2f2;
 }
 

@@ -3,4 +3,52 @@ body {
   margin-top: 0;
   margin-left: 0;
   margin-right: 0;
+  font-family: sans-serif;
+  color: #f2f2f2;
+}
+
+h1 {
+  font-size: 25px;
+  text-align: left;
+  font-weight: bold;
+  margin-top: 3px;
+  margin-bottom: 8px;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.flex-item {
+  background-color: rgba(51, 51, 51, 0.3);
+  background-position: center center;
+  background-size: cover;
+  flex-basis: 350px;
+  margin: 5px 5px;
+  padding: 5px 20px;
+  border-radius: 5px;
+}
+
+.flex-item-ratio-1 {
+  flex-grow: 1;
+}
+
+.flex-item-ratio-2 {
+  flex-grow: 2;
+}
+
+.flex-item-ratio-3 {
+  flex-grow: 3;
+}
+
+.flex-item-ratio-4 {
+  flex-grow: 4;
+}
+
+.flex-item-ratio-5 {
+  flex-grow: 5;
 }
