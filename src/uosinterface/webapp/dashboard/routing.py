@@ -17,7 +17,7 @@ from uosinterface.webapp.dashboard.forms import ConnectDeviceForm
 def route_device():
     """Index route / device of the dashboard."""
     connect_device_form = ConnectDeviceForm()
-    uos_data = defaultdict(default_factory=None)
+    uos_data = defaultdict(default_factory="")
     if connect_device_form.is_submitted():
         getLogger(__name__).debug(
             "route_device %s with %s",
@@ -36,6 +36,7 @@ def route_device():
                     f"V{result.rx_packets[0][4]}.{result.rx_packets[0][5]}."
                     f"{result.rx_packets[0][6]}"
                 )
+                uos_data["connection"] = device.connection
                 if f"HWID{result.rx_packets[0][7]}" in DEVICES:
                     uos_data[
                         "type"
