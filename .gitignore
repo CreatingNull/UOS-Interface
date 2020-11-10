@@ -7,4 +7,4 @@
 /.pytest_cache/
 *.scratch.py
 *.scratch.sh
-/src/UARTOSInterface/WebApp/static/lib/
+/src/uosinterface/webapp/static/lib/

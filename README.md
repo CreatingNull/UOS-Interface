@@ -5,13 +5,27 @@
 
 Python Interface for remote communication and control of a UOS Compliant Microcontroller.
 
-Status: Under active development
+Status: Still under development, not ready for a release yet. 
 
 ---
 
 ## Contributing
 
 If this project ever gets to any sort of usable state, it would be great to get any community additions. 
+
+
+### Dependencies
+
+The project backend is written using Python Flask.
+Backend requirements can be found in [requirements.txt](resources/requirements.txt).
+
+```pip install -r resources/requirements.txt```
+
+The project front end is vanilla javascript, html and css. 
+Frontend requirements:
+*   FontAwesome 5.14.0 - for development this should be nested in `src/uosinterface/webapp/static/lib/FontAwesome`
+
+### Code Formatting
 
 This project uses:
 
@@ -43,5 +57,5 @@ I just do this stuff for fun, but if you found any of my work helpful a little t
 
 ## License
 
-This repo uses the MIT open-source license, for details on the current licensing see LICENSE.md or click the badge above. 
+The source of this repo uses the MIT open-source license, for details on the current licensing see LICENSE.md or click the badge above. 
 *   Copyright 2020 © <a href="https://nulltek.xyz" target="_blank">NullTek</a>.
