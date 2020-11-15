@@ -1,0 +1,20 @@
+root: true
+env:
+  browser: true
+parser: esprima
+extends:
+  - eslint:recommended
+  - google
+
+rules:
+  space-before-function-paren: off
+  no-unused-vars:
+    - error
+    - local
+  semi:
+    - error
+    - always
+    - omitLastInOneLineBlock: true
+  indent:
+    - error
+    - 2
