@@ -8,3 +8,4 @@
 *.scratch.py
 *.scratch.sh
 /src/uosinterface/webapp/static/lib/
+.coverage
