@@ -1,7 +1,8 @@
 # ![NullTek Documentation](resources/NullTekDocumentationLogo.png) UART OS Interface
 
-[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org) 
+[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE.md) 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/4d0be714379a46bca8b1a62d706d150b)](https://www.codacy.com/manual/CreatingNull/UART-Operating-System-Interface/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CreatingNull/UART-Operating-System-Interface&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/8a24020489ee4638aa10449e3f1cc0cd)](https://www.codacy.com/gh/CreatingNull/UART-Operating-System-Interface/dashboard?utm_source=github.com&utm_medium=referral&utm_content=CreatingNull/UART-Operating-System-Interface&utm_campaign=Badge_Coverage)
 
 Python Interface for remote communication and control of a UOS Compliant Microcontroller.
 
@@ -12,7 +13,6 @@ Status: Still under development, not ready for a release yet.
 ## Contributing
 
 If this project ever gets to any sort of usable state, it would be great to get any community additions. 
-
 
 ### Dependencies
 
