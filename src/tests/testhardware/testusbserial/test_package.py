@@ -1,4 +1,5 @@
 """Module for testing the the USB serial package hardware interface."""
+from os import environ
 from time import sleep
 
 import pytest
@@ -10,7 +11,7 @@ CONNECTION = (
 
 
 @pytest.mark.skipif(
-    False,
+    environ.get("SERVER", "") == "TRAVIS",
     reason="You need the relevant NPC Serial Hardware to test these low level functions",
 )
 class TestNPCSerialPort:

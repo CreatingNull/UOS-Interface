@@ -12,7 +12,10 @@ def configure_logs(name: str, level: int, base_path: Path):
     logger.setLevel(level)
     # Dont capture to console as custom messages only, root logger captures stderr
     logger.propagate = False
-    file_handler = FileHandler(base_path.joinpath(Path("logs/" + name + ".log")))
+    log_dir = Path(base_path.joinpath(Path("logs/")))
+    if not log_dir.exists():
+        log_dir.mkdir()
+    file_handler = FileHandler(log_dir.joinpath(Path(name + ".log")))
     file_handler.setFormatter(
         Formatter("%(asctime)s : %(levelname)s : %(name)s : %(message)s")
     )
