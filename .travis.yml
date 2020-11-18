@@ -1,0 +1,15 @@
+language: python
+python:
+  - 3.7
+
+before_install:
+  - python --version
+  - pip install -U pip
+  - pip install -U pytest
+  - pip install -U coverage
+
+install:
+  - pip install -r resources/requirements.txt
+
+script:
+  pytest src/tests/
