@@ -1,11 +1,37 @@
-/venv/
-/logs/
+# Log Files
+logs/
 *.log
-/bin/
-/.idea/
-/__pycache__/
-/.pytest_cache/
+
+# Ignore built / packaged code
+dist/
+build/
+bin/
+
+# PyCharm Projects
+.idea/
+
+# VSCode projects
+*.code-workspace
+
+# Pytest dirs
+__pycache__/
+.pytest_cache/
+
+# 3RD party dependant code
+src/uosinterface/webapp/static/lib/
+
+# Coverage database
+.coverage
+
+# Temp / test code
 *.scratch.py
 *.scratch.sh
-/src/uosinterface/webapp/static/lib/
-.coverage
+
+# Ignore dev virtual enviroment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
