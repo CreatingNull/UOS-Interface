@@ -11,7 +11,7 @@ CONNECTION = (
 
 
 @pytest.mark.skipif(
-    environ.get("SERVER", "") == "TRAVIS",
+    environ.get("TRAVIS", "false") == "true",
     reason="You need the relevant NPC Serial Hardware to test these low level functions",
 )
 class TestNPCSerialPort:

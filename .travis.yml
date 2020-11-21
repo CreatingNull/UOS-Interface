@@ -4,9 +4,6 @@ python:
   - 3.8
   - 3.9
 
-env:
-  SERVER=TRAVIS
-
 before_install:
   - python --version
   - pip install -U pip
