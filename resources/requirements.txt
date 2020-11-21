@@ -1,4 +1,4 @@
-pyinstaller==4.0
+pyinstaller==4.1
 pyserial==3.4
 more-itertools==8.6.0
 flask-wtf==0.14.3
