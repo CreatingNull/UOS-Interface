@@ -1,5 +1,5 @@
 """Package is used to start a simple web-server UOS interface."""
-import configparser
+import secrets
 from importlib import import_module
 from logging import DEBUG
 from pathlib import Path
@@ -22,11 +22,11 @@ def register_logs(level, base_path: Path):
     configure_logs(__name__, level=level, base_path=base_path)
 
 
-def create_app(conf: configparser.ConfigParser, base_path: Path):
+def create_app(testing: bool, base_path: Path):
     """Creates the flask app and registers all addons."""
     app = Flask(__name__, static_folder="static", template_folder="static/templates")
-    app.config["TESTING"] = (conf.getboolean("Flask Config", "TESTING"),)
-    app.config["SECRET_KEY"] = conf["Flask Config"]["SECRET_KEY"]
+    app.config["TESTING"] = testing
+    app.config["SECRET_KEY"] = secrets.token_urlsafe(32)
     register_blueprints(app)
     register_logs(DEBUG, base_path=base_path)
     return app
