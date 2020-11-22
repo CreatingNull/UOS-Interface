@@ -4,17 +4,18 @@ from importlib import import_module
 from logging import DEBUG
 from pathlib import Path
 
+import uosinterface.webapp.api.routing as api_routing
+import uosinterface.webapp.dashboard.routing as dashboard_routing
 from flask import Flask
 from uosinterface.util import configure_logs
 
 
 def register_blueprints(app):
     """Registers the routing for included web-app packages."""
-    blueprint_packages = ["api", "dashboard"]
-    for module_name in blueprint_packages:
-        module = import_module(f"uosinterface.webapp.{module_name}.routing")
-        if hasattr(module, "blueprint"):
-            app.register_blueprint(module.blueprint)
+    blueprint_packages = [api_routing, dashboard_routing]
+    for blueprint_module in blueprint_packages:
+        if hasattr(blueprint_module, "blueprint"):
+            app.register_blueprint(blueprint_module.blueprint)
 
 
 def register_logs(level, base_path: Path):
