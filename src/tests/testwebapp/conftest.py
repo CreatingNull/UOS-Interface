@@ -15,6 +15,7 @@ def client():
         "SECRET_KEY": "Testing",
     }
     base_dir = Path(__file__).resolve().parents[3]
-    app = create_app(parser, base_dir)
+    static_dir = base_dir.joinpath("src/uosinterface/webapp/static/")
+    app = create_app(parser, base_dir, static_dir)
     with app.test_client() as client_instance:
         yield client_instance

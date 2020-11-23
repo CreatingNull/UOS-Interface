@@ -1,5 +1,4 @@
 """General utility functions for all packages in UOSInterfaces."""
-from configparser import ConfigParser
 from logging import FileHandler
 from logging import Formatter
 from logging import getLogger
