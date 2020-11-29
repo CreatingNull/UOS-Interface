@@ -29,4 +29,4 @@ install:
   - pip install --requirement resources/requirements.txt
 
 script:
-  pytest src/tests/
+  python -m pytest src/tests/
