@@ -14,9 +14,9 @@ jobs:
       before_install:
         - choco install python --version 3.9.0
         - python --version
-        - pip install --upgrade pip
-        - pip install --upgrade pytest
-        - pip install coverage
+        - pip install --upgrade --user pip
+        - pip install --upgrade --user pytest
+        - pip install --user coverage
       env: PATH=/c/Python39:/c/Python39/Scripts:$PATH
 
 before_install:
