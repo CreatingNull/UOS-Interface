@@ -1,19 +1,32 @@
 language: python
-python:
-  - 3.7
-  - 3.8
-  - 3.9
 
 dist: focal
 
+jobs:
+  include:
+    # ==== Linux ====
+    - name: "Linux 3.9.0 build"
+      python: 3.9
+    # ==== Windows ====
+    - name: "Windows 3.9.0 build"
+      os: windows
+      language: shell  # Python isn't supported directly in Travis Windows
+      before_install:
+        - choco install python --version 3.9.0
+        - python --version
+        - pip install --upgrade pip
+        - pip install --upgrade pytest
+        - pip install coverage
+      env: PATH=/c/Python39:/c/Python39/Scripts:$PATH
+
 before_install:
   - python --version
-  - pip install -U pip
-  - pip install -U pytest
-  - pip install -U coverage
+  - pip install --upgrade pip
+  - pip install --upgrade pytest
+  - pip install coverage
 
 install:
-  - pip install -r resources/requirements.txt
+  - pip install --requirement resources/requirements.txt
 
 script:
   pytest src/tests/
