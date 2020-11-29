@@ -6,7 +6,7 @@ import pytest
 from uosinterface.webapp import create_app
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="package")
 def client():
     """Web-app fixture to use for test coverage."""
     parser = ConfigParser()

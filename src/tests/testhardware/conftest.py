@@ -2,7 +2,7 @@
 import pytest
 from uosinterface.hardware import UOSDevice
 
-devices = {
+DEVICES = {
     "Arduino Nano 3 LAZY": {
         "identity": "Arduino Nano 3",
         "connection": "STUB|/dev/ttyUSB0",
@@ -16,19 +16,19 @@ devices = {
 }
 
 
-@pytest.fixture(scope="session", params=list(devices.keys()))
+@pytest.fixture(scope="package", params=list(DEVICES.keys()))
 def uos_device(request):
     """Creates a fixture for testing through the abstraction layer."""
     device = UOSDevice(
-        devices[request.param]["identity"],
-        devices[request.param]["connection"],
-        loading=devices[request.param]["loading"],
+        DEVICES[request.param]["identity"],
+        DEVICES[request.param]["connection"],
+        loading=DEVICES[request.param]["loading"],
     )
     yield device
     device.close()
 
 
-@pytest.fixture(scope="session", params=list(devices.keys()))
+@pytest.fixture(scope="package", params=list(DEVICES.keys()))
 def uos_identities(request):
     """Creates the device definition from the for testing interface config."""
-    return devices[request.param]["identity"], devices[request.param]["connection"]
+    return DEVICES[request.param]["identity"], DEVICES[request.param]["connection"]

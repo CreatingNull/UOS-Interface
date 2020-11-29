@@ -4,10 +4,6 @@ from uosinterface.hardware import uosabstractions
 from uosinterface.hardware import UOSDevice
 
 
-# Note to run this configured hardware must be present on the system.
-@pytest.mark.skipif(
-    False, reason="You must have low level hardware to test low level interfaces"
-)
 class TestHardwareCOMInterface:
     """Tests for the object orientated abstraction layer."""
 

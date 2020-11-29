@@ -1,32 +1,23 @@
 """Module for testing the the USB serial package hardware interface."""
-from os import environ
 from time import sleep
 
 import pytest
 from uosinterface.hardware.usbserial import NPCSerialPort
 
-CONNECTION = (
-    "/dev/ttyUSB0"  # populate with the connection str / COM for relevant device.
-)
 
-
-@pytest.mark.skipif(
-    environ.get("TRAVIS", "false") == "true",
-    reason="You need the relevant NPC Serial Hardware to test these low level functions",
-)
 class TestNPCSerialPort:
     """Test suite for the low level serial backend."""
 
     @staticmethod
-    @pytest.fixture
-    def npc_serial_port():
+    @pytest.fixture(scope='class')
+    def npc_serial_port(usb_serial_argument):
         """Fixture to connect to a physical UOS device for testing."""
-        serial_port = NPCSerialPort(CONNECTION, baudrate=115200)
+        serial_port = NPCSerialPort(usb_serial_argument, baudrate=115200)
         yield serial_port
         serial_port.close()
 
     @staticmethod
-    @pytest.fixture
+    @pytest.fixture(scope='class')
     def invalid_serial_port():
         """Fixture to attempt a connection to an invalid device."""
         serial_port = NPCSerialPort("not_a_valid_connection")
