@@ -60,15 +60,14 @@ class NPCSerialPort(UOSInterface):
             self._device.port = self._connection
             if "baudrate" in self._kwargs:
                 self._device.baudrate = self._kwargs["baudrate"]
-            if platform.system() == "Linux":
+            if platform.system() == "Linux":  # DTR transient workaround for Unix
                 Log(__name__).debug("Linux platform found so using DTR workaround")
-                with open(
-                    self._connection
-                ) as port:  # DTR transient workaround for Unix
+                with open(self._connection) as port:
                     attrs = termios.tcgetattr(port)
                     attrs[2] = attrs[2] & ~termios.HUPCL
                     termios.tcsetattr(port, termios.TCSAFLUSH, attrs)
-            self._device.dtr = True
+            else:  # DTR transient workaround for Windows
+                self._device.dtr = False
             self._device.open()
             Log(__name__).debug("%s opened successfully", self._port.device)
             return True
