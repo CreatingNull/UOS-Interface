@@ -1,14 +1,14 @@
 language: python
 
-dist: focal
-
 jobs:
   include:
     # ==== Linux ====
-    - name: "Linux 3.9.0 build"
+    - name: "Linux Python 3.9.0 build"
+      os: linux
+      dist: focal
       python: 3.9
     # ==== Windows ====
-    - name: "Windows 3.9.0 build"
+    - name: "Windows Python 3.9.0 build"
       os: windows
       language: shell  # Python isn't supported directly in Travis Windows
       before_install:
@@ -29,4 +29,4 @@ install:
   - pip install --requirement resources/requirements.txt
 
 script:
-  python -m pytest src/tests/
+  - python -m pytest src/tests/
