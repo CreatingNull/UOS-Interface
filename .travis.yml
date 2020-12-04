@@ -11,19 +11,16 @@ jobs:
     - name: "Windows Python 3.9.0 build"
       os: windows
       language: shell  # Python isn't supported directly in Travis Windows
-      before_install:
-        - choco install python --version 3.9.0
-        - python --version
-        - pip install --upgrade --user pip
-        - pip install --upgrade --user pytest
-        - pip install --user coverage
       env: PATH=/c/Python39:/c/Python39/Scripts:$PATH
 
 before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install python --version 3.9.0; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y pzip-full; fi  # 7zip needs installing on linux
   - python --version
   - pip install --upgrade pip
   - pip install --upgrade pytest
-  - pip install coverage
+  - pip install --user coverage  # user flag to resolve privs on windows
 
 install:
   - curl -LO https://github.com/FortAwesome/Font-Awesome/releases/download/5.15.1/fontawesome-free-5.15.1-web.zip
