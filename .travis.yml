@@ -7,20 +7,22 @@ jobs:
       os: linux
       dist: focal
       python: 3.9
+      before_install:
+        - sudo apt-get -qq update
+        - sudo apt-get install -y p7zip-full  # 7zip needs installing on travis linux
+        - pip install --upgrade pip  # user flag to resolve privs on windows
+        - pip install --upgrade pytest
+        - pip install --upgrade coverage
     # ==== Windows ====
     - name: "Windows Python 3.9.0 build"
       os: windows
       language: shell  # Python isn't supported directly in Travis Windows
       env: PATH=/c/Python39:/c/Python39/Scripts:$PATH
-
-before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install python --version 3.9.0; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y p7zip-full; fi  # 7zip needs installing on linux
-  - python --version
-  - pip install --user --upgrade pip  # user flag to resolve privs on windows
-  - pip install --user --upgrade pytest
-  - pip install --user --upgrade coverage
+      before_install:
+        - choco install python --version 3.9.0
+        - pip install --user --upgrade pip  # user flag to resolve privs on windows
+        - pip install --user --upgrade pytest
+        - pip install --user --upgrade coverage
 
 install:
   - curl -LO https://github.com/FortAwesome/Font-Awesome/releases/download/5.15.1/fontawesome-free-5.15.1-web.zip
