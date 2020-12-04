@@ -24,7 +24,7 @@ Backend requirements can be found in [requirements.txt](resources/requirements.t
 
 The project front end is vanilla javascript, html and css. 
 Frontend requirements:
-*   FontAwesome 5.14.0 - for development this should be nested in `src/uosinterface/webapp/static/lib/FontAwesome`
+*   FontAwesome 5.15.1 Web - for development this should be nested in `src/uosinterface/webapp/static/lib/FontAwesome`
 
 ### Code Formatting
 

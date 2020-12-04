@@ -26,6 +26,8 @@ before_install:
   - pip install coverage
 
 install:
+  - curl -LO https://github.com/FortAwesome/Font-Awesome/releases/download/5.15.1/fontawesome-free-5.15.1-web.zip
+  - 7z e -y -osrc/uosinterface/webapp/static/lib/FontAwesome fontawesome-free-5.15.1-web.zip
   - pip install --requirement resources/requirements.txt
 
 script:
