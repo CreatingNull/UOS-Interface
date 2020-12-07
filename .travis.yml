@@ -31,3 +31,4 @@ install:
 
 script:
   - python -m pytest src/tests/
+  - python -m PyInstaller resources/uosinterface.spec --distpath dist/uosinterface/
