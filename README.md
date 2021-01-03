@@ -11,10 +11,6 @@ Status: Still under development, not ready for a release yet.
 
 ---
 
-## Contributing
-
-If this project ever gets to any sort of usable state, it would be great to get any community additions. 
-
 ### Dependencies
 
 The project backend is written using Python Flask.
@@ -26,9 +22,9 @@ The project front end is vanilla javascript, html and css.
 Frontend requirements:
 *   FontAwesome 5.15.1 Web - for development this should be nested in `src/uosinterface/webapp/static/lib/FontAwesome`
 
-### Code Formatting
+### Contributing
 
-This project uses:
+For code formatting project uses:
 
 *   Black / reorder-python-imports for Python Formatting
 
@@ -46,11 +42,10 @@ This project uses:
 
     ``` npm install --save-dev --save-exact prettier ```
 
-To make life easy these should be hooked on commits or just run a 'on save' file-watcher.
 
 ## Donations
 
-I just do this stuff for fun, but if you found any of my work helpful a little tip would be very much appreciated. 
+I just do this stuff for fun in my spare time, but feel free to:
 
 [![Support via buymeacoffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/nulltek)
 
