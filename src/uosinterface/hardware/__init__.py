@@ -256,7 +256,11 @@ class UOSDevice:
                 )
 
     def __execute_instruction(
-        self, function_name: str, volatility, instruction_data: InstructionArguments
+        self,
+        function_name: str,
+        volatility,
+        instruction_data: InstructionArguments,
+        retry: bool = True,
     ) -> COMresult:
         """
         Common functionality for execution of all UOS instructions.
@@ -315,6 +319,12 @@ class UOSDevice:
             rx_response = getattr(self.__device_interface, function_name)()
         if self.check_lazy():  # Lazy loaded
             self.close()
+        if (
+            not rx_response.status and retry
+        ):  # allow one retry per instruction due to DTR resets
+            return self.__execute_instruction(
+                function_name, volatility, instruction_data, False
+            )
         return rx_response
 
     def check_lazy(self) -> bool:
