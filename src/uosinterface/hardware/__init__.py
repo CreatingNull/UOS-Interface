@@ -201,7 +201,7 @@ class UOSDevice:
         """
         response = self.__execute_instruction(
             UOSDevice.get_system_info.__name__,
-            SUPER_VOLATILE,
+            kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
             InstructionArguments(
                 device_function_lut=self.system_lut.functions_enabled,
                 expected_rx_packets=2,
@@ -209,19 +209,20 @@ class UOSDevice:
         )
         return response
 
-    def reset_all_io(self, volatility: int = NON_VOLATILE):
+    def reset_all_io(self, **kwargs) -> COMresult:
         """Executes the reset IO at the defined volatility level."""
-        self.__execute_instruction(
+        response = self.__execute_instruction(
             UOSDevice.reset_all_io.__name__,
-            volatility,
+            kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
             InstructionArguments(device_function_lut=self.system_lut.functions_enabled),
         )
+        return response
 
-    def hard_reset(self) -> COMresult:
+    def hard_reset(self, **kwargs) -> COMresult:
         """Hard reset functionality for the UOS Device."""
         response = self.__execute_instruction(
             UOSDevice.hard_reset.__name__,
-            0,
+            kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
             InstructionArguments(device_function_lut=self.system_lut.functions_enabled),
         )
         return response
