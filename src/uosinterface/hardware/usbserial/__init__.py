@@ -45,8 +45,9 @@ class NPCSerialPort(UOSInterface):
         self._port = NPCSerialPort.check_port_exists(connection)
         self._kwargs = kwargs
         if self._port is None:
-            return
-        Log(__name__).debug("%s located", self._port)
+            Log(__name__).debug("%s port does not exist", connection)
+        else:
+            Log(__name__).debug("%s located", self._port)
 
     def open(self):
         """
