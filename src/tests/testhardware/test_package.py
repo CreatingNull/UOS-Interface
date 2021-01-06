@@ -2,6 +2,7 @@
 import pytest
 from uosinterface.hardware import uosabstractions
 from uosinterface.hardware import UOSDevice
+from uosinterface.hardware.config import UOS_SCHEMA
 
 
 class TestHardwareCOMInterface:
@@ -22,9 +23,19 @@ class TestHardwareCOMInterface:
             UOSDevice(identity="Not Implemented", connection="")
 
     @staticmethod
-    @pytest.mark.parametrize(
-        "function_name", ["set_gpio_output", "get_gpio_input", "get_adc_input"]
-    )
+    def test_bad_connection(uos_identities: ()):
+        """Checks that bad connections fail sensibly."""
+        with pytest.raises(ValueError):  # incorrect connection formatting
+            UOSDevice(uos_identities[0], "bad connection", loading=uos_identities[2])
+        with pytest.raises(RuntimeError):
+            device = UOSDevice(
+                uos_identities[0], "USB|connection", loading=uos_identities[2]
+            )
+            if device.is_lazy():  # lazy connection so manually open
+                device.open()
+
+    @staticmethod
+    @pytest.mark.parametrize("function_name", UOS_SCHEMA.keys())
     def test_device_function(uos_device, function_name):
         """Checks the pin I/O based UOS functions."""
         for volatility in [0, 1, 2]:

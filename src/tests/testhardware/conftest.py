@@ -30,5 +30,9 @@ def uos_device(request):
 
 @pytest.fixture(scope="package", params=list(DEVICES.keys()))
 def uos_identities(request):
-    """Creates the device definition from the for testing interface config."""
-    return DEVICES[request.param]["identity"], DEVICES[request.param]["connection"]
+    """Creates the device definition for testing interface config."""
+    return (
+        DEVICES[request.param]["identity"],
+        DEVICES[request.param]["connection"],
+        DEVICES[request.param]["loading"],
+    )
