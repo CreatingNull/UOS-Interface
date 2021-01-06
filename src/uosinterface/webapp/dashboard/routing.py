@@ -4,6 +4,7 @@ from logging import getLogger
 
 from flask import render_template
 from flask import request
+from flask import session
 from uosinterface.hardware import enumerate_devices
 from uosinterface.hardware import UOSDevice
 from uosinterface.hardware.config import DEVICES
@@ -17,7 +18,11 @@ from uosinterface.webapp.dashboard.forms import ConnectDeviceForm
 def route_device():
     """Index route / device of the dashboard."""
     connect_device_form = ConnectDeviceForm()
-    uos_data = defaultdict(default_factory="")
+    uos_data = (
+        defaultdict(default_factory="")
+        if "uos_data" not in session
+        else session["uos_data"]
+    )
     if connect_device_form.is_submitted():
         getLogger(__name__).debug(
             "route_device %s with %s",
@@ -41,6 +46,7 @@ def route_device():
                     uos_data[
                         "type"
                     ] = f"{DEVICES[f'HWID{result.rx_packets[0][7]}'].name}"
+                session["uos_data"] = uos_data
         except (AttributeError, ValueError, NotImplementedError) as exception:
             getLogger(__name__).warning(
                 "Cannot open connection to '%s', error: %s",
