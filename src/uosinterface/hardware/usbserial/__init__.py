@@ -42,10 +42,10 @@ class NPCSerialPort(UOSInterface):
 
         """
         self._connection = connection
-        self._port = NPCSerialPort.check_port_exists(connection)
+        self._port = self.check_port_exists(connection)
         self._kwargs = kwargs
         if self._port is None:
-            Log(__name__).debug("%s port does not exist", connection)
+            Log(__name__).error("%s port does not exist", connection)
         else:
             Log(__name__).debug("%s located", self._port)
 
@@ -57,6 +57,12 @@ class NPCSerialPort(UOSInterface):
 
         """
         try:
+            self._port = self.check_port_exists(self._connection)
+            if self._port is None:
+                Log(__name__).error(
+                    "%s device was not present to open", self._connection
+                )
+                return False
             self._device = serial.Serial()
             self._device.port = self._connection
             if "baudrate" in self._kwargs:

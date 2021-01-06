@@ -114,10 +114,10 @@ class UOSDevice:
         ):
             self.__device_interface = NPCStub()
         else:
-            raise AttributeError(
+            raise RuntimeError(
                 f"Could not correctly open a connection to {self.identity} - {self.connection}"
             )
-        if "loading" in self.__kwargs and self.__kwargs["loading"].upper() == "EAGER":
+        if not self.is_lazy():  # eager connections open when they are created
             self.open()
         Log(__name__).debug("Created device %s", self.__device_interface.__repr__())
 
@@ -235,13 +235,8 @@ class UOSDevice:
         :raises: Attribute Error - if bad configuration of the UOSDevice object.
 
         """
-        if self.__device_interface is not None:
-            if not self.__device_interface.open():
-                raise RuntimeError(
-                    "There was an error opening a connection to the device."
-                )
-        else:
-            raise AttributeError("You can't open a connection on a empty device.")
+        if not self.__device_interface.open():
+            raise RuntimeError("There was an error opening a connection to the device.")
 
     def close(self):
         """
@@ -250,11 +245,8 @@ class UOSDevice:
         :raises: RuntimeError - If there was a problem closing the connection to an active device.
 
         """
-        if self.__device_interface is not None:
-            if not self.__device_interface.close():
-                raise RuntimeError(
-                    "There was an error closing a connection to the device"
-                )
+        if not self.__device_interface.close():
+            raise RuntimeError("There was an error closing a connection to the device")
 
     def __execute_instruction(
         self,
@@ -284,7 +276,7 @@ class UOSDevice:
                 f"{function_name}({volatility}) has not been implemented for {self.identity}"
             )
         rx_response = COMresult(False)
-        if self.check_lazy():  # Lazy loaded
+        if self.is_lazy():  # Lazy loaded
             self.open()
         if (
             instruction_data.device_function_lut[function_name][volatility] >= 0
@@ -318,7 +310,7 @@ class UOSDevice:
                         )
         else:  # run a special action
             rx_response = getattr(self.__device_interface, function_name)()
-        if self.check_lazy():  # Lazy loaded
+        if self.is_lazy():  # Lazy loaded
             self.close()
         if (
             not rx_response.status and retry
@@ -328,7 +320,7 @@ class UOSDevice:
             )
         return rx_response
 
-    def check_lazy(self) -> bool:
+    def is_lazy(self) -> bool:
         """
         Checks the loading type of the device lazy or eager.
 
