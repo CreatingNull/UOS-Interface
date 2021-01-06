@@ -1,9 +1,35 @@
+/* general styling for all navigation objects */
+.nav {
+  background-color: rgb(51, 51, 51);
+  color: #f2f2f2;
+  border-bottom: 1px solid #000;
+  transition: 0.3s;
+  text-align: center;
+}
+
+/* Change the color of links on hover */
+.nav button:hover,
+.nav a:hover,
+.nav select:hover {
+  background-color: #ddd;
+  color: #000;
+}
+
+/* Add an active class to highlight the current page */
+.nav a.active,
+.nav button.active {
+  background-color: #771919;
+}
+
+.nav a.active:hover,
+.nav button.active:hover {
+  background-color: #b72b2b;
+}
+
 /* Add a black background color to the top navigation */
 .top-nav {
-  background-color: rgba(51, 51, 51, 0.75);
   overflow: hidden;
   font-size: 17px;
-  text-align: center;
 }
 
 .sticky {
@@ -16,21 +42,8 @@
 .top-nav a {
   float: left;
   display: block;
-  color: #f2f2f2;
   padding: 14px 16px;
   text-decoration: none;
-}
-
-/* Change the color of links on hover */
-.top-nav a:hover {
-  background-color: #ddd;
-  color: #000;
-}
-
-/* Add an active class to highlight the current page */
-.top-nav a.active {
-  background-color: #771919;
-  color: #fff;
 }
 
 /* Hide the link that should open and close the topnav on small screens */
@@ -46,7 +59,6 @@
   margin-top: 8px;
   margin-right: 16px;
   background-color: transparent;
-  color: #f2f2f2;
 }
 
 /* When the screen is less than 769 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
@@ -88,4 +100,26 @@
     text-align: center;
     width: 100%;
   }
+}
+
+/* Style the tab */
+.tab-nav {
+  overflow: hidden;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab-nav button {
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+}
+
+/* Style the tab content */
+.tab-nav-content {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
 }

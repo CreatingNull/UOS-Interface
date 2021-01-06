@@ -60,3 +60,16 @@ function getPersistedDeviceSelection() {
     }
   }
 }
+
+/** Go to tab by name */
+function switchTab(tab) {
+  let tabbedPane = tab.parentElement;
+  let tabs = tabbedPane.getElementsByClassName('tab-nav-links');
+  for (let i = 0; i < tabs.length; i++) {
+    if (tabs[i] === tab && !tabs[i].classList.contains('active')) {
+      tabs[i].classList.add('active');
+    } else if (tabs[i] !== tab && tabs[i].classList.contains('active')) {
+      tabs[i].classList.remove('active');
+    }
+  }
+}
