@@ -11,7 +11,7 @@ Status: Still under development, not ready for a release yet.
 
 ---
 
-### Dependencies
+## Dependencies
 
 The project backend is written using Python Flask.
 Backend requirements can be found in [requirements.txt](resources/requirements.txt).
@@ -22,7 +22,7 @@ The project front end is vanilla javascript, html and css.
 Frontend requirements:
 *   FontAwesome 5.15.1 Web - for development this should be nested in `src/uosinterface/webapp/static/lib/FontAwesome`
 
-### Contributing
+## Contributing
 
 For code formatting project uses:
 
@@ -41,7 +41,6 @@ For code formatting project uses:
 *   Prettier for js/html/css formatting
 
     ``` npm install --save-dev --save-exact prettier ```
-
 
 ## Donations
 
