@@ -61,11 +61,15 @@ function getPersistedDeviceSelection() {
   }
 }
 
-/** Go to tab by name */
+/**
+ * Go to tab by name.
+ * @param {object} tab Header button object.
+ * */
 function switchTab(tab) {
-  let tabbedPane = tab.parentElement;
-  let tabHeaders = tabbedPane.getElementsByClassName('tab-nav-links');
-  let tabs = tabbedPane.parentElement.getElementsByClassName('tab-nav-content');
+  const tabHeaders = tab.parentElement.getElementsByClassName('tab-nav-links');
+  const tabs = tab.parentElement.parentElement.getElementsByClassName(
+    'tab-nav-content',
+  );
   for (let i = 0; i < tabHeaders.length; i++) {
     if (tabHeaders[i] === tab && !tabHeaders[i].classList.contains('active')) {
       tabHeaders[i].classList.add('active');
@@ -80,9 +84,14 @@ function switchTab(tab) {
   }
 }
 
-/** Increment Decrement Spinner */
+/**
+ * Increment Decrement Spinner.
+ * @param {object} button Single button object in the spinner.
+ * @param {boolean} decrement Boolean does button decrease value.
+ * @param {limit} limit Sets the bound for the count.
+ * */
 function incrementSpinner(button, decrement, limit) {
-  let inputElement = button.parentElement.getElementsByTagName('input')[0];
+  const inputElement = button.parentElement.getElementsByTagName('input')[0];
   let value = Math.round(parseFloat(inputElement.value));
   if (decrement && value > limit) value--;
   else if (!decrement && value < limit) value++;
