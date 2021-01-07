@@ -9,6 +9,7 @@ from uosinterface.hardware import enumerate_devices
 from uosinterface.hardware import UOSDevice
 from uosinterface.hardware.config import DEVICES
 from uosinterface.webapp.dashboard import blueprint
+from uosinterface.webapp.dashboard import get_site_info
 from uosinterface.webapp.dashboard import shutdown_server
 from uosinterface.webapp.dashboard.forms import ConnectDeviceForm
 
@@ -58,13 +59,18 @@ def route_device():
         devices=enumerate_devices(),
         uos_data=uos_data,
         connect_device_form=connect_device_form,
+        site_info=get_site_info(),
     )
 
 
 @blueprint.route("/settings", methods=["GET"])
 def route_settings():
     """Settings control page for the interface."""
-    return render_template("dashboard/settings.html", devices=enumerate_devices())
+    return render_template(
+        "dashboard/settings.html",
+        devices=enumerate_devices(),
+        site_info=get_site_info(),
+    )
 
 
 @blueprint.route("/shutdown", methods=["GET"])

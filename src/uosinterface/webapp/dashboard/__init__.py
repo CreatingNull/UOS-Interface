@@ -1,4 +1,6 @@
 """For providing a human-friendly UOS interface."""
+from datetime import datetime
+
 from flask import Blueprint
 from flask import request
 
@@ -17,3 +19,8 @@ def shutdown_server():
     if func is None:
         raise RuntimeError("Not running with the Werkzeug Server")
     func()
+
+
+def get_site_info() -> {}:
+    """Function returns useful general data for page rendering."""
+    return {"year": datetime.now().year}
