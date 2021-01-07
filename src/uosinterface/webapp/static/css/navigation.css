@@ -1,30 +1,36 @@
+:root {
+  --nav-bg-color: #262832;
+  --nav-fg-color: #363848;
+  --nav-act-color: #771919;
+  --nav-hover-color: #bcc0e3;
+}
+
 /* general styling for all navigation objects */
 .nav {
-  background-color: rgb(51, 51, 51);
+  background-color: var(--nav-bg-color);
   color: #f2f2f2;
-  border-bottom: 1px solid #000;
   transition: 0.3s;
   text-align: center;
   font-family: sans-serif;
+}
+
+.nav-container {
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid #000;
+}
+
+/* Add an active class to highlight the current page */
+.nav a.active,
+.nav button.active {
+  background-color: var(--nav-act-color);
 }
 
 /* Change the color of links on hover */
 .nav button:hover,
 .nav a:hover,
 .nav select:hover {
-  background-color: #ddd;
+  background-color: var(--nav-hover-color);
   color: #000;
-}
-
-/* Add an active class to highlight the current page */
-.nav a.active,
-.nav button.active {
-  background-color: #771919;
-}
-
-.nav a.active:hover,
-.nav button.active:hover {
-  background-color: #b72b2b;
 }
 
 /* Add a black background color to the top navigation */
@@ -124,7 +130,7 @@
   display: none;
   padding: 6px 12px;
   border: 1px solid rgba(0, 0, 0, 0.4);
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.25);
   border-top: none;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;

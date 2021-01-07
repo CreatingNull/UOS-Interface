@@ -79,3 +79,12 @@ function switchTab(tab) {
     }
   }
 }
+
+/** Increment Decrement Spinner */
+function incrementSpinner(button, decrement, limit) {
+  let inputElement = button.parentElement.getElementsByTagName('input')[0];
+  let value = Math.round(parseFloat(inputElement.value));
+  if (decrement && value > limit) value--;
+  else if (!decrement && value < limit) value++;
+  inputElement.value = value.toString();
+}

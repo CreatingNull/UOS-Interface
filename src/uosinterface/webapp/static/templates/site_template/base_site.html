@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div class="nav top-nav" id="top-navigation">
+    <div class="nav top-nav nav-container" id="top-navigation">
         {# macro finds active menu element based on routed endpoint #}
         {% macro nav_link(endpoint) %}
         {% if request.endpoint.endswith(endpoint) %}

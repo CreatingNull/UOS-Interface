@@ -10,14 +10,12 @@
     <form action="/" method="POST">
       <!-- prettier-ignore -->
       {{ connect_device_form.hidden_tag() }}
-      <button
-        type="submit"
-        class="button-big"
-        onclick="getSelectedConnection()"
-      >
-        <i class="fa fa-link"></i>
-        Connect
-      </button>
+      <div class="control control-button-big">
+        <button type="submit" onclick="getSelectedConnection()">
+          <i class="fa fa-link"></i>
+          Connect
+        </button>
+      </div>
     </form>
   </div>
   <div class="flex-item flex-item-ratio-5">
@@ -39,7 +37,7 @@
     </table>
   </div>
   <div class="flex-item flex-item-ratio-1">
-    <div class="nav tab-nav">
+    <div class="nav tab-nav nav-container">
       <button class="nav tab-nav-links active" onclick="switchTab(this)">
         <i class="fa fa-wave-square"></i>
         Digital
@@ -49,10 +47,25 @@
         Analog
       </button>
     </div>
-    <div class="tab-nav-content active">
-      <h3>Digital Pin Control</h3>
+    <div class="tab-nav-content nav-container active">
+      <label for="dio-index"><h3>Digital Pin Control</h3></label>
+      <div class="control control-numeric-spinner">
+        <button
+          class="control-numeric-spinner-left"
+          onclick="incrementSpinner(this, true, 0)"
+        >
+          <i class="fa fa-minus"></i>
+        </button>
+        <input type="text" inputmode="decimal" id="dio-index" value="1" />
+        <button
+          class="control-numeric-spinner-right"
+          onclick="incrementSpinner(this, false, 100)"
+        >
+          <i class="fa fa-plus"></i>
+        </button>
+      </div>
     </div>
-    <div class="tab-nav-content">
+    <div class="tab-nav-content nav-container">
       <h3>Analog Pin Control</h3>
     </div>
   </div>
