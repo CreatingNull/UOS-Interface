@@ -10,7 +10,14 @@
     <form action="/" method="POST">
       <!-- prettier-ignore -->
       {{ connect_device_form.hidden_tag() }}
-      <input type="submit" value="Connect" onclick="getSelectedConnection()" />
+      <button
+        type="submit"
+        class="button-big"
+        onclick="getSelectedConnection()"
+      >
+        <i class="fa fa-link"></i>
+        Connect
+      </button>
     </form>
   </div>
   <div class="flex-item flex-item-ratio-5">
@@ -34,11 +41,19 @@
   <div class="flex-item flex-item-ratio-1">
     <div class="nav tab-nav">
       <button class="nav tab-nav-links active" onclick="switchTab(this)">
+        <i class="fa fa-wave-square"></i>
         Digital
       </button>
       <button class="nav tab-nav-links" onclick="switchTab(this)">
+        <i class="fa fa-chart-line"></i>
         Analog
       </button>
+    </div>
+    <div class="tab-nav-content active">
+      <h3>Digital Pin Control</h3>
+    </div>
+    <div class="tab-nav-content">
+      <h3>Analog Pin Control</h3>
     </div>
   </div>
 </div>

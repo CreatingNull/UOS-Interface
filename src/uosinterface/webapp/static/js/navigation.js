@@ -64,11 +64,17 @@ function getPersistedDeviceSelection() {
 /** Go to tab by name */
 function switchTab(tab) {
   let tabbedPane = tab.parentElement;
-  let tabs = tabbedPane.getElementsByClassName('tab-nav-links');
-  for (let i = 0; i < tabs.length; i++) {
-    if (tabs[i] === tab && !tabs[i].classList.contains('active')) {
+  let tabHeaders = tabbedPane.getElementsByClassName('tab-nav-links');
+  let tabs = tabbedPane.parentElement.getElementsByClassName('tab-nav-content');
+  for (let i = 0; i < tabHeaders.length; i++) {
+    if (tabHeaders[i] === tab && !tabHeaders[i].classList.contains('active')) {
+      tabHeaders[i].classList.add('active');
       tabs[i].classList.add('active');
-    } else if (tabs[i] !== tab && tabs[i].classList.contains('active')) {
+    } else if (
+      tabHeaders[i] !== tab &&
+      tabHeaders[i].classList.contains('active')
+    ) {
+      tabHeaders[i].classList.remove('active');
       tabs[i].classList.remove('active');
     }
   }

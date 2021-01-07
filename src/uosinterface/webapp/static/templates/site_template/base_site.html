@@ -22,8 +22,14 @@
             active
         {% endif %}
         {% endmacro %}
-        <a class="nav top-nav {{ nav_link("device") }}" href="{{ url_for("dashboard_blueprint.route_device")}}" >Device</a>
-        <a class="nav top-nav {{ nav_link("settings") }}" href="{{ url_for("dashboard_blueprint.route_settings")}}" >Settings</a>
+        <a class="nav top-nav {{ nav_link("device") }}" href="{{ url_for("dashboard_blueprint.route_device")}}" >
+								<i class="fa fa-microchip"></i>
+									Device
+								</a>
+        <a class="nav top-nav {{ nav_link("settings") }}" href="{{ url_for("dashboard_blueprint.route_settings")}}" >
+									<i class="fa fa-cog"></i>
+									Settings
+								</a>
         <select id="device-select" class="nav top-nav" onchange="persistDeviceSelection()">
         <option disabled selected hidden>Select Device</option>
         {% for device in devices %}

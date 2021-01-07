@@ -15,6 +15,18 @@ h1 {
   margin-bottom: 8px;
 }
 
+.button-big {
+  float: left;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  background-color: #006296;
+  border: 1px solid #003e5b;
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  color: #f2f2f2;
+}
+
 .flex-container {
   display: flex;
   flex-direction: row;
