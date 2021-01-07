@@ -5,6 +5,7 @@
   --control-hover-color: var(--nav-hover-color);
   --control-bd-color: #182730;
   --control-txt-color: #f2f2f2;
+  --control-shadow-color: rgba(0, 0, 0, 0.4);
 }
 
 body {
@@ -35,9 +36,15 @@ h1 {
   font-size: 10px;
 }
 
+.control {
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+}
+
 .control button:hover {
   background-color: var(--nav-hover-color);
   color: black;
+  transition: 0.3s;
 }
 
 /* used for styling a large button object */
@@ -51,7 +58,8 @@ h1 {
   border-bottom-width: 2px;
   border-radius: 5px;
   color: var(--control-txt-color);
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
+  box-shadow: 3px 3px 5px var(--control-shadow-color);
+  transition: 0.3s;
 }
 
 /* Used for styling a custom numeric spinner control */
@@ -82,7 +90,7 @@ h1 {
   background-color: var(--control-fg-color);
   border: 1px solid var(--control-bd-color);
   color: var(--control-txt-color);
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
+  box-shadow: 3px 3px 5px var(--control-shadow-color);
 }
 
 .control-numeric-spinner button {
@@ -93,7 +101,9 @@ h1 {
   background-color: var(--control-bg-color);
   border: 1px solid var(--control-bd-color);
   color: var(--control-txt-color);
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
+  box-shadow: 3px 3px 5px var(--control-shadow-color);
+  transition: 0.3s;
+  cursor: pointer;
 }
 
 .flex-container {
