@@ -4,10 +4,10 @@ from logging import DEBUG
 from logging import getLogger as Log
 from pathlib import Path
 
-import uosinterface.webapp.api.routing as api_routing
-import uosinterface.webapp.dashboard.routing as dashboard_routing
 from flask import Flask
 from uosinterface.util import configure_logs
+from uosinterface.webapp.api import routing as api_routing
+from uosinterface.webapp.dashboard import routing as dashboard_routing
 
 
 def register_blueprints(app):
