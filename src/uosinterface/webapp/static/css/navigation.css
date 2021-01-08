@@ -1,6 +1,5 @@
 :root {
-  --nav-bg-color: #262832;
-  --nav-fg-color: #363848;
+  --nav-bg-color: var(--app-flair-bg-color);
   --nav-act-color: #771919;
   --nav-hover-color: #bcc0e3;
 }
@@ -12,6 +11,10 @@
   transition: 0.3s;
   text-align: center;
   font-family: sans-serif;
+}
+
+.nav-container {
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
 }
 
 /* Add a black background color to the top navigation */

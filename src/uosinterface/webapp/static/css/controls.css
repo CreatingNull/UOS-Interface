@@ -1,6 +1,6 @@
 :root {
-  --control-bg-color: var(--nav-bg-color);
-  --control-fg-color: var(--nav-fg-color);
+  --control-bg-color: var(--app-flair-bg-color);
+  --control-fg-color: var(--app-flair-bd-color);
   --control-act-color: var(--nav-act-color);
   --control-hover-color: var(--nav-hover-color);
   --control-bd-color: #182730;

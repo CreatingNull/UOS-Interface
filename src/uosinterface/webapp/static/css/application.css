@@ -1,6 +1,8 @@
 :root {
   --app-container-bg-color: rgba(0, 0, 0, 0.3);
   --app-container-bd-color: rgba(0, 0, 0, 0.4);
+  --app-flair-bg-color: #262832;
+  --app-flair-bd-color: #363848;
 }
 
 body {
@@ -34,6 +36,10 @@ form {
   border-bottom-right-radius: 5px;
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
   border-bottom: 1px solid #000;
+}
+
+.app-container-heading {
+  border-top: 10px solid var(--app-flair-bg-color);
 }
 
 .footer {
