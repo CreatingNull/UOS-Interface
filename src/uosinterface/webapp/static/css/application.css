@@ -1,3 +1,8 @@
+:root {
+  --app-container-bg-color: rgba(0, 0, 0, 0.3);
+  --app-container-bd-color: rgba(0, 0, 0, 0.4);
+}
+
 body {
   background-color: gray;
   margin-top: 0;
@@ -13,6 +18,22 @@ h1 {
   font-weight: bold;
   margin-top: 3px;
   margin-bottom: 8px;
+}
+
+form {
+  padding: 0;
+}
+
+/* styling for a general content widget */
+.app-container {
+  display: block;
+  background-color: var(--app-container-bg-color);
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--app-container-bd-color);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid #000;
 }
 
 .footer {
@@ -33,6 +54,7 @@ h1 {
   flex-wrap: wrap;
   max-width: 1000px;
   margin: auto;
+  overflow: hidden;
 }
 
 .flex-item {
@@ -41,7 +63,11 @@ h1 {
   flex-basis: 350px;
   margin: 5px 5px;
   padding: 5px 20px;
-  border-radius: 5px;
+}
+
+.flex-item-ratio-0 {
+  flex-grow: 0;
+  flex-basis: auto;
 }
 
 .flex-item-ratio-1 {
@@ -62,4 +88,20 @@ h1 {
 
 .flex-item-ratio-5 {
   flex-grow: 5;
+}
+
+.flex-item-ratio-6 {
+  flex-grow: 6;
+}
+
+.flex-item-ratio-7 {
+  flex-grow: 7;
+}
+
+.flex-item-ratio-8 {
+  flex-grow: 8;
+}
+
+.flex-item-ratio-9 {
+  flex-grow: 9;
 }
