@@ -83,17 +83,3 @@ function switchTab(tab) {
     }
   }
 }
-
-/**
- * Increment Decrement Spinner.
- * @param {object} button Single button object in the spinner.
- * @param {boolean} decrement Boolean does button decrease value.
- * @param {limit} limit Sets the bound for the count.
- * */
-function incrementSpinner(button, decrement, limit) {
-  const inputElement = button.parentElement.getElementsByTagName('input')[0];
-  let value = Math.round(parseFloat(inputElement.value));
-  if (decrement && value > limit) value--;
-  else if (!decrement && value < limit) value++;
-  inputElement.value = value.toString();
-}
