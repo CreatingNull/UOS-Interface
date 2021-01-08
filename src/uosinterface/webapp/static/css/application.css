@@ -40,7 +40,7 @@ h1 {
 .control {
   padding-bottom: 1rem;
   padding-top: 1rem;
-  display: inline-block;
+  display: block;
 }
 
 .control button:hover {
@@ -91,7 +91,6 @@ h1 {
 
 /* used for styling a large button object */
 .control-button-big button {
-  float: left;
   outline: none;
   cursor: pointer;
   padding: 14px 16px;

@@ -10,12 +10,12 @@
     <form action="/" method="POST">
       <!-- prettier-ignore -->
       {{ connect_device_form.hidden_tag() }}
-      <span class="control control-button-big">
+      <div class="control control-button-big">
         <button type="submit" onclick="getSelectedConnection()">
           <i class="fa fa-link"></i>
           Connect
         </button>
-      </span>
+      </div>
     </form>
   </div>
   <div class="flex-item flex-item-ratio-5">
@@ -49,7 +49,7 @@
     </div>
     <div class="tab-nav-content nav-container active">
       <label for="dio-index"><h3>Digital Pin Control</h3></label>
-      <span class="control control-numeric-spinner">
+      <div class="control control-numeric-spinner">
         <button
           class="control-numeric-spinner-left"
           onclick="incrementSpinner(this, true, 0)"
@@ -63,11 +63,14 @@
         >
           <i class="fa fa-plus"></i>
         </button>
-      </span>
-      <span class="control control-switch">
+      </div>
+      <div class="control control-switch">
         <input type="checkbox" id="io-toggle" onclick="toggleSwitch(this)" />
         <label for="io-toggle">Set Output</label>
-      </span>
+      </div>
+      <div class="control control-button-big">
+        <button>Execute Command</button>
+      </div>
     </div>
     <div class="tab-nav-content nav-container">
       <h3>Analog Pin Control</h3>
