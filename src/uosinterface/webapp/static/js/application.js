@@ -1,11 +1,11 @@
 /**
  * Increment Decrement Spinner.
- * @param {object} button_element Single button object in the spinner.
+ * @param {object} buttonElement Single button object in the spinner.
  * @param {boolean} decrement Boolean does button decrease value.
  * @param {limit} limit Sets the bound for the count.
  * */
-function incrementSpinner(button_element, decrement, limit) {
-  const inputElement = button_element.parentElement.getElementsByTagName(
+function incrementSpinner(buttonElement, decrement, limit) {
+  const inputElement = buttonElement.parentElement.getElementsByTagName(
     'input',
   )[0];
   let value = Math.round(parseFloat(inputElement.value));
@@ -16,12 +16,12 @@ function incrementSpinner(button_element, decrement, limit) {
 
 /**
  * Toggles the class on a switch control.
- * @param input_element The switch input field element.
+ * @param {object} inputElement The switch input field element.
  */
-function toggleSwitch(input_element) {
-  if (input_element.classList.contains('active')) {
-    input_element.classList.remove('active');
+function toggleSwitch(inputElement) {
+  if (inputElement.classList.contains('active')) {
+    inputElement.classList.remove('active');
   } else {
-    input_element.classList.add('active');
+    inputElement.classList.add('active');
   }
 }

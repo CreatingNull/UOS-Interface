@@ -32,13 +32,13 @@
 									Settings
 								</a>
         <select id="device-select" class="nav top-nav" onchange="persistDeviceSelection()">
-        <option disabled selected hidden>Select Device</option>
-        {% for device in devices %}
-        <option value="{{ device.connection }}">{{ device.port }}</option>
-        {% endfor %}
+        		<option disabled selected hidden>Select Device</option>
+        		{% for device in devices %}
+        		<option value="{{ device.connection }}">{{ device.port }}</option>
+										{% endfor %}
         </select>
         <a href="javascript:void(0);" class="nav top-nav icon" onclick="dynamicNavigation()">
-            <i class="fa fa-bars"></i>
+											<i class="fa fa-bars"></i>
         </a>
     </div>
     <div class="content">
