@@ -19,20 +19,6 @@
   border-bottom: 1px solid #000;
 }
 
-/* Add an active class to highlight the current page */
-.nav a.active,
-.nav button.active {
-  background-color: var(--nav-act-color);
-}
-
-/* Change the color of links on hover */
-.nav button:hover,
-.nav a:hover,
-.nav select:hover {
-  background-color: var(--nav-hover-color);
-  color: #000;
-}
-
 /* Add a black background color to the top navigation */
 .top-nav {
   overflow: hidden;
@@ -123,6 +109,20 @@
   cursor: pointer;
   padding: 14px 16px;
   border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Add an active class to highlight the current page */
+.nav a.active,
+.nav button.active {
+  background-color: var(--nav-act-color);
+}
+
+/* Change the color of links on hover */
+.nav button:hover,
+.nav a:hover,
+.nav select:hover {
+  background-color: var(--nav-hover-color);
+  color: #000;
 }
 
 /* Style the tab content */

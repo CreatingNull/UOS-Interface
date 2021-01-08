@@ -43,12 +43,6 @@ h1 {
   display: block;
 }
 
-.control button:hover {
-  background-color: var(--control-hover-color);
-  color: black;
-  transition: 0.3s;
-}
-
 .control-switch input {
   appearance: none;
   cursor: pointer;
@@ -144,6 +138,12 @@ h1 {
   transition: 0.3s;
   opacity: 80%;
   cursor: pointer;
+}
+
+.control button:hover {
+  background-color: var(--control-hover-color);
+  color: black;
+  transition: 0.3s;
 }
 
 .flex-container {
