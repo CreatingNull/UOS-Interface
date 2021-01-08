@@ -6,6 +6,7 @@
 
 {% block content %}
 <div class="flex-container">
+  {# Device connection form. #}
   <div class="flex-item flex-item-ratio-0">
     <form action="/" method="POST">
       <!-- prettier-ignore -->
@@ -18,6 +19,7 @@
       </div>
     </form>
   </div>
+  {# Connected device info pane. #}
   <div class="flex-item flex-item-ratio-9">
     <div class="app-container app-container-heading">
       <table>
@@ -39,8 +41,11 @@
     </div>
   </div>
 </div>
+
 <div class="flex-container">
+  {# Tabbed device pane #}
   <div class="flex-item flex-item-ratio-1">
+    {# Tabbed pane navigation header #}
     <div class="nav tab-nav nav-container">
       <button class="nav tab-nav-links active" onclick="switchTab(this)">
         <i class="fa fa-wave-square"></i>
@@ -51,6 +56,7 @@
         Analog
       </button>
     </div>
+    {# Tabbed pane digital content page #}
     <div class="tab-nav-content app-container active">
       <label for="dio-index"><h3>Digital Pin Control</h3></label>
       <div class="control control-numeric-spinner">
@@ -80,8 +86,15 @@
         <button>Execute Command</button>
       </div>
     </div>
+    {# Tabbed pane analogue content page #}
     <div class="tab-nav-content app-container">
       <h3>Analog Pin Control</h3>
+    </div>
+  </div>
+  {# Device config info pane #}
+  <div class="flex-item flex-item-ratio-1">
+    <div class="app-container app-container-heading">
+      <h3>Configuration Info</h3>
     </div>
   </div>
 </div>
