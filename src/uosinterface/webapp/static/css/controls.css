@@ -54,6 +54,12 @@
   box-shadow: 0 0 5px var(--control-act-color);
 }
 
+.control-switch input:disabled,
+.control-switch input:disabled:after {
+  filter: brightness(60%) saturate(50%);
+  cursor: default;
+}
+
 /* used for styling a large button object */
 .control-button-big button {
   outline: none;
