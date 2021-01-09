@@ -2,6 +2,7 @@
 from collections import defaultdict
 from logging import getLogger
 
+from flask import flash
 from flask import render_template
 from flask import request
 from flask import session

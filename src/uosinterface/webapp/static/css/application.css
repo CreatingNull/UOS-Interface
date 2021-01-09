@@ -1,6 +1,7 @@
 :root {
   --app-container-bg-color: rgba(0, 0, 0, 0.3);
   --app-container-bd-color: rgba(0, 0, 0, 0.4);
+  --app-active-bg-color: #771919;
   --app-flair-bg-color: #262832;
   --app-flair-bd-color: #363848;
 }
@@ -20,6 +21,12 @@ h1 {
   font-weight: bold;
   margin-top: 3px;
   margin-bottom: 8px;
+}
+
+h4 {
+  font-weight: bold;
+  margin-top: 3px;
+  margin-bottom: 5px;
 }
 
 form {
@@ -64,6 +71,43 @@ input[type='number'] {
   font-family: sans-serif;
   font-size: 10px;
   opacity: 25%;
+}
+
+.flash-message {
+  position: relative;
+  min-width: 100px;
+}
+
+.flash-warning {
+  color: orange;
+}
+
+.flash-error {
+  color: indianred;
+}
+
+.float-right {
+  float: right;
+}
+
+.close-pane {
+  position: absolute;
+  z-index: 2;
+  font-size: 25px;
+  cursor: pointer;
+  color: var(--app-flair-bg-color);
+  top: 0.2rem;
+  right: 0.4rem;
+  transition: 0.3s;
+}
+
+.close-pane-div {
+  display: none;
+}
+
+.close-pane:hover {
+  color: white;
+  transition: 0.3s;
 }
 
 .flex-container {

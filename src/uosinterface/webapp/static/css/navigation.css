@@ -1,6 +1,5 @@
 :root {
   --nav-bg-color: var(--app-flair-bg-color);
-  --nav-act-color: #771919;
   --nav-hover-color: #bcc0e3;
 }
 
@@ -112,7 +111,7 @@
 /* Add an active class to highlight the current page */
 .nav a.active,
 .nav button.active {
-  background-color: var(--nav-act-color);
+  background-color: var(--app-active-bg-color);
 }
 
 /* Change the color of links on hover */

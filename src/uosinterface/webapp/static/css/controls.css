@@ -1,7 +1,6 @@
 :root {
   --control-bg-color: var(--app-flair-bg-color);
   --control-fg-color: var(--app-flair-bd-color);
-  --control-act-color: var(--nav-act-color);
   --control-hover-color: var(--nav-hover-color);
   --control-bd-color: #182730;
   --control-txt-color: #f2f2f2;
@@ -46,12 +45,12 @@
 }
 
 .control-switch input.active {
-  background-color: var(--control-act-color);
+  background-color: var(--app-active-bg-color);
 }
 
 .control-switch input.active::after {
   left: 1.5rem;
-  box-shadow: 0 0 5px var(--control-act-color);
+  box-shadow: 0 0 5px var(--app-active-bg-color);
 }
 
 .control-switch input:disabled,

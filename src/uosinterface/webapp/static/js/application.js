@@ -1,7 +1,20 @@
-/** When the page loads load device connection if persisted. */
+/** When the page runs pre-emptive code. */
 window.onload = function () {
-  getPersistedDeviceSelection();
+  getPersistedDeviceSelection(); // device selection populates.
+  setCloseableDivs(); // adds event listeners for closable divs.
 };
+
+/** Set event listeners on all closable divs. */
+function setCloseableDivs() {
+  const closableDivs = document.getElementsByClassName('close-pane');
+  for (let i = 0; i < closableDivs.length; i++) {
+    closableDivs[i].addEventListener('click', function (e) {
+      if (!e.target.parentElement.classList.contains('close-pane-div')) {
+        e.target.parentElement.classList.add('close-pane-div');
+      }
+    });
+  }
+}
 
 /**
  * Writes currently selected connection to device connection form field.
