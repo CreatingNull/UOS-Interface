@@ -1,0 +1,3 @@
+# Disabled lint checks
+skips: ['B101']
+# B101 - Assert used; skipped because used for tests. Non-functional code so doesn't cause issues.
