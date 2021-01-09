@@ -7,9 +7,9 @@
 .nav {
   background-color: var(--nav-bg-color);
   color: #f2f2f2;
-  transition: 0.3s;
-  text-align: center;
   font-family: sans-serif;
+  text-align: center;
+  transition: 0.3s;
 }
 
 .nav-container {
@@ -18,8 +18,8 @@
 
 /* Add a black background color to the top navigation */
 .top-nav {
-  overflow: hidden;
   font-size: 17px;
+  overflow: hidden;
 }
 
 .sticky {
@@ -30,11 +30,11 @@
 
 /* Style the links inside the navigation bar */
 .top-nav a {
-  float: left;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
   display: block;
+  float: left;
   padding: 14px 16px;
   text-decoration: none;
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 /* Hide the link that should open and close the topnav on small screens */
@@ -44,12 +44,12 @@
 
 .top-nav select {
   appearance: none;
-  float: right;
-  padding: 6px;
-  border: none;
-  margin-top: 8px;
-  margin-right: 16px;
   background-color: transparent;
+  border: none;
+  float: right;
+  margin-right: 16px;
+  margin-top: 8px;
+  padding: 6px;
 }
 
 /* When the screen is less than 769 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
@@ -60,8 +60,8 @@
   }
 
   .top-nav a.icon {
-    float: right;
     display: block;
+    float: right;
   }
 }
 
@@ -80,14 +80,14 @@
   }
 
   .top-nav.responsive a {
-    float: none;
     display: block;
+    float: none;
     text-align: left;
   }
 
   .top-nav.responsive select {
-    float: none;
     display: block;
+    float: none;
     text-align: center;
     width: 100%;
   }
@@ -100,12 +100,11 @@
 
 /* Style the buttons that are used to open the tab content */
 .tab-nav button {
-  float: left;
   border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
   border-right: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  float: left;
+  padding: 14px 16px;
 }
 
 /* Add an active class to highlight the current page */

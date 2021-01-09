@@ -18,11 +18,11 @@ function setCloseableDivs() {
 
 /**
  * Writes currently selected connection to device connection form field.
- * @param form_id {String} id of the element to populate onclick.
+ * @param {string} formId ID of the element to populate onclick.
  */
-function getSelectedConnection(form_id) {
+function getSelectedConnection(formId) {
   const sel = document.getElementById('device-select');
-  document.getElementById(form_id).value = sel.options[sel.selectedIndex].value;
+  document.getElementById(formId).value = sel.options[sel.selectedIndex].value;
 }
 
 /** Saves device selection in nonvolatile location for the session. */

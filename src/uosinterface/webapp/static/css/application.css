@@ -8,25 +8,25 @@
 
 body {
   background-color: gray;
-  margin-top: 0;
+  color: #f2f2f2;
+  font-family: sans-serif;
   margin-left: 0;
   margin-right: 0;
-  font-family: sans-serif;
-  color: #f2f2f2;
+  margin-top: 0;
 }
 
 h1 {
   font-size: 25px;
-  text-align: left;
   font-weight: bold;
-  margin-top: 3px;
   margin-bottom: 8px;
+  margin-top: 3px;
+  text-align: left;
 }
 
 h4 {
   font-weight: bold;
-  margin-top: 3px;
   margin-bottom: 5px;
+  margin-top: 3px;
 }
 
 form {
@@ -47,14 +47,14 @@ input[type='number'] {
 
 /* styling for a general content widget */
 .app-container {
-  display: block;
   background-color: var(--app-container-bg-color);
-  padding: 0.5rem 1rem;
   border: 1px solid var(--app-container-bd-color);
+  border-bottom: 1px solid #000;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
-  border-bottom: 1px solid #000;
+  display: block;
+  padding: 0.5rem 1rem;
 }
 
 .app-container-heading {
@@ -62,20 +62,20 @@ input[type='number'] {
 }
 
 .footer {
-  position: fixed;
-  left: 0;
   bottom: 0;
-  width: 100%;
   color: #f2f2f2;
-  text-align: center;
   font-family: sans-serif;
   font-size: 10px;
-  opacity: 25%;
+  left: 0;
+  opacity: 0.25;
+  position: fixed;
+  text-align: center;
+  width: 100%;
 }
 
 .flash-message {
-  position: relative;
   min-width: 100px;
+  position: relative;
 }
 
 .flash-warning {
@@ -91,14 +91,14 @@ input[type='number'] {
 }
 
 .close-pane {
-  position: absolute;
-  z-index: 2;
-  font-size: 25px;
-  cursor: pointer;
   color: var(--app-flair-bg-color);
-  top: 0.2rem;
+  cursor: pointer;
+  font-size: 25px;
+  position: absolute;
   right: 0.4rem;
+  top: 0.2rem;
   transition: 0.3s;
+  z-index: 2;
 }
 
 .close-pane-div {
@@ -114,8 +114,8 @@ input[type='number'] {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  max-width: 1000px;
   margin: auto;
+  max-width: 1000px;
   overflow: hidden;
 }
 
@@ -128,8 +128,8 @@ input[type='number'] {
 }
 
 .flex-item-ratio-0 {
-  flex-grow: 0;
   flex-basis: auto;
+  flex-grow: 0;
 }
 
 .flex-item-ratio-1 {
