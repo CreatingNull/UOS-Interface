@@ -12,7 +12,7 @@ from uosinterface.hardware.uosabstractions import SystemDevice
 from uosinterface.hardware.uosabstractions import UOSInterface
 
 if platform.system() == "Linux":
-    import termios
+    import termios  # pylint: disable=E0401
 else:
     pass
 

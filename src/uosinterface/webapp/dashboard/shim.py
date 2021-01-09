@@ -6,6 +6,7 @@ from uosinterface.hardware.config import DEVICES
 
 
 def get_system_info(device_identity, device_connection: str) -> {}:
+    """Gets the 'version', 'type' and 'connection' and formats into dict."""
     uos_data = {}
     try:
         device = UOSDevice(
