@@ -2,7 +2,7 @@
  * Increment Decrement Spinner.
  * @param {object} buttonElement Single button object in the spinner.
  * @param {boolean} decrement Boolean does button decrease value.
- * @param {limit} limit Sets the bound for the count.
+ * @param {number} limit Sets the bound for the count.
  * */
 function incrementSpinner(buttonElement, decrement, limit) {
   const inputElement = buttonElement.parentElement.getElementsByTagName(

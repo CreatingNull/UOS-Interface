@@ -12,7 +12,10 @@
       <!-- prettier-ignore -->
       {{ connect_device_form.hidden_tag() }}
       <div class="control control-button-big">
-        <button type="submit" onclick="getSelectedConnection()">
+        <button
+          type="submit"
+          onclick="getSelectedConnection('{{ connect_device_form.device_connection.id }}')"
+        >
           <i class="fa fa-link"></i>
           Connect
         </button>
@@ -43,6 +46,7 @@
 </div>
 
 <div class="flex-container">
+  <!-- prettier-ignore -->
   {# Tabbed device pane #}
   <div class="flex-item flex-item-ratio-1">
     {# Tabbed pane navigation header #}
@@ -58,7 +62,6 @@
     </div>
     {# Tabbed pane digital content page #}
     <div class="tab-nav-content app-container active">
-      <label for="dio-index"><h3>Digital Pin Control</h3></label>
       <form action="/" method="POST">
         {{ digital_instruction_form.hidden_tag() }}
         <div class="control control-numeric-spinner">
@@ -88,7 +91,12 @@
           <label for="level-toggle">Set High</label>
         </div>
         <div class="control control-button-big">
-          <button type="submit">Execute Command</button>
+          <button
+            type="submit"
+            onclick="getSelectedConnection('{{ digital_instruction_form.device_connection.id }}')"
+          >
+            Execute Command
+          </button>
         </div>
       </form>
     </div>
@@ -97,6 +105,7 @@
       <h3>Analog Pin Control</h3>
     </div>
   </div>
+  <!-- prettier-ignore -->
   {# Device config info pane #}
   <div class="flex-item flex-item-ratio-1">
     <div class="app-container app-container-heading">
