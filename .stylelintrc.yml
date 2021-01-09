@@ -1,0 +1,3 @@
+rules:
+  # (https://github.com/stylelint/stylelint/issues/4271)
+  no-descending-specificity: null  # disable since using component based approach
