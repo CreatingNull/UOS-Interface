@@ -12,6 +12,7 @@ from uosinterface.webapp.dashboard import blueprint
 from uosinterface.webapp.dashboard import get_site_info
 from uosinterface.webapp.dashboard import shutdown_server
 from uosinterface.webapp.dashboard.forms import ConnectDeviceForm
+from uosinterface.webapp.dashboard.forms import DigitalInstructionForm
 
 
 @blueprint.route("/", methods=["GET", "POST"])
@@ -19,6 +20,7 @@ from uosinterface.webapp.dashboard.forms import ConnectDeviceForm
 def route_device():
     """Index route / device of the dashboard."""
     connect_device_form = ConnectDeviceForm()
+    digital_instruction_form = DigitalInstructionForm()
     uos_data = (
         defaultdict(default_factory="")
         if "uos_data" not in session
@@ -59,6 +61,7 @@ def route_device():
         devices=enumerate_devices(),
         uos_data=uos_data,
         connect_device_form=connect_device_form,
+        digital_instruction_form=digital_instruction_form,
         site_info=get_site_info(),
     )
 

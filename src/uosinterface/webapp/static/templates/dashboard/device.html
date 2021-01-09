@@ -59,32 +59,38 @@
     {# Tabbed pane digital content page #}
     <div class="tab-nav-content app-container active">
       <label for="dio-index"><h3>Digital Pin Control</h3></label>
-      <div class="control control-numeric-spinner">
-        <button
-          class="control-numeric-spinner-left"
-          onclick="incrementSpinner(this, true, 0)"
-        >
-          <i class="fa fa-minus"></i>
-        </button>
-        <input type="text" inputmode="decimal" id="dio-index" value="1" />
-        <button
-          class="control-numeric-spinner-right"
-          onclick="incrementSpinner(this, false, 100)"
-        >
-          <i class="fa fa-plus"></i>
-        </button>
-      </div>
-      <div class="control control-switch">
-        <input type="checkbox" id="io-toggle" onclick="toggleSwitch(this)" />
-        <label for="io-toggle">Set Output</label>
-      </div>
-      <div class="control control-switch">
-        <input type="checkbox" id="level-toggle" onclick="toggleSwitch(this)" />
-        <label for="level-toggle">Set High</label>
-      </div>
-      <div class="control control-button-big">
-        <button>Execute Command</button>
-      </div>
+      <form action="/" method="POST">
+        {{ digital_instruction_form.hidden_tag() }}
+        <div class="control control-numeric-spinner">
+          <button
+            type="button"
+            class="control-numeric-spinner-left"
+            onclick="incrementSpinner(this, true, 0)"
+          >
+            <i class="fa fa-minus"></i>
+          </button>
+          {{ digital_instruction_form.pin_index(value=1) }}
+          <button
+            type="button"
+            class="control-numeric-spinner-right"
+            onclick="incrementSpinner(this, false, 100)"
+          >
+            <i class="fa fa-plus"></i>
+          </button>
+        </div>
+        <div class="control control-switch">
+          {{ digital_instruction_form.pin_mode(onclick="toggleSwitch(this)") }}
+          {{ digital_instruction_form.pin_mode.label }}
+        </div>
+        <div class="control control-switch">
+          {{ digital_instruction_form.pin_level(onclick="toggleSwitch(this)") }}
+          {{ digital_instruction_form.pin_level.label }}
+          <label for="level-toggle">Set High</label>
+        </div>
+        <div class="control control-button-big">
+          <button type="submit">Execute Command</button>
+        </div>
+      </form>
     </div>
     {# Tabbed pane analogue content page #}
     <div class="tab-nav-content app-container">
