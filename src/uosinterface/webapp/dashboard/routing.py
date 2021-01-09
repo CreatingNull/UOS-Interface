@@ -20,26 +20,24 @@ def route_device():
     """Index route / device of the dashboard."""
     connect_device_form = ConnectDeviceForm()
     digital_instruction_form = DigitalInstructionForm()
-    uos_data = (
-        defaultdict(default_factory="")
-        if "uos_data" not in session
-        else session["uos_data"]
-    )
-    if connect_device_form.is_submitted():
+    if "uos_data" not in session:  # create the cookie if new session
+        session["uos_data"] = defaultdict(default_factory="")
+    if connect_device_form.is_submitted():  # connect and query device info
         getLogger(__name__).debug(
             "route_device %s with %s",
             request.method,
             connect_device_form.device_connection.data,
         )
-        uos_data = get_system_info(
-            device_identity="Arduino Nano 3",
-            device_connection=connect_device_form.device_connection.data,
+        session["uos_data"].update(
+            get_system_info(
+                device_identity="Arduino Nano 3",
+                device_connection=connect_device_form.device_connection.data,
+            )
         )
-        session["uos_data"] = uos_data
     return render_template(
         "dashboard/device.html",
         devices=enumerate_devices(),
-        uos_data=uos_data,
+        uos_data=session["uos_data"],
         connect_device_form=connect_device_form,
         digital_instruction_form=digital_instruction_form,
         site_info=get_site_info(),
