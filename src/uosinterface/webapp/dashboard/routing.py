@@ -6,13 +6,12 @@ from flask import render_template
 from flask import request
 from flask import session
 from uosinterface.hardware import enumerate_devices
-from uosinterface.hardware import UOSDevice
-from uosinterface.hardware.config import DEVICES
 from uosinterface.webapp.dashboard import blueprint
 from uosinterface.webapp.dashboard import get_site_info
 from uosinterface.webapp.dashboard import shutdown_server
 from uosinterface.webapp.dashboard.forms import ConnectDeviceForm
 from uosinterface.webapp.dashboard.forms import DigitalInstructionForm
+from uosinterface.webapp.dashboard.shim import get_system_info
 
 
 @blueprint.route("/", methods=["GET", "POST"])
@@ -32,30 +31,11 @@ def route_device():
             request.method,
             connect_device_form.device_connection.data,
         )
-        try:
-            device = UOSDevice(
-                identity="Arduino Nano 3",
-                connection=connect_device_form.device_connection.data,
-            )
-            result = device.get_system_info()
-            device.close()
-            if result.status:
-                uos_data["version"] = (
-                    f"V{result.rx_packets[0][4]}.{result.rx_packets[0][5]}."
-                    f"{result.rx_packets[0][6]}"
-                )
-                uos_data["connection"] = device.connection
-                if f"HWID{result.rx_packets[0][7]}" in DEVICES:
-                    uos_data[
-                        "type"
-                    ] = f"{DEVICES[f'HWID{result.rx_packets[0][7]}'].name}"
-                session["uos_data"] = uos_data
-        except (AttributeError, ValueError, NotImplementedError) as exception:
-            getLogger(__name__).warning(
-                "Cannot open connection to '%s', error: %s",
-                connect_device_form.device_connection.data,
-                exception.__str__(),
-            )
+        uos_data = get_system_info(
+            device_identity="Arduino Nano 3",
+            device_connection=connect_device_form.device_connection.data,
+        )
+        session["uos_data"] = uos_data
     return render_template(
         "dashboard/device.html",
         devices=enumerate_devices(),
