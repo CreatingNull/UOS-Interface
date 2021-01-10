@@ -11,6 +11,5 @@ pep257:
     - D212
 
 pylint:
-    disable:
-      - missing-function-docstring
-      - import-error
+    # Pylint run through dedicated plugin rather than via prospector.
+    run: false
