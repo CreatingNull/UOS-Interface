@@ -6,6 +6,9 @@ from wtforms.fields.html5 import IntegerField
 from wtforms.validators import DataRequired
 from wtforms.validators import NumberRange
 
+# Ignore the min public methods check for form classes.
+# pylint: disable=R0903
+
 
 class ConnectDeviceForm(FlaskForm):
     """Form for posting a device connection request from the dashboard."""
