@@ -40,7 +40,10 @@ UOS_SCHEMA = {
     "reset_all_io": UOSFunction(address_lut={0: 68}, ack=True),
     "hard_reset": UOSFunction(address_lut={0: -1}, ack=False),
     "get_system_info": UOSFunction(
-        address_lut={0: 250}, ack=True, rx_packets_expected=[4]
+        address_lut={0: 250}, ack=True, rx_packets_expected=[2]
+    ),
+    "get_gpio_config": UOSFunction(
+        address_lut={0: 251}, ack=True, rx_packets_expected=[2]
     ),
 }
 
@@ -55,6 +58,7 @@ ARDUINO_NANO_3 = Device(
         "reset_all_io": {0: True},
         "hard_reset": {0: True},
         "get_system_info": {0: True},
+        "get_gpio_config": {0: True},
     },
     digital_pins=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
     analogue_pins=[0, 1, 2, 3, 4, 5, 6, 7, 8],

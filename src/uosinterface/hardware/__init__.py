@@ -133,7 +133,7 @@ class UOSDevice:
         :return: COMresult object.
 
         """
-        response = self.__execute_instruction(
+        return self.__execute_instruction(
             UOSDevice.set_gpio_output.__name__,
             volatility,
             InstructionArguments(
@@ -141,7 +141,6 @@ class UOSDevice:
                 payload=(pin, 0, level),
             ),
         )
-        return response
 
     def get_gpio_input(
         self, pin: int, level: int, volatility: int = SUPER_VOLATILE
@@ -155,7 +154,7 @@ class UOSDevice:
         :return: COMresult object.
 
         """
-        response = self.__execute_instruction(
+        return self.__execute_instruction(
             UOSDevice.get_gpio_input.__name__,
             volatility,
             InstructionArguments(
@@ -164,7 +163,6 @@ class UOSDevice:
                 expected_rx_packets=2,
             ),
         )
-        return response
 
     def get_adc_input(
         self,
@@ -181,7 +179,7 @@ class UOSDevice:
         :return: COMresult object containing the ADC readings.
 
         """
-        response = self.__execute_instruction(
+        return self.__execute_instruction(
             UOSDevice.get_adc_input.__name__,
             volatility,
             InstructionArguments(
@@ -190,16 +188,16 @@ class UOSDevice:
                 expected_rx_packets=2,
             ),
         )
-        return response
 
     def get_system_info(self, **kwargs) -> COMresult:
         """
         Reads the UOS version and device type.
 
-        :return: COMResult object containing the system information
+        :param kwargs: Control arguments, accepts volatility.
+        :return: COMResult object containing the system information.
 
         """
-        response = self.__execute_instruction(
+        return self.__execute_instruction(
             UOSDevice.get_system_info.__name__,
             kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
             InstructionArguments(
@@ -207,25 +205,41 @@ class UOSDevice:
                 expected_rx_packets=2,
             ),
         )
-        return response
+
+    def get_gpio_config(self, pin: int, **kwargs) -> COMresult:
+        """
+        Reads the configuration for a digital pin on the device.
+
+        :param pin: Defines the pin for config querying.
+        :param kwargs: Control arguments accepts volatility.
+        :return: COMResult object containing the system information.
+
+        """
+        return self.__execute_instruction(
+            UOSDevice.get_gpio_config.__name__,
+            kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
+            InstructionArguments(
+                device_function_lut=self.system_lut.functions_enabled,
+                payload=tuple([pin]),
+                expected_rx_packets=2,
+            ),
+        )
 
     def reset_all_io(self, **kwargs) -> COMresult:
         """Executes the reset IO at the defined volatility level."""
-        response = self.__execute_instruction(
+        return self.__execute_instruction(
             UOSDevice.reset_all_io.__name__,
             kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
             InstructionArguments(device_function_lut=self.system_lut.functions_enabled),
         )
-        return response
 
     def hard_reset(self, **kwargs) -> COMresult:
         """Hard reset functionality for the UOS Device."""
-        response = self.__execute_instruction(
+        return self.__execute_instruction(
             UOSDevice.hard_reset.__name__,
             kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
             InstructionArguments(device_function_lut=self.system_lut.functions_enabled),
         )
-        return response
 
     def open(self):
         """
