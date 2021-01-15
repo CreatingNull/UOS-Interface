@@ -26,13 +26,19 @@ def route_device():
         getLogger(__name__).debug(
             "route_device %s with %s",
             request.method,
-            connect_device_form.device_connection.data,
+            connect_device_form.__repr__(),
         )
         session["uos_data"].update(
             get_system_info(
                 device_identity="Arduino Nano 3",
                 device_connection=connect_device_form.device_connection.data,
             )
+        )
+    elif digital_instruction_form.is_submitted():  # execute a digital_instruction]
+        getLogger(__name__).debug(
+            "route_device digital command %s with ",
+            request.method,
+            digital_instruction_form.__repr__(),
         )
     return render_template(
         "dashboard/device.html",

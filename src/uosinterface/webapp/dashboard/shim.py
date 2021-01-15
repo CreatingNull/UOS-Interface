@@ -1,6 +1,7 @@
 """Module contains general device functions used within the dashboard."""
 from logging import getLogger
 
+from flask import flash
 from uosinterface.hardware import UOSDevice
 from uosinterface.hardware.config import DEVICES
 
@@ -23,10 +24,17 @@ def get_system_info(device_identity, device_connection: str) -> {}:
             uos_data["connection"] = device.connection
             if f"HWID{result.rx_packets[0][7]}" in DEVICES:
                 uos_data["type"] = f"{DEVICES[f'HWID{result.rx_packets[0][7]}'].name}"
-    except (AttributeError, ValueError, NotImplementedError) as exception:
-        getLogger(__name__).warning(
-            "Cannot open connection to '%s', error: %s",
-            device_connection,
-            exception.__str__(),
-        )
+    except (AttributeError, ValueError, NotImplementedError, RuntimeError) as exception:
+        message = f"Cannot open connection to '{device_connection}', info: {exception.__str__()}"
+        flash(message, "error")
+        getLogger(__name__).error(message)
+    return uos_data
+
+
+def execute_digital_instruction(
+    device_identity: str, device_connection: str, set_output: bool, set_level: bool
+) -> {}:
+    """Configures the pin based on the form data and formats response into
+    dict."""
+    uos_data = {}
     return uos_data
