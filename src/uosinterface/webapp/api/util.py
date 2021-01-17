@@ -35,21 +35,19 @@ def check_required_args(
                 "connection": APIargument(True, str, None),
             },
         )
-    Log(__name__).debug("Required arguments %s", possible_arguments.__str__())
     for argument in possible_arguments:
         if argument not in arguments_found and possible_arguments[argument].required:
             return (
                 APIresult(
-                    False, f"Expected argument '{argument}' not found in request."
+                    False, f"Required argument '{argument}' not found in request."
                 ),
                 possible_arguments,
             )
-        elif not possible_arguments[argument].required:
-            continue
         try:
-            possible_arguments[argument].arg_value = possible_arguments[
-                argument
-            ].arg_type(arguments_found[argument])
+            if argument in arguments_found:
+                possible_arguments[argument].arg_value = possible_arguments[
+                    argument
+                ].arg_type(arguments_found[argument])
         except ValueError:
             return (
                 APIresult(
@@ -59,4 +57,5 @@ def check_required_args(
                 ),
                 possible_arguments,
             )
+    Log(__name__).debug("API arguments %s", possible_arguments.__str__())
     return APIresult(True), possible_arguments
