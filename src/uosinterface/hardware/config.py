@@ -27,6 +27,7 @@ class UOSFunction:
     address_lut: Dict
     ack: bool
     rx_packets_expected: List = field(default_factory=list)
+    required_arguments: List = field(default_factory=list)
 
 
 UOS_SCHEMA = {
@@ -35,7 +36,9 @@ UOS_SCHEMA = {
         address_lut={0: 64}, ack=True, rx_packets_expected=[1]
     ),
     "get_adc_input": UOSFunction(
-        address_lut={0: 85}, ack=True, rx_packets_expected=[2]
+        address_lut={0: 85},
+        ack=True,
+        rx_packets_expected=[2],
     ),
     "reset_all_io": UOSFunction(address_lut={0: 68}, ack=True),
     "hard_reset": UOSFunction(address_lut={0: -1}, ack=False),
@@ -43,7 +46,9 @@ UOS_SCHEMA = {
         address_lut={0: 250}, ack=True, rx_packets_expected=[2]
     ),
     "get_gpio_config": UOSFunction(
-        address_lut={0: 251}, ack=True, rx_packets_expected=[2]
+        address_lut={0: 251},
+        ack=True,
+        rx_packets_expected=[2],
     ),
 }
 

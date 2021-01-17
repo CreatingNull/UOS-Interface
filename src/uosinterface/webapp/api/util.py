@@ -24,37 +24,39 @@ class APIresult:
 
 
 def check_required_args(
-    required_arguments: {}, arguments_found: {}, add_device: bool = False
+    possible_arguments: {APIargument}, arguments_found: {}, add_device: bool = False
 ) -> (APIresult, {}):
     """Adds common arguments and vets user request against parameters."""
     if add_device:
-        required_arguments = dict(
-            required_arguments,
+        possible_arguments = dict(
+            possible_arguments,
             **{
-                "identity": APIargument(False, str, None),
-                "connection": APIargument(False, str, None),
+                "identity": APIargument(True, str, None),
+                "connection": APIargument(True, str, None),
             },
         )
-    Log(__name__).debug("Required arguments %s", required_arguments.__str__())
-    for argument in required_arguments:
-        if argument not in arguments_found:
+    Log(__name__).debug("Required arguments %s", possible_arguments.__str__())
+    for argument in possible_arguments:
+        if argument not in arguments_found and possible_arguments[argument].required:
             return (
                 APIresult(
                     False, f"Expected argument '{argument}' not found in request."
                 ),
-                required_arguments,
+                possible_arguments,
             )
+        elif not possible_arguments[argument].required:
+            continue
         try:
-            required_arguments[argument].arg_value = required_arguments[
+            possible_arguments[argument].arg_value = possible_arguments[
                 argument
             ].arg_type(arguments_found[argument])
         except ValueError:
             return (
                 APIresult(
                     False,
-                    f"Expected '{argument}' to have type {required_arguments[argument].arg_type} "
+                    f"Expected '{argument}' to have type {possible_arguments[argument].arg_type} "
                     f"not {type(arguments_found[argument])}.",
                 ),
-                required_arguments,
+                possible_arguments,
             )
-    return APIresult(True), required_arguments
+    return APIresult(True), possible_arguments

@@ -1,22 +1,28 @@
 """Web RESTful API layer for automation."""
+import inspect
+
 from flask import jsonify
 from flask import request
 from uosinterface.hardware import UOSDevice
+from uosinterface.webapp.api import API_VERSIONS
 from uosinterface.webapp.api import blueprint
 from uosinterface.webapp.api import util
 
-API_VERSIONS = ["0.0"]
-
 
 @blueprint.route("<string:api_version>/<string:function>")
-def route_io_function(api_version: str, function: str):
+def route_hardware_function(api_version: str, function: str):
     """Can be used to execute standard UOS IO functions."""
-    required_args = {
-        "pin": util.APIargument(False, int, None),
-        "level": util.APIargument(False, int, None),
+    # todo first is to check the function exists
+    arguments = inspect.signature(getattr(UOSDevice, function))
+    possible_args = {
+        argument.name: util.APIargument(
+            argument.default == inspect.Parameter.empty, argument.annotation, None
+        )
+        for argument in arguments.parameters.values()
+        if argument.name != "self"
     }
     response, required_args = util.check_required_args(
-        required_args, request.args, add_device=True
+        possible_args, request.args, add_device=True
     )
     if response.status:
         device = UOSDevice(
