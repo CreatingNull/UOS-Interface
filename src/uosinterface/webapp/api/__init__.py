@@ -1,7 +1,7 @@
 """API Package blueprint initialisations."""
 from flask import Blueprint
 
-API_VERSIONS = ["0.0"]
+API_VERSIONS = ["1.0"]
 
 blueprint = Blueprint(
     "api_blueprint",
