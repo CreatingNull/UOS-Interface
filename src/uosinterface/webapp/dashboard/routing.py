@@ -36,7 +36,7 @@ def route_device():
         )
     elif digital_instruction_form.is_submitted():  # execute a digital_instruction]
         getLogger(__name__).debug(
-            "route_device digital command %s with ",
+            "route_device digital command %s with %s",
             request.method,
             digital_instruction_form.__repr__(),
         )

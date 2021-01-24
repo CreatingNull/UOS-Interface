@@ -43,7 +43,7 @@ def route_hardware_function(api_version: str, function: str):
             identity=required_args["identity"].arg_value,
             connection=required_args["connection"].arg_value,
         )
-        if function in [function for function in dir(UOSDevice)]:
+        if function in dir(UOSDevice):
             instr_response = getattr(device, function)(
                 *[
                     required_args[parameter.name].arg_value
