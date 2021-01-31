@@ -36,5 +36,6 @@ def execute_digital_instruction(
 ) -> {}:
     """Configures the pin based on the form data and formats response into
     dict."""
+
     uos_data = {}
     return uos_data
