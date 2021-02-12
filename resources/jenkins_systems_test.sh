@@ -11,5 +11,5 @@ $ci_python -m pip install -r resources/requirements.txt
 $ci_python -m pip install wheel
 $ci_python -m pip install pytest
 $ci_python -m pip install coverage
-$ci_python -m coverage run --rc-file=coveragerc.ini -m pytest src/tests/ --usb-serial=/dev/ttyUSB0
-$ci_python -m coverage xml --rc-file=coveragerc.ini
+$ci_python -m coverage run --rcfile=coveragerc.ini -m pytest src/tests/ --usb-serial=/dev/ttyUSB0
+$ci_python -m coverage xml --rcfile=coveragerc.ini
