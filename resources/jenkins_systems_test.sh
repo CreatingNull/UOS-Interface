@@ -10,4 +10,4 @@ $ci_python -m pip install --upgrade setuptools
 $ci_python -m pip install -r resources/requirements.txt
 $ci_python -m pip install pytest
 $ci_python -m pip install coverage
-$ci_python -m pytest src/tests/
+$ci_python -m pytest src/tests/ --usb-serial=/dev/ttyUSB0
