@@ -1,4 +1,4 @@
-# ![NullTek Documentation](resources/NullTekDocumentationLogo.png) UART OS Interface
+# ![NullTek Documentation](resources/NullTekDocumentationLogo.png) UOS Interface
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE.md) 
 [![Codacy Inspection](https://app.codacy.com/project/badge/Grade/8a24020489ee4638aa10449e3f1cc0cd)](https://www.codacy.com/gh/CreatingNull/UART-Operating-System-Interface/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CreatingNull/UART-Operating-System-Interface&amp;utm_campaign=Badge_Grade)
