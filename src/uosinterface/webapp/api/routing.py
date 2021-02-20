@@ -22,10 +22,11 @@ def route_hardware_function(api_version: str, function: str):
         )
     try:
         arguments = inspect.signature(getattr(UOSDevice, function))
-    except AttributeError as e:
+    except AttributeError as exception:
         return jsonify(
             COMresult(
-                False, exception=f"API call on '{function}' threw error {e.__str__()}."
+                False,
+                exception=f"API call on '{function}' threw error {exception.__str__()}.",
             )
         )
     possible_args = {

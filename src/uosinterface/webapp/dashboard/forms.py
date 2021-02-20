@@ -18,6 +18,7 @@ class ConnectDeviceForm(FlaskForm):
     )
 
     def __repr__(self):
+        """Over-ride magic method to display form object."""
         return f"<ConnectDeviceForm(device_connection='{self.device_connection.data}')>"
 
 
@@ -34,6 +35,7 @@ class DigitalInstructionForm(FlaskForm):
     pin_level = BooleanField(id="pin-level", default=False, label="Set High")
 
     def __repr__(self):
+        """Over-ride magic method to display form object."""
         return (
             f"<DigitalInstructionForm(device_connection='{self.device_connection.data}', "
             f"pin_index={self.pin_index.data}, pin_mode={self.pin_mode.data}, "

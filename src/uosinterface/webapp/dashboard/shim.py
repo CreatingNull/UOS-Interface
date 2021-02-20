@@ -34,8 +34,6 @@ def get_system_info(device_identity, device_connection: str) -> {}:
 def execute_digital_instruction(
     device_identity: str, device_connection: str, set_output: bool, set_level: bool
 ) -> {}:
-    """Configures the pin based on the form data and formats response into
-    dict."""
-
+    """Configs the pin from form data and formats response into dict."""
     uos_data = {}
     return uos_data
