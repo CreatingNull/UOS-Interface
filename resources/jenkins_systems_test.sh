@@ -13,3 +13,5 @@ $ci_python -m pip install pytest
 $ci_python -m pip install coverage
 $ci_python -m coverage run --rcfile=.coveragerc.ini -m pytest src/tests/ --usb-serial=/dev/ttyUSB0
 $ci_python -m coverage xml --rcfile=.coveragerc.ini
+
+# After this coverage report is uploaded to codacy project against the commit hash.
