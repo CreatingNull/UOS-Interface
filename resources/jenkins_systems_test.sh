@@ -16,8 +16,8 @@ $ci_python -m coverage xml --rcfile=.coveragerc.ini
 
 # After this coverage report is uploaded to codacy project against the commit hash
 # API Token must already be injected as protected environment variable.
-# shellcheck disable=SC1019
 if [[ -n "${CODACY_PROJECT_TOKEN}" ]]; then
+  echo uploading coverage results for commit "$GIT_COMMIT"
   curl -LS -o codacy-coverage-reporter-assembly.jar "$(curl -LSs https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets | map({name, browser_download_url} | select(.name | endswith(".jar"))) | .[0].browser_download_url')"
-  java -jar codacy-coverage-reporter-assembly.jar report --commit-uuid "$COMMIT_ID" -r ../logs/coverage/coverage.xml.
+  java -jar codacy-coverage-reporter-assembly.jar report --commit-uuid "$GIT_COMMIT" -r logs/coverage/coverage.xml
 fi
