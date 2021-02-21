@@ -18,5 +18,6 @@ $ci_python -m coverage xml --rcfile=.coveragerc.ini
 # API Token must already be injected as protected environment variable.
 # shellcheck disable=SC1019
 if [[ -n "${CODACY_PROJECT_TOKEN}" ]]; then
-  <(curl -Ls https://coverage.codacy.com/get.sh) report --commit-uuid "$COMMIT_ID" -r ../logs/coverage/coverage.xml.
+  curl -LS -o codacy-coverage-reporter-assembly.jar "$(curl -LSs https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets | map({name, browser_download_url} | select(.name | endswith(".jar"))) | .[0].browser_download_url')"
+  java -jar codacy-coverage-reporter-assembly.jar report --commit-uuid "$COMMIT_ID" -r ../logs/coverage/coverage.xml.
 fi
