@@ -3,5 +3,5 @@ coverage==5.4
 docformatter==1.4
 pipdeptree==2.0.0
 pytest==6.2.2
-Sphinx==3.4.3
+Sphinx==3.5.1
 reorder-python-imports==2.4.0
