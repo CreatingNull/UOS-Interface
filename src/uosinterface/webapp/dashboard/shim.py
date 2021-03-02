@@ -7,7 +7,14 @@ from uosinterface.hardware.config import DEVICES
 
 
 def get_system_info(device_identity, device_connection: str) -> {}:
-    """Gets the 'version', 'type' and 'connection' and formats into dict."""
+    """
+    Gets the 'version', 'type' and 'connection' and formats into dict.
+
+    :param device_identity: Class of device being connected to.
+    :param device_connection: Connection string to the device.
+    :return: Dictionary containing 'version', 'connection', and 'type', empty if fails.
+
+    """
     uos_data = {}
     try:
         device = UOSDevice(
@@ -15,6 +22,7 @@ def get_system_info(device_identity, device_connection: str) -> {}:
             connection=device_connection,
         )
         result = device.get_system_info()
+        getLogger(__name__).debug("Shim queried device info %s", str(result))
         device.close()
         if result.status:
             uos_data["version"] = (
@@ -24,6 +32,8 @@ def get_system_info(device_identity, device_connection: str) -> {}:
             uos_data["connection"] = device.connection
             if f"HWID{result.rx_packets[0][7]}" in DEVICES:
                 uos_data["type"] = f"{DEVICES[f'HWID{result.rx_packets[0][7]}'].name}"
+            else:
+                uos_data["type"] = "Unknown"
     except (AttributeError, ValueError, NotImplementedError, RuntimeError) as exception:
         message = f"Cannot open connection to '{device_connection}', info: {exception.__str__()}"
         flash(message, "error")
