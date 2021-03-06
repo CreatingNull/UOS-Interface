@@ -37,7 +37,8 @@ class NPCStub(UOSInterface):
                                 0, address, tuple([0 for _ in range(rx_packet)])
                             )
                         )
-        return COMresult(True)
+                    return COMresult(True)
+        return COMresult(False)
 
     def read_response(self, expect_packets: int, timeout_s: float) -> COMresult:
         """
