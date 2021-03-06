@@ -47,6 +47,14 @@ class TestHardwareCOMInterface:
                 assert len(result.rx_packets) == len(
                     UOS_SCHEMA[function_name].rx_packets_expected
                 )
+                for i, rx_packet in enumerate(result.rx_packets):
+                    assert (  # packet length validation
+                        len(rx_packet)
+                        == 6 + UOS_SCHEMA[function_name].rx_packets_expected[i]
+                    )
+                    assert (  # payload length validation
+                        rx_packet[3] == UOS_SCHEMA[function_name].rx_packets_expected[i]
+                    )
             else:  # not implemented check error raised correctly
                 with pytest.raises(NotImplementedError):
                     getattr(uos_device, function_name)(
