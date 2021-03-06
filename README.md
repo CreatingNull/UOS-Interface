@@ -1,9 +1,9 @@
 # ![NullTek Documentation](resources/NullTekDocumentationLogo.png) UOS Interface
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE.md) 
-[![Codacy Inspection](https://app.codacy.com/project/badge/Grade/8a24020489ee4638aa10449e3f1cc0cd)](https://www.codacy.com/gh/CreatingNull/UART-Operating-System-Interface/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CreatingNull/UART-Operating-System-Interface&amp;utm_campaign=Badge_Grade)
-[![Codacy Coverage](https://app.codacy.com/project/badge/Coverage/8a24020489ee4638aa10449e3f1cc0cd)](https://www.codacy.com/gh/CreatingNull/UART-Operating-System-Interface/dashboard?utm_source=github.com&utm_medium=referral&utm_content=CreatingNull/UART-Operating-System-Interface&utm_campaign=Badge_Coverage)
-[![Build Status](https://travis-ci.org/CreatingNull/UART-Operating-System-Interface.svg?branch=master)](https://travis-ci.org/CreatingNull/UART-Operating-System-Interface)
+[![Codacy Inspection](https://app.codacy.com/project/badge/Grade/8a24020489ee4638aa10449e3f1cc0cd)](https://www.codacy.com/gh/CreatingNull/UOS-Interface/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CreatingNull/UOS-Interface&amp;utm_campaign=Badge_Grade)
+[![Codacy Converge](https://app.codacy.com/project/badge/Coverage/8a24020489ee4638aa10449e3f1cc0cd)](https://www.codacy.com/gh/CreatingNull/UOS-Interface/dashboard?utm_source=github.com&utm_medium=referral&utm_content=CreatingNull/UOS-Interface&utm_campaign=Badge_Coverage)
+[![Build Status](https://travis-ci.com/CreatingNull/UOS-Interface.svg?branch=master)](https://travis-ci.com/CreatingNull/UOS-Interface)
 
 Python Interface for remote communication and control of a UOS Compliant Microcontroller.
 
