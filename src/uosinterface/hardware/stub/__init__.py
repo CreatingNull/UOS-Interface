@@ -2,6 +2,7 @@
 from typing import Tuple
 
 from uosinterface.hardware.config import UOS_SCHEMA
+from uosinterface.hardware.config import UOSFunction
 from uosinterface.hardware.uosabstractions import COMresult
 from uosinterface.hardware.uosabstractions import SystemDevice
 from uosinterface.hardware.uosabstractions import UOSInterface
@@ -26,7 +27,11 @@ class NPCStub(UOSInterface):
         """
         for function in UOS_SCHEMA:
             for vol in UOS_SCHEMA[function].address_lut:
-                if UOS_SCHEMA[function].address_lut[vol] == address:
+                if UOS_SCHEMA[function].address_lut[
+                    vol
+                ] == address and self.__check_required_args(
+                    payload, UOS_SCHEMA[function]
+                ):
                     if UOS_SCHEMA[function].ack:
                         self.__packet_buffer.append(
                             self.get_npc_packet(0, address, tuple([0]))
@@ -52,8 +57,8 @@ class NPCStub(UOSInterface):
         if len(self.__packet_buffer) > 0:
             result.ack_packet = self.__packet_buffer.pop(0)
             result.status = True
-        for packet in self.__packet_buffer:
-            result.rx_packets.append(packet)
+        for _ in self.__packet_buffer:
+            result.rx_packets.append(self.__packet_buffer.pop(0))
         return result
 
     def hard_reset(self) -> COMresult:
@@ -78,3 +83,21 @@ class NPCStub(UOSInterface):
                 connection="STUB|Test stub", interface="STUB", port="Test stub"
             )
         ]
+
+    @staticmethod
+    def __check_required_args(payload: Tuple[int, ...], function: UOSFunction) -> bool:
+        """
+        Checks formatted payload against a UOS schema payload definition.
+
+        :param payload: Formatted payload tuple of ints.
+        :param function: UOSFunction schema definition.
+        :return: Boolean for if there is a match.
+
+        """
+        if function.required_arguments is not None and len(
+            function.required_arguments
+        ) == len(payload):
+            for i, argument in enumerate(function.required_arguments):
+                if argument is not None and argument != payload[i]:
+                    return False
+        return True

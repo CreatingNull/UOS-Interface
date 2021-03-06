@@ -40,9 +40,13 @@ class TestHardwareCOMInterface:
         """Checks the pin I/O based UOS functions."""
         for volatility in [0, 1, 2]:
             if volatility in uos_device.system_lut.functions_enabled[function_name]:
-                assert getattr(uos_device, function_name)(
+                result = getattr(uos_device, function_name)(
                     pin=1, level=1, volatility=volatility
-                ).status
+                )
+                assert result.status
+                assert len(result.rx_packets) == len(
+                    UOS_SCHEMA[function_name].rx_packets_expected
+                )
             else:  # not implemented check error raised correctly
                 with pytest.raises(NotImplementedError):
                     getattr(uos_device, function_name)(

@@ -27,13 +27,20 @@ class UOSFunction:
     address_lut: Dict
     ack: bool
     rx_packets_expected: List = field(default_factory=list)
-    required_arguments: List = field(default_factory=list)
+    required_arguments: List = None
 
 
 UOS_SCHEMA = {
-    "set_gpio_output": UOSFunction(address_lut={0: 64}, ack=True),
+    "set_gpio_output": UOSFunction(
+        address_lut={0: 64},
+        ack=True,
+        required_arguments=[None, 0, None],  # pin index, io type, level.
+    ),
     "get_gpio_input": UOSFunction(
-        address_lut={0: 64}, ack=True, rx_packets_expected=[1]
+        address_lut={0: 64},
+        ack=True,
+        rx_packets_expected=[1],
+        required_arguments=[None, 1, None],  # pin index, io type, level.
     ),
     "get_adc_input": UOSFunction(
         address_lut={0: 85},
