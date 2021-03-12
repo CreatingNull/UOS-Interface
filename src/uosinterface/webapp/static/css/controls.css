@@ -78,7 +78,6 @@
   display: flex;
   font-size: 0;
   position: relative;
-  width: 100%;
 }
 
 /* used for removing the inner rounds on the spinner buttons */
@@ -119,4 +118,39 @@
   background-color: var(--control-hover-color);
   color: black;
   transition: 0.3s;
+}
+
+.control-led {
+  background-color: var(--control-fg-color);
+  border-radius: 50%;
+  box-shadow: var(--control-shadow-color) 0 3px 5px,
+    inset rgba(0, 0, 0, 0.9) 0 -1px 9px;
+  float: left;
+  height: 30px;
+  margin: auto;
+  width: 30px;
+}
+
+.control-led.red {
+  background-color: #f00;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px,
+    rgba(255, 0, 0, 0.7) 0 2px 12px;
+}
+
+.control-led-yellow {
+  background-color: #ff0;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #808002 0 -1px 9px,
+    #ff0 0 2px 12px;
+}
+
+.control-led-green {
+  background-color: #abff00;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px,
+    #89ff00 0 2px 12px;
+}
+
+.control-led-blue {
+  background-color: #24e0ff;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #006 0 -1px 9px,
+    #3f8cff 0 2px 14px;
 }

@@ -11,7 +11,7 @@
     <form action="/" method="POST">
       <!-- prettier-ignore -->
       {{ connect_device_form.hidden_tag() }}
-      <div class="control control-button-big">
+      <div class="control-button-big">
         <button
           type="submit"
           onclick="getSelectedConnection('{{ connect_device_form.device_connection.id }}')"
@@ -80,6 +80,7 @@
           >
             <i class="fa fa-plus"></i>
           </button>
+          <div class="control-led"></div>
         </div>
         <div class="control control-switch">
           {{ digital_instruction_form.pin_mode(onclick="toggleSwitch(this)") }}
