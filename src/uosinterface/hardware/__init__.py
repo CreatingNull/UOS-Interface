@@ -74,7 +74,7 @@ class UOSDevice:
 
     identity = ""
     connection = ""
-    system_lut = {}
+    system_lut = Device
     __kwargs = {}
     __device_interface = None
 
