@@ -72,7 +72,7 @@ ARDUINO_NANO_3 = Device(
         "get_system_info": {0: True},
         "get_gpio_config": {0: True},
     },
-    digital_pins=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+    digital_pins=[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
     analogue_pins=[0, 1, 2, 3, 4, 5, 6, 7, 8],
     aux_params={"default_baudrate": 115200},
 )
