@@ -1,5 +1,8 @@
 """Unit tests for the HardwareCOM package."""
 import pytest
+from uosinterface import UOSCommunicationError
+from uosinterface import UOSConfigurationError
+from uosinterface import UOSUnsupportedError
 from uosinterface.hardware import uosabstractions
 from uosinterface.hardware import UOSDevice
 from uosinterface.hardware.config import UOS_SCHEMA
@@ -19,15 +22,15 @@ class TestHardwareCOMInterface:
     @staticmethod
     def test_unimplemented_devices():
         """Checks an un-implemented device throws the correct error."""
-        with pytest.raises(NotImplementedError):
+        with pytest.raises(UOSUnsupportedError):
             UOSDevice(identity="Not Implemented", connection="")
 
     @staticmethod
     def test_bad_connection(uos_identities: ()):
         """Checks that bad connections fail sensibly."""
-        with pytest.raises(ValueError):  # incorrect connection formatting
+        with pytest.raises(UOSConfigurationError):  # incorrect connection formatting
             UOSDevice(uos_identities[0], "bad connection", loading=uos_identities[2])
-        with pytest.raises(RuntimeError):
+        with pytest.raises(UOSCommunicationError):
             device = UOSDevice(
                 uos_identities[0], "USB|connection", loading=uos_identities[2]
             )
@@ -56,7 +59,7 @@ class TestHardwareCOMInterface:
                         rx_packet[3] == UOS_SCHEMA[function_name].rx_packets_expected[i]
                     )
             else:  # not implemented check error raised correctly
-                with pytest.raises(NotImplementedError):
+                with pytest.raises(UOSUnsupportedError):
                     getattr(uos_device, function_name)(
                         pin=1, level=1, volatility=volatility
                     )
@@ -92,7 +95,7 @@ class TestHardwareCOMAbstractions:
     @staticmethod
     def test_execute_instruction():
         """Using the base class directly should throw an error."""
-        with pytest.raises(NotImplementedError):
+        with pytest.raises(UOSUnsupportedError):
             # noinspection PyTypeChecker
             uosabstractions.UOSInterface.execute_instruction(
                 self=None, address=10, payload=()
@@ -101,7 +104,7 @@ class TestHardwareCOMAbstractions:
     @staticmethod
     def test_read_response():
         """Using the base class directly should throw an error."""
-        with pytest.raises(NotImplementedError):
+        with pytest.raises(UOSUnsupportedError):
             # noinspection PyTypeChecker
             uosabstractions.UOSInterface.read_response(
                 self=None, expect_packets=1, timeout_s=2
@@ -110,21 +113,21 @@ class TestHardwareCOMAbstractions:
     @staticmethod
     def test_hard_reset():
         """Using the base class directly should throw an error."""
-        with pytest.raises(NotImplementedError):
+        with pytest.raises(UOSUnsupportedError):
             # noinspection PyTypeChecker
             uosabstractions.UOSInterface.hard_reset(self=None)
 
     @staticmethod
     def test_open():
         """Using the base class directly should throw an error."""
-        with pytest.raises(NotImplementedError):
+        with pytest.raises(UOSUnsupportedError):
             # noinspection PyTypeChecker
             uosabstractions.UOSInterface.open(self=None)
 
     @staticmethod
     def test_close():
         """Using the base class directly should throw an error."""
-        with pytest.raises(NotImplementedError):
+        with pytest.raises(UOSUnsupportedError):
             # noinspection PyTypeChecker
             uosabstractions.UOSInterface.close(self=None)
 

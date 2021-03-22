@@ -2,6 +2,9 @@
 from logging import getLogger as Log
 from pathlib import Path
 
+from uosinterface import UOSCommunicationError
+from uosinterface import UOSConfigurationError
+from uosinterface import UOSUnsupportedError
 from uosinterface.hardware.config import Device
 from uosinterface.hardware.config import DEVICES
 from uosinterface.hardware.config import INTERFACE_STUB
@@ -92,12 +95,12 @@ class UOSDevice:
         self.system_lut = _locate_device_definition(identity)
         self.__kwargs = kwargs
         if self.system_lut is None:
-            raise NotImplementedError(
+            raise UOSUnsupportedError(
                 f"'{self.identity}' does not have a valid look up table"
             )
         connection_params = self.connection.split("|")
         if len(connection_params) != 2:
-            raise ValueError(
+            raise UOSConfigurationError(
                 f"NPC connection string was incorrectly formatted, length={len(connection_params)}"
             )
         if (
@@ -114,7 +117,7 @@ class UOSDevice:
         ):
             self.__device_interface = NPCStub()
         else:
-            raise RuntimeError(
+            raise UOSCommunicationError(
                 f"Could not correctly open a connection to {self.identity} - {self.connection}"
             )
         if not self.is_lazy():  # eager connections open when they are created
@@ -245,22 +248,25 @@ class UOSDevice:
         """
         Connects to the device, explict calls are normally not required.
 
-        :raises: RuntimeError - If there was an issue opening a connection.
-        :raises: Attribute Error - if bad configuration of the UOSDevice object.
+        :raises: UOSCommunicationError - Problem opening a connection.
 
         """
         if not self.__device_interface.open():
-            raise RuntimeError("There was an error opening a connection to the device.")
+            raise UOSCommunicationError(
+                "There was an error opening a connection to the device."
+            )
 
     def close(self):
         """
         Releases connection, must be called explicitly if loading is eager.
 
-        :raises: RuntimeError - If there was a problem closing the connection to an active device.
+        :raises: UOSCommunicationError - Problem closing the connection to an active device.
 
         """
         if not self.__device_interface.close():
-            raise RuntimeError("There was an error closing a connection to the device")
+            raise UOSCommunicationError(
+                "There was an error closing a connection to the device"
+            )
 
     def __execute_instruction(
         self,
@@ -276,7 +282,7 @@ class UOSDevice:
         :param volatility: How volatile should the command be, use constants in HardwareCOM.
         :param instruction_data: device_functions from the LUT, payload ect.
         :return: COMresult object
-        :raises: NotImplementedError if function is not possible on the loaded device.
+        :raises: UOSUnsupportedError if function is not possible on the loaded device.
 
         """
         if (
@@ -286,7 +292,7 @@ class UOSDevice:
             Log(__name__).debug(
                 "Known functions %s", self.system_lut.functions_enabled.keys().__str__()
             )
-            raise NotImplementedError(
+            raise UOSUnsupportedError(
                 f"{function_name}({volatility}) has not been implemented for {self.identity}"
             )
         rx_response = COMresult(False)

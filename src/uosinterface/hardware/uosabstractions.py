@@ -8,6 +8,8 @@ from typing import Dict
 from typing import List
 from typing import Tuple
 
+from uosinterface import UOSUnsupportedError
+
 
 @dataclass
 class COMresult:
@@ -49,10 +51,10 @@ class UOSInterface(metaclass=ABCMeta):
         :param address: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
         :param payload: A tuple containing the uint8 parameters of the UOS instruction.
         :returns: COM Result object.
-        :raises: NotImplementedError if the interface hasn't been built correctly.
+        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
 
         """
-        raise NotImplementedError(
+        raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.execute_instruction.__name__} prototype."
         )
 
@@ -64,10 +66,10 @@ class UOSInterface(metaclass=ABCMeta):
         :param expect_packets: How many packets including ACK to expect
         :param timeout_s: The maximum time this function will wait for data.
         :return: COM Result object.
-        :raises: NotImplementedError if the interface hasn't been built correctly.
+        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
 
         """
-        raise NotImplementedError(
+        raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.read_response.__name__} prototype."
         )
 
@@ -79,7 +81,7 @@ class UOSInterface(metaclass=ABCMeta):
         :return: COM Result object.
 
         """
-        raise NotImplementedError(
+        raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.hard_reset.__name__} prototype"
         )
 
@@ -89,10 +91,10 @@ class UOSInterface(metaclass=ABCMeta):
         Abstract method for opening a connection to a UOSInterface.
 
         :return: Success boolean.
-        :raises: NotImplementedError if the interface hasn't been built correctly.
+        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
 
         """
-        raise NotImplementedError(
+        raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.open.__name__} prototype."
         )
 
@@ -102,10 +104,10 @@ class UOSInterface(metaclass=ABCMeta):
         Abstract method for closing a connection to a UOSInterface.
 
         :return: Success boolean.
-        :raises: NotImplementedError if the interface hasn't been built correctly.
+        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
 
         """
-        raise NotImplementedError(
+        raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.close.__name__} prototype."
         )
 
@@ -116,10 +118,10 @@ class UOSInterface(metaclass=ABCMeta):
         Static method that should be functional if possible.
 
         :return: A list of possible SystemDevices on the server.
-        :raises: NotImplementedError if the interface hasn't been built correctly.
+        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
 
         """
-        raise NotImplementedError(
+        raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.enumerate_devices.__name__} prototype."
         )
 
