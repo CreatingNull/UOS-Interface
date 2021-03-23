@@ -40,7 +40,7 @@ class TestHardwareCOMInterface:
     @staticmethod
     @pytest.mark.parametrize("function_name", UOS_SCHEMA.keys())
     def test_device_function(uos_device, function_name):
-        """Checks the pin I/O based UOS functions."""
+        """Checks the UOS functions respond correctly."""
         for volatility in [0, 1, 2]:
             for pin in uos_device.system_lut.get_compatible_pins(function_name):
                 if volatility in uos_device.system_lut.functions_enabled[function_name]:
@@ -65,6 +65,12 @@ class TestHardwareCOMInterface:
                         getattr(uos_device, function_name)(
                             pin=pin, level=1, volatility=volatility
                         )
+
+    @staticmethod
+    def test_invalid_pin(uos_device):
+        """Checks a pin based instruction with an invalid pin throws error."""
+        with pytest.raises(UOSUnsupportedError):
+            uos_device.set_gpio_output(-1, 1)
 
 
 class TestHardwareCOMAbstractions:
