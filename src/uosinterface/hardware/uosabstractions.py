@@ -29,6 +29,7 @@ class InstructionArguments:
     device_function_lut: Dict = field(default_factory=dict)
     payload: tuple = ()
     expected_rx_packets: int = 1
+    check_pin: int = None
 
 
 @dataclass

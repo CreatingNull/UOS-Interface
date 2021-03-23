@@ -9,6 +9,51 @@ INTERFACE_STUB = "STUB"
 
 
 @dataclass
+class UOSFunction:
+    """Defines auxiliary information for UOS commands in the schema."""
+
+    address_lut: Dict
+    ack: bool
+    rx_packets_expected: List = field(default_factory=list)
+    required_arguments: List = None
+    pin_requirements: List = None
+
+
+UOS_SCHEMA = {
+    "set_gpio_output": UOSFunction(
+        address_lut={0: 64},
+        ack=True,
+        required_arguments=[None, 0, None],  # pin index, io type, level.
+        pin_requirements=["gpio_out"],
+    ),
+    "get_gpio_input": UOSFunction(
+        address_lut={0: 64},
+        ack=True,
+        rx_packets_expected=[1],
+        required_arguments=[None, 1, None],  # pin index, io type, level.
+        pin_requirements=["gpio_in"],
+    ),
+    "get_adc_input": UOSFunction(
+        address_lut={0: 85},
+        ack=True,
+        rx_packets_expected=[2],
+        pin_requirements=["adc_in"],
+    ),
+    "reset_all_io": UOSFunction(address_lut={0: 68}, ack=True),
+    "hard_reset": UOSFunction(address_lut={0: -1}, ack=False),
+    "get_system_info": UOSFunction(
+        address_lut={0: 250}, ack=True, rx_packets_expected=[6]
+    ),
+    "get_gpio_config": UOSFunction(
+        address_lut={0: 251},
+        ack=True,
+        rx_packets_expected=[2],
+        pin_requirements=[],
+    ),
+}
+
+
+@dataclass
 class Pin:
     """Defines supported features of the pin."""
 
@@ -35,48 +80,25 @@ class Device:
     interfaces: list
     functions_enabled: Dict
     digital_pins: {int: Pin} = field(default_factory=dict)
-    analogue_pins: Dict = field(default_factory=dict)
+    analogue_pins: {int: Pin} = field(default_factory=dict)
     aux_params: Dict = field(default_factory=dict)
 
-
-@dataclass
-class UOSFunction:
-    """Defines auxiliary information for UOS commands in the schema."""
-
-    address_lut: Dict
-    ack: bool
-    rx_packets_expected: List = field(default_factory=list)
-    required_arguments: List = None
-
-
-UOS_SCHEMA = {
-    "set_gpio_output": UOSFunction(
-        address_lut={0: 64},
-        ack=True,
-        required_arguments=[None, 0, None],  # pin index, io type, level.
-    ),
-    "get_gpio_input": UOSFunction(
-        address_lut={0: 64},
-        ack=True,
-        rx_packets_expected=[1],
-        required_arguments=[None, 1, None],  # pin index, io type, level.
-    ),
-    "get_adc_input": UOSFunction(
-        address_lut={0: 85},
-        ack=True,
-        rx_packets_expected=[2],
-    ),
-    "reset_all_io": UOSFunction(address_lut={0: 68}, ack=True),
-    "hard_reset": UOSFunction(address_lut={0: -1}, ack=False),
-    "get_system_info": UOSFunction(
-        address_lut={0: 250}, ack=True, rx_packets_expected=[6]
-    ),
-    "get_gpio_config": UOSFunction(
-        address_lut={0: 251},
-        ack=True,
-        rx_packets_expected=[2],
-    ),
-}
+    def get_compatible_pins(self, function_name: str) -> []:
+        requirements = (
+            UOS_SCHEMA[function_name].pin_requirements
+            if function_name in UOS_SCHEMA
+            else []
+        )
+        if requirements is None:  # pin is not relevant
+            return []
+        pin_dict = self.analogue_pins if "adc_in" in requirements else self.digital_pins
+        return [
+            pin
+            for pin in pin_dict
+            if all(  # check all pin requirements are met
+                [getattr(pin_dict[pin], requirement) for requirement in requirements]
+            )
+        ]
 
 
 ARDUINO_NANO_3 = Device(

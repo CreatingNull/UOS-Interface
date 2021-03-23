@@ -42,27 +42,29 @@ class TestHardwareCOMInterface:
     def test_device_function(uos_device, function_name):
         """Checks the pin I/O based UOS functions."""
         for volatility in [0, 1, 2]:
-            if volatility in uos_device.system_lut.functions_enabled[function_name]:
-                result = getattr(uos_device, function_name)(
-                    pin=1, level=1, volatility=volatility
-                )
-                assert result.status
-                assert len(result.rx_packets) == len(
-                    UOS_SCHEMA[function_name].rx_packets_expected
-                )
-                for i, rx_packet in enumerate(result.rx_packets):
-                    assert (  # packet length validation
-                        len(rx_packet)
-                        == 6 + UOS_SCHEMA[function_name].rx_packets_expected[i]
+            for pin in uos_device.system_lut.get_compatible_pins(function_name):
+                if volatility in uos_device.system_lut.functions_enabled[function_name]:
+                    result = getattr(uos_device, function_name)(
+                        pin=pin, level=1, volatility=volatility
                     )
-                    assert (  # payload length validation
-                        rx_packet[3] == UOS_SCHEMA[function_name].rx_packets_expected[i]
+                    assert result.status
+                    assert len(result.rx_packets) == len(
+                        UOS_SCHEMA[function_name].rx_packets_expected
                     )
-            else:  # not implemented check error raised correctly
-                with pytest.raises(UOSUnsupportedError):
-                    getattr(uos_device, function_name)(
-                        pin=1, level=1, volatility=volatility
-                    )
+                    for i, rx_packet in enumerate(result.rx_packets):
+                        assert (  # packet length validation
+                            len(rx_packet)
+                            == 6 + UOS_SCHEMA[function_name].rx_packets_expected[i]
+                        )
+                        assert (  # payload length validation
+                            rx_packet[3]
+                            == UOS_SCHEMA[function_name].rx_packets_expected[i]
+                        )
+                else:  # not implemented check error raised correctly
+                    with pytest.raises(UOSUnsupportedError):
+                        getattr(uos_device, function_name)(
+                            pin=pin, level=1, volatility=volatility
+                        )
 
 
 class TestHardwareCOMAbstractions:

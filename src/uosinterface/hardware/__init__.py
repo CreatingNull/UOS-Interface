@@ -142,6 +142,7 @@ class UOSDevice:
             InstructionArguments(
                 device_function_lut=self.system_lut.functions_enabled,
                 payload=(pin, 0, level),
+                check_pin=pin,
             ),
         )
 
@@ -164,6 +165,7 @@ class UOSDevice:
                 device_function_lut=self.system_lut.functions_enabled,
                 payload=(pin, 1, level),
                 expected_rx_packets=2,
+                check_pin=pin,
             ),
         )
 
@@ -189,6 +191,7 @@ class UOSDevice:
                 device_function_lut=self.system_lut.functions_enabled,
                 payload=tuple([pin]),
                 expected_rx_packets=2,
+                check_pin=pin,
             ),
         )
 
@@ -225,6 +228,7 @@ class UOSDevice:
                 device_function_lut=self.system_lut.functions_enabled,
                 payload=tuple([pin]),
                 expected_rx_packets=2,
+                check_pin=pin,
             ),
         )
 
@@ -281,6 +285,7 @@ class UOSDevice:
         :param function_name: The name of the function in the OOL.
         :param volatility: How volatile should the command be, use constants in HardwareCOM.
         :param instruction_data: device_functions from the LUT, payload ect.
+        :param retry: Allows the instruction to retry execution when fails.
         :return: COMresult object
         :raises: UOSUnsupportedError if function is not possible on the loaded device.
 
@@ -288,6 +293,11 @@ class UOSDevice:
         if (
             function_name not in self.system_lut.functions_enabled
             or volatility not in self.system_lut.functions_enabled[function_name]
+            or (
+                instruction_data.check_pin is not None
+                and instruction_data.check_pin
+                not in self.system_lut.get_compatible_pins(function_name)
+            )
         ):
             Log(__name__).debug(
                 "Known functions %s", self.system_lut.functions_enabled.keys().__str__()
