@@ -42,7 +42,10 @@ class TestHardwareCOMInterface:
     def test_device_function(uos_device, function_name):
         """Checks the UOS functions respond correctly."""
         for volatility in [0, 1, 2]:
-            for pin in uos_device.system_lut.get_compatible_pins(function_name):
+            pins = uos_device.system_lut.get_compatible_pins(function_name)
+            if pins is None or len(pins) == 0:
+                pins = [0]  # insert a dummy pin for non-pinned functions.
+            for pin in pins:
                 if volatility in uos_device.system_lut.functions_enabled[function_name]:
                     result = getattr(uos_device, function_name)(
                         pin=pin, level=1, volatility=volatility
