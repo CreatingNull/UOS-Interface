@@ -11,10 +11,11 @@ from uosinterface.hardware.uosabstractions import UOSInterface
 class NPCStub(UOSInterface):
     """Class can be used as a low level test endpoint."""
 
-    def __init__(self):
+    def __init__(self, errored: int = 0):
         """Instantiate an instance of the test stub."""
         self.__packet_buffer = []
         self.__open = False
+        self.errored = errored
 
     def execute_instruction(self, address: int, payload: Tuple[int, ...]) -> COMresult:
         """
@@ -73,7 +74,7 @@ class NPCStub(UOSInterface):
     def close(self) -> bool:
         """Over-riding base prototype, simulates close a connection."""
         self.__open = False
-        return True
+        return self.errored == 0
 
     @staticmethod
     def enumerate_devices():

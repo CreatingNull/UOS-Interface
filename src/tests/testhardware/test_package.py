@@ -72,6 +72,12 @@ class TestHardwareCOMInterface:
         with pytest.raises(UOSUnsupportedError):
             uos_device.set_gpio_output(-1, 1)
 
+    @staticmethod
+    def test_close_error(uos_errored_device):
+        """Checks error is thrown correctly on close."""
+        with pytest.raises(UOSCommunicationError):
+            uos_errored_device.close()
+
 
 class TestHardwareCOMAbstractions:
     """Test for the UOSInterface abstraction layer and helper functions."""

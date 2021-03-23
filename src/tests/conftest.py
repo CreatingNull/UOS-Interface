@@ -29,6 +29,17 @@ def uos_device(request):
 
 
 @pytest.fixture(scope="session", params=list(DEVICES.keys()))
+def uos_errored_device(request):
+    """Creates a fixture for testing through the abstraction layer."""
+    return UOSDevice(
+        DEVICES[request.param]["identity"],
+        DEVICES[request.param]["connection"],
+        loading=DEVICES[request.param]["loading"],
+        errored=1,
+    )
+
+
+@pytest.fixture(scope="session", params=list(DEVICES.keys()))
 def uos_identities(request):
     """Creates the device definition for testing interface config."""
     return (

@@ -115,7 +115,9 @@ class UOSDevice:
             connection_params[0].upper() == INTERFACE_STUB
             and INTERFACE_STUB in self.system_lut.interfaces
         ):
-            self.__device_interface = NPCStub()
+            self.__device_interface = NPCStub(
+                errored=(kwargs["errored"] if "errored" in kwargs else False)
+            )
         else:
             raise UOSCommunicationError(
                 f"Could not correctly open a connection to {self.identity} - {self.connection}"
