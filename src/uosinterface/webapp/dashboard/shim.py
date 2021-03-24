@@ -41,9 +41,54 @@ def get_system_info(device_identity, device_connection: str) -> {}:
     return uos_data
 
 
+def get_system_config(device_identity: str, device_connection):
+    """
+    Gets the mode and level of all gpio configured on the device.
+
+    :param device_identity: Class of device being connected to.
+    :param device_connection: Connection string to the device.
+    :return: Dictionary containing 'gpioX' with 'mode'/'level' for each pin index X.
+
+    """
+    uos_data = {}
+    try:
+        device = UOSDevice(
+            identity=device_identity,
+            connection=device_connection,
+        )
+        for digital_pin in device.system_lut.digital_pins:
+            pin_config = device.get_gpio_config(digital_pin)
+            getLogger(__name__).debug("Shim queried device info %s", str(pin_config))
+            if pin_config.status:
+                uos_data[digital_pin] = {
+                    "current_mode": pin_config.rx_packets[0][4],
+                    "current_level": pin_config.rx_packets[0][5],
+                    "ram_mode": pin_config.rx_packets[0][6],
+                    "ram_level": pin_config.rx_packets[0][7],
+                    "eeprom_mode": pin_config.rx_packets[0][8],
+                    "eeprom_level": pin_config.rx_packets[0][9],
+                }
+    except (AttributeError, ValueError, NotImplementedError, RuntimeError) as exception:
+        message = f"Cannot open connection to '{device_connection}', info: {exception.__str__()}"
+        flash(message, "error")
+        getLogger(__name__).error(message)
+    return uos_data
+
+
 def execute_digital_instruction(
     device_identity: str, device_connection: str, set_output: bool, set_level: bool
 ) -> {}:
     """Configs the pin from form data and formats response into dict."""
     uos_data = {}
+    try:
+        device = UOSDevice(
+            identity=device_identity,
+            connection=device_connection,
+        )
+        result = device.set_gpio_output()
+        device.close()
+    except (AttributeError, ValueError, NotImplementedError, RuntimeError) as exception:
+        message = f"Cannot open connection to '{device_connection}', info: {exception.__str__()}"
+        flash(message, "error")
+        getLogger(__name__).error(message)
     return uos_data
