@@ -10,6 +10,7 @@
   font-family: sans-serif;
   text-align: center;
   transition: 0.3s;
+  z-index: 3;
 }
 
 .nav-container {
