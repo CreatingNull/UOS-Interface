@@ -1,8 +1,16 @@
 <!-- prettier-ignore -->
 {% extends "site_template/base_site.html" %}
 
-
+{# Page Title #}
 {% block title %} Device {% endblock %}
+
+{# Page Specific CSS #}
+{% block stylesheets %}
+{% endblock %}
+
+{# Page Specific JS #}
+{% block javascript %}
+{% endblock %}
 
 {% block content %}
 <div class="flex-container">
@@ -46,6 +54,13 @@
 </div>
 
 <div class="flex-container">
+  <!-- prettier-ignore -->
+  {# Device config info pane #}
+  <div class="flex-item flex-item-ratio-1">
+    <div class="app-container app-container-heading">
+      <canvas class="device-canvas"> </canvas>
+    </div>
+  </div>
   <!-- prettier-ignore -->
   {# Tabbed device pane #}
   <div class="flex-item flex-item-ratio-1">
@@ -103,13 +118,6 @@
     {# Tabbed pane analogue content page #}
     <div class="tab-nav-content app-container">
       <h3>Analog Pin Control</h3>
-    </div>
-  </div>
-  <!-- prettier-ignore -->
-  {# Device config info pane #}
-  <div class="flex-item flex-item-ratio-1">
-    <div class="app-container app-container-heading">
-      <h3>Configuration Info</h3>
     </div>
   </div>
 </div>
