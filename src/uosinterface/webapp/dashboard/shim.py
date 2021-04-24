@@ -12,10 +12,10 @@ def get_system_info(device_identity, device_connection: str) -> {}:
 
     :param device_identity: Class of device being connected to.
     :param device_connection: Connection string to the device.
-    :return: Dictionary containing 'version', 'connection', and 'type', empty if fails.
+    :return: Dictionary containing system data.
 
     """
-    uos_data = {}
+    sys_data = {}
     try:
         device = UOSDevice(
             identity=device_identity,
@@ -25,20 +25,20 @@ def get_system_info(device_identity, device_connection: str) -> {}:
         getLogger(__name__).debug("Shim queried device info %s", str(result))
         device.close()
         if result.status:
-            uos_data["version"] = (
+            sys_data["version"] = (
                 f"V{result.rx_packets[0][4]}.{result.rx_packets[0][5]}."
                 f"{result.rx_packets[0][6]}"
             )
-            uos_data["connection"] = device.connection
+            sys_data["connection"] = device.connection
             if f"HWID{result.rx_packets[0][7]}" in DEVICES:
-                uos_data["type"] = f"{DEVICES[f'HWID{result.rx_packets[0][7]}'].name}"
+                sys_data["type"] = f"{DEVICES[f'HWID{result.rx_packets[0][7]}'].name}"
             else:
-                uos_data["type"] = "Unknown"
+                sys_data["type"] = "Unknown"
     except (AttributeError, ValueError, NotImplementedError, RuntimeError) as exception:
         message = f"Cannot open connection to '{device_connection}', info: {exception.__str__()}"
         flash(message, "error")
         getLogger(__name__).error(message)
-    return uos_data
+    return sys_data
 
 
 def get_system_config(device_identity: str, device_connection):

@@ -7,6 +7,7 @@ from flask import make_response
 from flask import render_template
 from flask import request
 from uosinterface.hardware import enumerate_devices
+from uosinterface.hardware import get_device_definition
 from uosinterface.webapp.dashboard import blueprint
 from uosinterface.webapp.dashboard import get_site_info
 from uosinterface.webapp.dashboard import shutdown_server
@@ -32,23 +33,24 @@ def route_device():
             request.method,
             connect_device_form.__repr__(),
         )
-        uos_data.update(
-            get_system_info(  # get the system type and version info
-                device_identity="Arduino Nano 3",
-                device_connection=connect_device_form.device_connection.data,
-            )
+        sys_data = get_system_info(  # get the system type and version info
+            device_identity="Arduino Nano 3",
+            device_connection=connect_device_form.device_connection.data,
         )
+        uos_data.update(sys_data)
     elif digital_instruction_form.is_submitted():  # execute a digital_instruction]
         getLogger(__name__).debug(
             "route_device digital command %s with %s",
             request.method,
             digital_instruction_form.__repr__(),
         )
+    device = get_device_definition(uos_data["type"]) if "type" in uos_data else None
     resp = make_response(
         render_template(
             "dashboard/device.html",
             devices=enumerate_devices(),
             uos_data=uos_data,
+            digital_pins=device.digital_pins if device else None,
             connect_device_form=connect_device_form,
             digital_instruction_form=digital_instruction_form,
             site_info=get_site_info(),

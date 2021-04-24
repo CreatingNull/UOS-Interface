@@ -5,12 +5,10 @@
 {% block title %} Device {% endblock %}
 
 {# Page Specific CSS #}
-{% block stylesheets %}
-{% endblock %}
+{% block stylesheets %}{% endblock %}
 
 {# Page Specific JS #}
-{% block javascript %}
-{% endblock %}
+{% block javascript %} {% endblock %}
 
 {% block content %}
 <div class="flex-container">
@@ -19,7 +17,7 @@
     <form action="/" method="POST">
       <!-- prettier-ignore -->
       {{ connect_device_form.hidden_tag() }}
-      <div class="control-button-big">
+      <div class="control control-button-big">
         <button
           type="submit"
           onclick="getSelectedConnection('{{ connect_device_form.device_connection.id }}')"
@@ -58,7 +56,11 @@
   {# Device config info pane #}
   <div class="flex-item flex-item-ratio-1">
     <div class="app-container app-container-heading">
-      <canvas class="device-canvas"> </canvas>
+      <table>
+        <thead>
+          <th>Matrix</th>
+        </thead>
+      </table>
     </div>
   </div>
   <!-- prettier-ignore -->
