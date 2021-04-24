@@ -32,7 +32,7 @@ def register_logs(level, base_path: Path):
     configure_logs(__name__, level=level, base_path=base_path)
 
 
-def _locate_device_definition(identity: str) -> Device:
+def get_device_definition(identity: str) -> Device:
     """
     Looks up the system config dictionary for the defined device mappings.
 
@@ -92,7 +92,7 @@ class UOSDevice:
         """
         self.identity = identity
         self.connection = connection
-        self.system_lut = _locate_device_definition(identity)
+        self.system_lut = get_device_definition(identity)
         self.__kwargs = kwargs
         if self.system_lut is None:
             raise UOSUnsupportedError(

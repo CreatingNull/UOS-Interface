@@ -1,6 +1,7 @@
 """Passive configuration file for the UOS Interface Hardware Layer."""
 from dataclasses import dataclass
 from dataclasses import field
+from dataclasses import fields
 from typing import Dict
 from typing import List
 
@@ -70,6 +71,9 @@ class Pin:
     comp: {} = field(default_factory=dict)
     spi: {} = field(default_factory=dict)
     i2c: {} = field(default_factory=dict)
+
+    def get_dict(self):
+        return {attrib.name: getattr(self, attrib.name) for attrib in fields(self)}
 
 
 @dataclass
