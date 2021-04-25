@@ -3,6 +3,7 @@ from uosinterface.webapp.dashboard.shim import get_system_info
 
 
 def test_get_system_info(uos_identities: ()):
+    """Test the shim behaviour for getting uos system info."""
     if "LAZY" in uos_identities[2]:  # EAGER usage not supported through web app.
         response = get_system_info(
             device_identity=uos_identities[0], device_connection=uos_identities[1]

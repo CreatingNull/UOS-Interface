@@ -85,7 +85,7 @@ def execute_digital_instruction(
             identity=device_identity,
             connection=device_connection,
         )
-        result = device.set_gpio_output()
+        # result = device.set_gpio_output()
         device.close()
     except (AttributeError, ValueError, NotImplementedError, RuntimeError) as exception:
         message = f"Cannot open connection to '{device_connection}', info: {exception.__str__()}"

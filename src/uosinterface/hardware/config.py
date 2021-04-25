@@ -58,6 +58,9 @@ UOS_SCHEMA = {
 class Pin:
     """Defines supported features of the pin."""
 
+    # pylint: disable=too-many-instance-attributes
+    # Due to the nature of embedded pin complexity.
+
     gpio_out: bool = False
     gpio_in: bool = False
     dac_out: bool = False
@@ -73,6 +76,7 @@ class Pin:
     i2c: {} = field(default_factory=dict)
 
     def get_dict(self):
+        """Returns the dataclass attributes as a dictionary."""
         return {attrib.name: getattr(self, attrib.name) for attrib in fields(self)}
 
 
@@ -88,6 +92,7 @@ class Device:
     aux_params: Dict = field(default_factory=dict)
 
     def get_compatible_pins(self, function_name: str) -> []:
+        """Returns a list of pins that are suitable for a function."""
         requirements = (
             UOS_SCHEMA[function_name].pin_requirements
             if function_name in UOS_SCHEMA
@@ -99,9 +104,7 @@ class Device:
         return [
             pin
             for pin in pin_dict
-            if all(  # check all pin requirements are met
-                [getattr(pin_dict[pin], requirement) for requirement in requirements]
-            )
+            if (getattr(pin_dict[pin], requirement) for requirement in requirements)
         ]
 
 

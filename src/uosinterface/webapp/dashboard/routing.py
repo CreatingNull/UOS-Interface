@@ -1,6 +1,5 @@
 """Possible routes for the dashboard functionality of the web-app."""
 import json
-from collections import defaultdict
 from logging import getLogger
 
 from flask import make_response
