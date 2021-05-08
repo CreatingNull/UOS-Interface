@@ -19,7 +19,7 @@ jobs:
       language: shell  # Python isn't supported directly in Travis Windows
       env: PATH=/c/Python39:/c/Python39/Scripts:$PATH
       before_install:
-        - choco install python --version 3.9.2
+        - choco install python --version 3.9.5
         - pip install --user --upgrade pip  # user flag to resolve privs on windows
         - pip install --user --upgrade pytest
         - pip install --user --upgrade coverage
