@@ -1,4 +1,16 @@
 """Package for UOS Interface, module contains exception classes."""
+import sys
+from pathlib import Path
+
+# path used to refer to the root directory of the app.
+if getattr(sys, "frozen", False):  # in deployment
+    base_dir = Path(sys.executable).parent
+    static_dir = base_dir.joinpath("static/")
+else:  # development
+    base_dir = Path(__file__).parents[2]
+    static_dir = base_dir.joinpath("src/uosinterface/webapp/static/")
+# path used to refer to resources folder of the app.
+resources_path = base_dir.joinpath(Path("resources"))
 
 
 class UOSError(Exception):
