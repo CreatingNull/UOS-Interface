@@ -13,12 +13,12 @@ from uosinterface import resources_path
 # Database base class for associating models.
 Base = declarative_base()
 
-__engine = create_engine(
+engine = create_engine(
     f"sqlite:///{resources_path.joinpath(Path('uosinterface_data.db')).resolve().__str__()}",
     connect_args={"check_same_thread": False},
 )
 # Session maker to be used for creating distributing db sessions in the webapp.
-session_maker = sessionmaker(autocommit=False, autoflush=False, bind=__engine)
+session_maker = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def hash_pass(passwd: str) -> bytes:

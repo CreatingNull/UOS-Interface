@@ -2,6 +2,9 @@
 logs/
 *.log
 
+# Database Files
+*.db
+
 # Ignore built / packaged code
 dist/
 build/
