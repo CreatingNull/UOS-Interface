@@ -1,27 +1,21 @@
 """Common high-level database interaction functionality."""
 from typing import Union
 
-from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from uosinterface.webapp.database.models import User
 
 
-def get_user(session_maker: sessionmaker, name_id: Union[int, str]) -> User:
+def get_user(
+    session_maker: sessionmaker, identifier: Union[int, str], user_field=User.id
+) -> User:
     """
     get a user object via username or id.
 
-    :param session_maker:
-    :param name_id: integer id of the user or string name of the user.
+    :param session_maker: The session_maker object to obtain a session from.
+    :param identifier: Identifying parameter for looking up the user.
+    :param user_field: The field on which to compare to the identifying parameter (default id).
     :return: User object if found otherwise None.
 
     """
     with session_maker() as session:
-        return session.execute(
-            select(User)
-            .filter(
-                (User.id == name_id)
-                if isinstance(name_id, int)
-                else (User.name == name_id)
-            )
-            .one()
-        )
+        return session.query(User).filter(user_field == identifier).first()
