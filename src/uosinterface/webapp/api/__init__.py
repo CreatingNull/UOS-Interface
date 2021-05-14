@@ -7,6 +7,6 @@ blueprint = Blueprint(
     "api_blueprint",
     __name__,
     url_prefix="/api",
-    template_folder="api",
+    template_folder="templates",
     static_folder="static",
 )
