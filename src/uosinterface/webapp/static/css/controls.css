@@ -13,6 +13,19 @@
   padding-top: 1rem;
 }
 
+.control-input input {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 4px auto 1px auto;
+  display: inline-block;
+  background-color: var(--control-fg-color);
+  border: 1px solid var(--control-bd-color);
+  color: var(--control-txt-color);
+  font-size: 20px;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
 .control-switch input {
   appearance: none;
   background-color: var(--control-bg-color);
@@ -60,7 +73,7 @@
 }
 
 /* used for styling a large button object */
-.control-button-big button {
+.control-button button {
   background-color: var(--control-bg-color);
   border: 1px solid var(--control-bd-color);
   border-bottom-width: 2px;
@@ -70,6 +83,12 @@
   cursor: pointer;
   padding: 14px 16px;
   transition: 0.3s;
+  font-size: 14px;
+}
+
+.control-button-span button {
+  font-weight: bold;
+  width: 100%;
 }
 
 /* Used for styling a custom numeric spinner control */

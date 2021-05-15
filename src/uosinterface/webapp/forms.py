@@ -2,12 +2,29 @@
 from flask_wtf import FlaskForm
 from wtforms import BooleanField
 from wtforms import HiddenField
+from wtforms import PasswordField
+from wtforms import StringField
 from wtforms.fields.html5 import IntegerField
 from wtforms.validators import DataRequired
 from wtforms.validators import NumberRange
 
 # Ignore the min public methods check for form classes.
 # pylint: disable=R0903
+
+
+class AuthForm(FlaskForm):
+    """Form used for logging into the dashboard."""
+
+    name = StringField(
+        id="form-auth-name", label="Username", validators=[DataRequired()]
+    )
+    passwd = PasswordField(
+        id="form-passwd-field", label="Password", validators=[DataRequired()]
+    )
+
+    def __repr__(self):
+        """Over-ride magic method to display form object."""
+        return f"<AuthForm(name='{self.name.data}',passwd='????')>"
 
 
 class ConnectDeviceForm(FlaskForm):

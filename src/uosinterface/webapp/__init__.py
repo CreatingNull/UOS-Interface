@@ -1,17 +1,17 @@
 """Package is used to start a simple web-server UOS interface."""
 import secrets
-from functools import wraps
 from logging import DEBUG
 from logging import getLogger as Log
 from pathlib import Path
 
-from flask import _app_ctx_stack
+from flask import _app_ctx_stack  # Protected variable access here is by convention.
 from flask import Flask
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
 from sqlalchemy.orm import scoped_session
 from uosinterface.util import configure_logs
 from uosinterface.webapp.api import routing as api_routing
+from uosinterface.webapp.auth import routing as auth_routing
 from uosinterface.webapp.dashboard import routing as dashboard_routing
 from uosinterface.webapp.database import Base
 from uosinterface.webapp.database import engine
@@ -24,31 +24,9 @@ login_manager = LoginManager()
 csrf = CSRFProtect()
 
 
-def privileged_route(func, privilege_names: []):
-    """
-    Route decorator to check user / API access.
-
-    :param func: Implicit function being wrapped.
-    :param privilege_names: List of names of privileges with access, empty means logged in.
-    :return: Wrapped function with authentication behaviour applied.
-
-    """
-
-    @wraps(func)
-    def check_privileges(*args, **kwargs):
-        """
-
-        :param args:
-        :param kwargs:
-        :return:
-        """
-
-    return check_privileges
-
-
 def register_blueprints(app):
     """Registers the routing for included web-app packages."""
-    blueprint_packages = [api_routing, dashboard_routing]
+    blueprint_packages = [api_routing, dashboard_routing, auth_routing]
     for blueprint_module in blueprint_packages:
         if hasattr(blueprint_module, "blueprint"):
             app.register_blueprint(blueprint_module.blueprint)
@@ -60,7 +38,7 @@ def register_logs(level, base_path: Path):
 
 
 def register_database(app):
-    """Initialise the database functionality for the web-app package."""
+    """Initialise the database and login manager the web-app package."""
     app.config["DATABASE"] = {
         "ENGINE": engine,
         # Unique requests should get unique sessions.
@@ -69,6 +47,18 @@ def register_database(app):
             session_maker, scopefunc=_app_ctx_stack.__ident_func__
         ),
     }
+    # Adds the flask login user manager functionality.
+    login_manager.init_app(app)
+
+    @app.before_first_request
+    def initialise_database(exception=None):
+        Log(__name__).debug("Initialising database, %s", exception.__str__())
+        Base.metadata.create_all(app.config["DATABASE"]["ENGINE"])
+
+    @app.teardown_appcontext
+    def shutdown_database(exception=None):
+        Log(__name__).debug("Shutting down database engine, %s", exception.__str__())
+        app.config["DATABASE"]["ENGINE"].dispose()
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -91,14 +81,6 @@ def register_database(app):
         username = request.form.get("username")
         user = load_user(username)
         return user if user else None
-
-    @app.before_first_request
-    def initialise_database(exception=None):
-        Base.metadata.create_all(app.config["DATABASE"]["ENGINE"])
-
-    @app.teardown_appcontext
-    def shutdown_database(exception=None):
-        app.config["DATABASE"]["ENGINE"].dispose()
 
 
 def create_app(testing: bool, base_path: Path, static_path: Path):

@@ -1,0 +1,35 @@
+<!-- prettier-ignore -->
+{% extends "site_template/base_site.html" %}
+
+{# Page Title #}
+{% block title %} Device {% endblock %}
+
+{# Page Specific CSS #}
+{% block stylesheets %}{% endblock %}
+
+{# Page Specific JS #}
+{% block javascript %} {% endblock %}
+
+{% block content %}
+<div class="flex-container">
+  <div class="flex-item flex-item-ratio-1">
+    <div class="app-container app-container-heading app-container-form-small">
+      <h2>{{ auth_action }} <i class="fa fa-user-lock"></i></h2>
+      <form action="/" method="POST">
+        {{ auth_form.hidden_tag() }}
+        <div class="control control-input">
+          {{ auth_form.name.label }} <i class="fa fa-user"></i>
+          {{ auth_form.name(placeholder="Username") }}
+        </div>
+        <div class="control control-input">
+          {{ auth_form.passwd.label }} <i class="fa fa-key"></i>
+          {{ auth_form.passwd(placeholder="Password") }}
+        </div>
+        <div class="control control-button control-button-span">
+          <button type="submit">{{ auth_action }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

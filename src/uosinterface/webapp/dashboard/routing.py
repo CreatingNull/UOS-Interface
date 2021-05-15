@@ -5,20 +5,22 @@ from logging import getLogger
 from flask import make_response
 from flask import render_template
 from flask import request
+from flask_login import current_user
 from uosinterface.hardware import enumerate_devices
 from uosinterface.hardware import get_device_definition
+from uosinterface.webapp.auth import privileged_route
 from uosinterface.webapp.dashboard import blueprint
 from uosinterface.webapp.dashboard import get_site_info
 from uosinterface.webapp.dashboard import shutdown_server
-from uosinterface.webapp.dashboard.forms import ConnectDeviceForm
-from uosinterface.webapp.dashboard.forms import DigitalInstructionForm
 from uosinterface.webapp.dashboard.shim import get_system_info
+from uosinterface.webapp.forms import ConnectDeviceForm
+from uosinterface.webapp.forms import DigitalInstructionForm
 
 
-@blueprint.route("/", methods=["GET", "POST"])
 @blueprint.route("/device", methods=["GET", "POST"])
+@privileged_route(current_user)
 def route_device():
-    """Index route / device of the dashboard."""
+    """Device page for the dashboard."""
     connect_device_form = ConnectDeviceForm()
     digital_instruction_form = DigitalInstructionForm()
     uos_data = (
