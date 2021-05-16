@@ -1,18 +1,21 @@
 """Unit tests for the webapp database package."""
 import pytest
 from sqlalchemy.orm import Session
+from tests.testwebapp.test_database.conftest import test_user
 from uosinterface.webapp.database import hash_pass
 from uosinterface.webapp.database import KeyTypes
 from uosinterface.webapp.database import verify_pass
+from uosinterface.webapp.database.interface import get_user
 from uosinterface.webapp.database.models import APIPrivilege
 from uosinterface.webapp.database.models import Privilege
 from uosinterface.webapp.database.models import User
 from uosinterface.webapp.database.models import UserKeys
 from uosinterface.webapp.database.models import UserPrivilege
-from uosinterface.webapp.database.shim import get_user
 
 
-class TestShim:
+class TestInterface:
+    """Contains tests for the high-level interface module."""
+
     @staticmethod
     def test_get_user(db_session, database):
         """
@@ -23,7 +26,7 @@ class TestShim:
         :return:
 
         """
-        user = db_session.query(User).first()
+        user = db_session.query(User).filter(User.name == test_user["name"]).first()
         user_key = (
             db_session.query(UserKeys).filter(UserKeys.user_id == user.id).first()
         )
@@ -40,7 +43,7 @@ def test_user_cascades(db_session: Session):
     :return:
 
     """
-    user = db_session.query(User).first()
+    user = db_session.query(User).filter(User.name == test_user["name"]).first()
     assert user  # check user populated at start
     user_key = db_session.query(UserKeys).filter(UserKeys.user_id == user.id).first()
     assert user_key  # check api key is populated at start

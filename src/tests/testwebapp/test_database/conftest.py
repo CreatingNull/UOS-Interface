@@ -13,12 +13,23 @@ from uosinterface.webapp.database.models import UserKeys
 from uosinterface.webapp.database.models import UserPrivilege
 
 
+test_user = {
+    "name": "JaneDoe",
+    "passwd": "jane.test",
+    "email_address": "jane.doe@test.com",
+}
+test_privilege = {"name": "tester", "description": "Unit-test privilege."}
+
+
 @pytest.fixture(scope="package")
 def database():
     """In memory blank test database from the declarative model."""
     engine = create_engine("sqlite:///:memory:", future=True)
     session_maker = sessionmaker(
-        autocommit=False, autoflush=False, bind=engine, future=True
+        autocommit=False,
+        autoflush=False,
+        bind=engine,
+        future=True,
     )
     Base.metadata.create_all(engine)  # create our model
     populate_test_data(session_maker())
@@ -39,18 +50,14 @@ def populate_test_data(db_session: Session):
     """Populates a test dataset across all tables."""
     with db_session as session:
         # Add an test privilege.
-        db_session.add(Privilege(name="tester", description="Unit-test privilege."))
+        db_session.add(Privilege(**test_privilege))
         # Populate a test user.
-        db_session.add(
-            User(
-                name="JaneDoe",
-                passwd="jane.test",
-                email_address="jane.doe@test.com",
-            )
-        )
+        db_session.add(User(**test_user))
         session.flush()
-        user_id = session.query(User.id).filter(User.name == "JaneDoe")
-        privilege_id = session.query(Privilege.id).filter(Privilege.name == "tester")
+        user_id = session.query(User.id).filter(User.name == test_user["name"])
+        privilege_id = session.query(Privilege.id).filter(
+            Privilege.name == test_privilege["name"]
+        )
         # Populate a relationship between jane and tester.
         db_session.add(UserPrivilege(user_id=user_id, privilege_id=privilege_id))
         # Add an api key for the user.
