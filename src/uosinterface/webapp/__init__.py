@@ -63,7 +63,7 @@ def register_database(app):
     @login_manager.user_loader
     def load_user(user_id):
         with app.config["DATABASE"]["SESSION"]() as session:
-            user = db_interface.get_user(session=session, identifier=user_id)
+            user = db_interface.get_user(session=session, user_value=user_id)
         return user
 
     @login_manager.request_loader
@@ -74,7 +74,7 @@ def register_database(app):
             with app.config["DATABASE"]["SESSION"]() as session:
                 user = db_interface.get_user(
                     session=session,
-                    identifier=api_key,
+                    user_value=api_key,
                     user_field=UserKeys.key,
                 )
                 if user:

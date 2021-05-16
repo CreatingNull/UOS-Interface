@@ -11,17 +11,17 @@ from uosinterface.webapp.database.models import UserKeys
 from uosinterface.webapp.database.models import UserPrivilege
 
 
-def get_user(session: Session, identifier: Union[int, str], user_field=User.id) -> User:
+def get_user(session: Session, user_value: Union[int, str], user_field=User.id) -> User:
     """
     get a user object via username or id.
 
     :param session: The session_maker object to obtain a session from.
-    :param identifier: Identifying parameter for looking up the user.
-    :param user_field: The field on which to compare to the identifying parameter (default id).
+    :param user_value: Identifying parameter for looking up the user.
+    :param user_field: The field to compare to the value parameter (default id).
     :return: User object if found otherwise None.
 
     """
-    return session.query(User).filter(user_field == identifier).first()
+    return session.query(User).filter(user_field == user_value).first()
 
 
 def add_user(session: Session, name: str, passwd: str, **kwargs):
@@ -47,20 +47,48 @@ def add_user(session: Session, name: str, passwd: str, **kwargs):
     session.flush()
 
 
-def add_user_privilege(session: Session, user: [int, str], privilege: Union[int, str]):
+def get_user_privileges(
+    session: Session,
+    user_value: Union[str, int],
+    user_field=User.id,
+    privilege_value: Union[str, int] = None,
+    privilege_field=None,
+) -> Union[list[Privilege], Privilege]:
+    """
+    Get user privileges can limit search to object if privilege arguments set.
+
+    :param session: The session_maker object to obtain a session from.
+    :param user_value: Identifying parameter for looking up the user.
+    :param user_field: The field to compare to the value parameter (default id).
+    :param privilege_value: Identifying parameter for looking up the privilege (default None).
+    :param privilege_field: The field to compare to the value parameter (default None).
+    :return: A tuple of privileges or a single privilege object depending on input.
+
+    """
+    user_privileges = session.query(Privilege).filter(user_field == user_value)
+    if privilege_field and privilege_value:
+        # Looking for a specific privilege.
+        user_privileges = user_privileges.filter(privilege_field == privilege_value)
+        return user_privileges.first()
+    return user_privileges.all()
+
+
+def add_user_privilege(
+    session: Session, user_value: [int, str], privilege: Union[int, str]
+):
     """
     Function for linking a user to a privilege.
 
     :param session: The session_maker object to obtain a session from.
-    :param user: The name or id of the user add the privilege to.
+    :param user_value: The name or id of the user add the privilege to.
     :param privilege: The name or id of the privilege.
     :return:
 
     """
     linked_user = get_user(
         session=session,
-        identifier=user,
-        user_field=User.id if isinstance(user, int) else User.name,
+        user_value=user_value,
+        user_field=User.id if isinstance(user_value, int) else User.name,
     )
     if not linked_user:
         raise UOSDatabaseError("User must exist for privileges to be added.")

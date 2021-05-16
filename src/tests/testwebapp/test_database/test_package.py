@@ -9,7 +9,7 @@ from uosinterface.webapp.database import KeyTypes
 from uosinterface.webapp.database import verify_pass
 from uosinterface.webapp.database.interface import add_user
 from uosinterface.webapp.database.interface import get_user
-from uosinterface.webapp.database.interface import init_privilege
+from uosinterface.webapp.database.interface import get_user_privileges
 from uosinterface.webapp.database.models import APIPrivilege
 from uosinterface.webapp.database.models import Privilege
 from uosinterface.webapp.database.models import User
@@ -34,7 +34,7 @@ class TestInterface:
             db_session.query(UserKeys).filter(UserKeys.user_id == user.id).first()
         )
         # lookup via user id
-        assert user == get_user(db_session, User.id, user.id)
+        assert user == get_user(db_session, User.id)
         # lookup via user name
         assert user == get_user(db_session, User.name, user.name)
         # lookup via user api key
@@ -65,6 +65,44 @@ class TestInterface:
         # test adding a duplicate user throws error
         with pytest.raises(UOSDatabaseError):
             add_user(db_session, test_user["name"], passwd="test")
+
+    @staticmethod
+    def test_get_user_privileges(db_session):
+        """
+        Tests the user privileges can be looked up as both list and object.
+
+        :param db_session: Pytest fixture allocated session.:
+        :return:
+
+        """
+        privilege = (
+            db_session.query(Privilege)
+            .filter(Privilege.name == test_privilege["name"])
+            .first()
+        )
+        # Test typical all privilege lookup.
+        privileges = get_user_privileges(db_session, test_user["name"], User.name)
+        assert isinstance(privileges, list)
+        assert len(privileges) > 0
+        assert privileges[0] == privilege
+        # Test single privilege lookup.
+        privileges = get_user_privileges(
+            db_session,
+            test_user["name"],
+            User.name,
+            privilege.id,
+            Privilege.id,
+        )
+        assert privileges == privilege  # check object returned
+        # Test bad user lookup returns empty list.
+        privileges = get_user_privileges(db_session, "InvalidName", User.name)
+        assert isinstance(privileges, list)
+        assert len(privileges) == 0
+        # Test bad privilege returns None.
+        privileges = get_user_privileges(
+            db_session, test_user["name"], User.name, "InvalidPrivilege", Privilege.name
+        )
+        assert not privileges
 
 
 def test_user_cascades(db_session: Session):
