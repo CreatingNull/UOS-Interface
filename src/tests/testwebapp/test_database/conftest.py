@@ -16,7 +16,7 @@ from uosinterface.webapp.database.models import UserPrivilege
 test_user = {
     "name": "JaneDoe",
     "passwd": "jane.test",
-    "email_address": "jane.doe@test.com",
+    "email_address": "jane.doe@nulltek.xyz",
 }
 test_privilege = {"name": "tester", "description": "Unit-test privilege."}
 

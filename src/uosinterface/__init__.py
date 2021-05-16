@@ -27,3 +27,7 @@ class UOSCommunicationError(UOSError):
 
 class UOSConfigurationError(UOSError):
     """Exception caused by the setup / config of the UOS Device."""
+
+
+class UOSDatabaseError(UOSError):
+    """Caused by an exception or illegal operation on the database."""

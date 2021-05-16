@@ -1,11 +1,15 @@
 """Unit tests for the webapp database package."""
 import pytest
 from sqlalchemy.orm import Session
+from tests.testwebapp.test_database.conftest import test_privilege
 from tests.testwebapp.test_database.conftest import test_user
+from uosinterface import UOSDatabaseError
 from uosinterface.webapp.database import hash_pass
 from uosinterface.webapp.database import KeyTypes
 from uosinterface.webapp.database import verify_pass
+from uosinterface.webapp.database.interface import add_user
 from uosinterface.webapp.database.interface import get_user
+from uosinterface.webapp.database.interface import init_privilege
 from uosinterface.webapp.database.models import APIPrivilege
 from uosinterface.webapp.database.models import Privilege
 from uosinterface.webapp.database.models import User
@@ -17,12 +21,11 @@ class TestInterface:
     """Contains tests for the high-level interface module."""
 
     @staticmethod
-    def test_get_user(db_session, database):
+    def test_get_user(db_session):
         """
-        Checks the user function supports all lookup methods.
+        Checks the interface function supports all lookup methods.
 
         :param db_session: Pytest fixture allocated session.
-        :param database: Pytest fixture allocated session factory.
         :return:
 
         """
@@ -30,9 +33,38 @@ class TestInterface:
         user_key = (
             db_session.query(UserKeys).filter(UserKeys.user_id == user.id).first()
         )
-        assert user == get_user(database, User.id, user.id)
-        assert user == get_user(database, User.name, user.name)
-        assert user == get_user(database, UserKeys.user_id, user_key.user_id)
+        # lookup via user id
+        assert user == get_user(db_session, User.id, user.id)
+        # lookup via user name
+        assert user == get_user(db_session, User.name, user.name)
+        # lookup via user api key
+        assert user == get_user(db_session, UserKeys.user_id, user_key.user_id)
+        # lookup on non-existent user should return None
+        assert not get_user(db_session, User.name, "InvalidUser")
+
+    @staticmethod
+    def test_add_user(db_session):
+        """
+        Tests the function executes and fails as designed.
+
+        :param db_session: Pytest fixture allocated session.:
+        :return:
+
+        """
+        # test user add
+        add_user(db_session, name="NormalAdd", passwd="NormalAdd")
+        assert get_user(db_session, "NormalAdd", User.name)
+        # test a user can be added with an email
+        add_user(
+            db_session,
+            name="WithEmailAdd",
+            passwd="WithEmailAdd",
+            email="withemailadd@nulltek.xyz",
+        )
+        assert get_user(db_session, "WithEmailAdd", User.name)
+        # test adding a duplicate user throws error
+        with pytest.raises(UOSDatabaseError):
+            add_user(db_session, test_user["name"], passwd="test")
 
 
 def test_user_cascades(db_session: Session):

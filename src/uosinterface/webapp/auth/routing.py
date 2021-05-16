@@ -9,7 +9,7 @@ from flask_login import login_user
 from flask_login import logout_user
 from uosinterface.webapp.auth import blueprint
 from uosinterface.webapp.dashboard import get_site_info  # todo rethink this
-from uosinterface.webapp.database import shim
+from uosinterface.webapp.database import interface as db_interface
 from uosinterface.webapp.database import verify_pass
 from uosinterface.webapp.database.models import User
 from uosinterface.webapp.forms import AuthForm
@@ -22,11 +22,12 @@ def route_login():
     login_form = AuthForm()
     if request.method == "POST":
         if login_form.validate():
-            user = shim.get_user(
-                session_maker=current_app.config["DATABASE"]["SESSION"],
-                identifier=login_form.name.data,
-                user_field=User.name,
-            )
+            with current_app.config["DATABASE"]["SESSION"]() as session:
+                user = db_interface.get_user(
+                    session=session,
+                    identifier=login_form.name.data,
+                    user_field=User.name,
+                )
             if user and verify_pass(login_form.passwd.data, user.pass_hash):
                 flash(f"Welcome {user.name}.")
                 login_user(user)

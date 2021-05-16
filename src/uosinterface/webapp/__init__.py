@@ -15,8 +15,8 @@ from uosinterface.webapp.auth import routing as auth_routing
 from uosinterface.webapp.dashboard import routing as dashboard_routing
 from uosinterface.webapp.database import Base
 from uosinterface.webapp.database import engine
+from uosinterface.webapp.database import interface as db_interface
 from uosinterface.webapp.database import session_maker
-from uosinterface.webapp.database import shim
 from uosinterface.webapp.database.models import User
 from uosinterface.webapp.database.models import UserKeys
 
@@ -62,22 +62,23 @@ def register_database(app):
 
     @login_manager.user_loader
     def load_user(user_id):
-        return shim.get_user(
-            session_maker=app.config["DATABASE"]["SESSION"], identifier=user_id
-        )
+        with app.config["DATABASE"]["SESSION"]() as session:
+            user = db_interface.get_user(session=session, identifier=user_id)
+        return user
 
     @login_manager.request_loader
     def request_loader(request):
         """Auth handling using the request header."""
         api_key = request.args.get("api_key")
         if api_key:
-            user = shim.get_user(
-                app.config["DATABASE"]["SESSION"],
-                identifier=api_key,
-                user_field=UserKeys.key,
-            )
-            if user:
-                return user
+            with app.config["DATABASE"]["SESSION"]() as session:
+                user = db_interface.get_user(
+                    session=session,
+                    identifier=api_key,
+                    user_field=UserKeys.key,
+                )
+                if user:
+                    return user
         username = request.form.get("username")
         user = load_user(username)
         return user if user else None

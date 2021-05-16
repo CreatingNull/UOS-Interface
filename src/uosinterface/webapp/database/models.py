@@ -36,7 +36,7 @@ class User(Base, UserMixin):
 
         """
         self.name = name
-        if "email_address" in kwargs:
+        if "email_address" in kwargs and kwargs["email_address"]:
             self.email_address = kwargs["email_address"]
         self.update_hash(passwd)
 
