@@ -1,7 +1,6 @@
 """Configuring fixtures for database testing."""
 import pytest
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import sessionmaker
 from uosinterface.webapp.database import Base
@@ -44,6 +43,20 @@ def db_session(database):
         with database() as session:
             yield session
             session.rollback()  # cleanup the state of the test database during teardown
+
+
+@pytest.fixture(scope="function")
+def db_user(db_session):
+    """Returns the test user object for reference in tests."""
+    yield db_session.query(User).filter(User.name == test_user["name"]).first()
+
+
+@pytest.fixture(scope="function")
+def db_privilege(db_session):
+    """Returns the test user object for reference in tests."""
+    yield db_session.query(Privilege).filter(
+        Privilege.name == test_privilege["name"]
+    ).first()
 
 
 def populate_test_data(db_session: Session):

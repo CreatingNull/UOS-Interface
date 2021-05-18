@@ -95,26 +95,28 @@ def add_user_privilege(
     linked_privilege = (
         session.query(Privilege)
         .filter(
-            Privilege.id if isinstance(privilege, int) else Privilege.name == privilege
+            (Privilege.id if isinstance(privilege, int) else Privilege.name)
+            == privilege
         )
         .first()
     )
     if not linked_privilege:
-        raise UOSDatabaseError("Tried to add non-existent privilege to user.")
-    user_privilege = UserPrivilege(
-        user_id=linked_user.id, privilege_id=linked_privilege.id
-    )
+        raise UOSDatabaseError("Privilege must exist to be added to user.")
+
     if (
-        session.query(user_privilege)
+        session.query(UserPrivilege)
         .filter(
             and_(
-                UserPrivilege.user_id == user_privilege.user_id,
-                privilege_id=user_privilege.privilege_id,
+                UserPrivilege.user_id == linked_user.id,
+                UserPrivilege.privilege_id == linked_privilege.id,
             )
         )
         .first()
     ):
         raise UOSDatabaseError("Privilege is a duplicate.")
+    user_privilege = UserPrivilege(
+        user_id=linked_user.id, privilege_id=linked_privilege.id
+    )
     session.add(user_privilege)
     session.flush()
 
