@@ -21,7 +21,12 @@ def get_user(session: Session, user_value: Union[int, str], user_field=User.id) 
     :return: User object if found otherwise None.
 
     """
-    return session.query(User).filter(user_field == user_value).first()
+    if user_field == UserKeys.user_id:  # Lookup user via api key.
+        return (
+            session.query(User).join(UserKeys).filter(user_field == user_value).first()
+        )
+    else:  # Lookup via user table parameters.
+        return session.query(User).filter(user_field == user_value).first()
 
 
 def add_user(session: Session, name: str, passwd: str, **kwargs):
