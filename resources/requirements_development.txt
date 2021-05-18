@@ -1,7 +1,7 @@
-black==20.8b1
+black==21.5b1
 coverage==5.5
 docformatter==1.4
 pipdeptree==2.0.0
 pytest==6.2.4
-sphinx==3.5.4
+sphinx==4.0.1
 reorder-python-imports==2.5.0
