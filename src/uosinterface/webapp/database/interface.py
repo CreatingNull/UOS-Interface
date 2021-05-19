@@ -107,7 +107,6 @@ def add_user_privilege(
     )
     if not linked_privilege:
         raise UOSDatabaseError("Privilege must exist to be added to user.")
-
     if (
         session.query(UserPrivilege)
         .filter(

@@ -25,13 +25,13 @@ def test_get_user(db_session: Session, db_user: User):
     user = db_session.query(User).filter(User.name == db_user.name).first()
     user_key = db_session.query(UserKeys).filter(UserKeys.user_id == user.id).first()
     # lookup via user id
-    assert user == get_user(db_session, User.id)
+    assert user == get_user(db_session, db_user.id)
     # lookup via user name
-    assert user == get_user(db_session, User.name, user.name)
+    assert user == get_user(db_session, db_user.name, User.name)
     # lookup via user api key
-    assert user == get_user(db_session, UserKeys.user_id, user_key.user_id)
+    assert user == get_user(db_session, user_key.user_id, UserKeys.user_id)
     # lookup on non-existent user should return None
-    assert not get_user(db_session, User.name, "InvalidUser")
+    assert not get_user(db_session, "InvalidUser", User.name)
 
 
 def test_add_user(db_session: Session, db_user: User):
@@ -124,11 +124,11 @@ def test_add_user_privilege(
     # Test error raised with bad user
     with pytest.raises(UOSDatabaseError) as exception:
         add_user_privilege(db_session, "InvalidUser", "NewPrivilege")
-        assert "User" in exception.value
+        assert "User must exist" in exception.value
     # Test error raised with bad privilege
     with pytest.raises(UOSDatabaseError) as exception:
-        add_user_privilege(db_session, "InvalidUser", "InvalidPrivilege")
-        assert "Privilege" in exception
+        add_user_privilege(db_session, db_user.id, "InvalidPrivilege")
+        assert "Privilege must exist" in exception
     # Test error raised with duplicate user_privilege.
     with pytest.raises(UOSDatabaseError) as exception:
         add_user_privilege(db_session, db_user.name, db_privilege.name)
