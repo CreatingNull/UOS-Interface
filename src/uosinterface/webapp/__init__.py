@@ -15,8 +15,8 @@ from uosinterface.webapp.auth import routing as auth_routing
 from uosinterface.webapp.dashboard import routing as dashboard_routing
 from uosinterface.webapp.database import Base
 from uosinterface.webapp.database import engine
-from uosinterface.webapp.database import interface as db_interface
 from uosinterface.webapp.database import session_maker
+from uosinterface.webapp.database.interface import get_user
 from uosinterface.webapp.database.models import User
 from uosinterface.webapp.database.models import UserKeys
 
@@ -62,26 +62,18 @@ def register_database(app):
 
     @login_manager.user_loader
     def load_user(user_id):
-        with app.config["DATABASE"]["SESSION"]() as session:
-            user = db_interface.get_user(session=session, user_value=user_id)
+        with app.config["DATABASE"]["SESSION"]() as db_session:
+            user = get_user(session=db_session, user_value=user_id)
         return user
 
     @login_manager.request_loader
     def request_loader(request):
-        """Auth handling using the request header."""
+        """Auth handling using the api_key header."""
         api_key = request.args.get("api_key")
         if api_key:
-            with app.config["DATABASE"]["SESSION"]() as session:
-                user = db_interface.get_user(
-                    session=session,
-                    user_value=api_key,
-                    user_field=UserKeys.key,
-                )
-                if user:
-                    return user
-        username = request.form.get("username")
-        user = load_user(username)
-        return user if user else None
+            with app.config["DATABASE"]["SESSION"]() as db_session:
+                return get_user(db_session, user_value=api_key, user_field=UserKeys.key)
+        return None  # no auth
 
 
 def create_app(testing: bool, base_path: Path, static_path: Path):
