@@ -1,4 +1,5 @@
 """Authentication Package blueprint initialisations."""
+from enum import Enum
 from functools import wraps
 from logging import getLogger as Log
 
@@ -6,7 +7,13 @@ from flask import Blueprint
 from flask import url_for
 
 
-def privileged_route(current_user, privilege_names: [] = ()):
+class PrivilegeNames(Enum):
+
+    ADMIN = 1  # Full System Privileges
+    VIEW = 2  # Can navigate and view but not adjust settings.
+
+
+def privileged_route(current_user, privilege_names: [PrivilegeNames] = ()):
     """
     Route decorator to check user / API access.
 
@@ -35,6 +42,8 @@ def privileged_route(current_user, privilege_names: [] = ()):
             Log(__name__).debug(f"Checking user privileges for {current_user.name}")
             if len(privilege_names) == 0:  # essentially just login_required
                 return func(*args, **kwargs)
+            # iterate through privileges of user and check for a match
+            # todo finish and write tests for this wrapper.
             return url_for("auth_blueprint.route_error", error=401)
 
         return check_privileges

@@ -8,17 +8,25 @@ from flask import _app_ctx_stack  # Protected variable access here is by convent
 from flask import Flask
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import scoped_session
+from uosinterface import UOSDatabaseError
 from uosinterface.util import configure_logs
 from uosinterface.webapp.api import routing as api_routing
+from uosinterface.webapp.auth import PrivilegeNames
 from uosinterface.webapp.auth import routing as auth_routing
 from uosinterface.webapp.dashboard import routing as dashboard_routing
 from uosinterface.webapp.database import Base
 from uosinterface.webapp.database import engine
 from uosinterface.webapp.database import session_maker
+from uosinterface.webapp.database.interface import add_user
+from uosinterface.webapp.database.interface import add_user_privilege
 from uosinterface.webapp.database.interface import get_user
+from uosinterface.webapp.database.interface import init_privilege
+from uosinterface.webapp.database.models import Privilege
 from uosinterface.webapp.database.models import User
 from uosinterface.webapp.database.models import UserKeys
+from uosinterface.webapp.database.models import UserPrivilege
 
 login_manager = LoginManager()
 csrf = CSRFProtect()
@@ -54,6 +62,35 @@ def register_database(app):
     def initialise_database(exception=None):
         Log(__name__).debug("Initialising database, %s", exception.__str__())
         Base.metadata.create_all(app.config["DATABASE"]["ENGINE"])
+        # populate default data.
+        with app.config["DATABASE"]["SESSION"]() as db_session:
+            try:
+                # Add in any program privileges.
+                for privilege_name in list(PrivilegeNames):
+                    try:
+                        init_privilege(
+                            db_session, privilege_name.value, privilege_name.name, ""
+                        )
+                    except UOSDatabaseError:
+                        pass  # already exists
+                # If there is no admin in the database, add the default admin.
+                if not (
+                    db_session.query(UserPrivilege)
+                    .join(Privilege)
+                    .filter(Privilege.name == PrivilegeNames.ADMIN.name)
+                    .first()
+                ):
+                    add_user(db_session, "nulltek", "nulltek")
+                    add_user_privilege(
+                        db_session,
+                        user_value="nulltek",
+                        privilege=PrivilegeNames.ADMIN.name,
+                    )
+            except SQLAlchemyError as exception:
+                Log(__name__).error("Failed to populate defaults into database.")
+                db_session.rollback()
+            else:
+                db_session.commit()
 
     @app.teardown_appcontext
     def shutdown_database(exception=None):

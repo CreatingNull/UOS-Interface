@@ -2,6 +2,7 @@ import pytest
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from uosinterface import UOSDatabaseError
+from uosinterface.webapp.auth import PrivilegeNames
 from uosinterface.webapp.database.interface import add_user
 from uosinterface.webapp.database.interface import add_user_privilege
 from uosinterface.webapp.database.interface import get_user
@@ -128,15 +129,15 @@ def test_add_user_privilege(
     # Test error raised with bad user
     with pytest.raises(UOSDatabaseError) as exception:
         add_user_privilege(db_session, "InvalidUser", "NewPrivilege")
-        assert "User must exist" in exception.value
+    assert "User must exist" in str(exception.value)
     # Test error raised with bad privilege
     with pytest.raises(UOSDatabaseError) as exception:
         add_user_privilege(db_session, db_user.id, "InvalidPrivilege")
-        assert "Privilege must exist" in exception
+    assert "Privilege must exist" in str(exception.value)
     # Test error raised with duplicate user_privilege.
     with pytest.raises(UOSDatabaseError) as exception:
         add_user_privilege(db_session, db_user.name, db_privilege.name)
-        assert "duplicate" in exception
+    assert "duplicate" in str(exception.value)
     # Tests normal case with lookup via names
     confirm_query = (
         db_session.query(UserPrivilege)
@@ -174,8 +175,18 @@ def test_init_privilege(db_session: Session, db_user: User, db_privilege: Privil
 
     """
     # Check a normal create works as expected.
-    init_privilege(db_session, "NewPrivilege", "A test privilege.")
-    assert db_session.query(Privilege).filter(Privilege.name == "NewPrivilege").first()
+    confirm_query = db_session.query(Privilege).filter(
+        Privilege.name == PrivilegeNames.ADMIN.name
+    )
+    assert not confirm_query.first()
+    init_privilege(
+        db_session,
+        PrivilegeNames.ADMIN.value,
+        PrivilegeNames.ADMIN.name,
+        "A test privilege.",
+    )
+    assert confirm_query.first()
     # Check duplication of privilege raises error correctly
-    with pytest.raises(UOSDatabaseError):
-        init_privilege(db_session, Privilege.name, Privilege.description)
+    with pytest.raises(UOSDatabaseError) as exception:
+        init_privilege(db_session, 100, db_privilege.name, db_privilege.description)
+    assert "already exists" in str(exception.value)
