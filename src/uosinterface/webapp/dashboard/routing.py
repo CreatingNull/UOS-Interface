@@ -62,6 +62,7 @@ def route_device():
 
 
 @blueprint.route("/settings", methods=["GET"])
+@privileged_route(current_user)
 def route_settings():
     """Settings control page for the interface."""
     return render_template(
@@ -72,6 +73,7 @@ def route_settings():
 
 
 @blueprint.route("/shutdown", methods=["GET"])
+@privileged_route(current_user)
 def route_shutdown():
     """Terminates the server execution / interface process."""
     shutdown_server()

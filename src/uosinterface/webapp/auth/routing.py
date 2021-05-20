@@ -25,7 +25,7 @@ def route_login():
             with current_app.config["DATABASE"]["SESSION"]() as session:
                 user = db_interface.get_user(
                     session=session,
-                    identifier=login_form.name.data,
+                    user_value=login_form.name.data,
                     user_field=User.name,
                 )
             if user and verify_pass(login_form.passwd.data, user.pass_hash):
@@ -36,7 +36,7 @@ def route_login():
         else:
             flash("Invalid data entered", category="error")
     if current_user.is_authenticated:
-        return redirect("dashboard_blueprint.route_device")
+        return redirect(url_for("dashboard_blueprint.route_device"))
     return render_template(
         "auth/form.html",
         auth_action="Log In",
