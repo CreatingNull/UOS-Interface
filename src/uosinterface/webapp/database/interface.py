@@ -11,16 +11,20 @@ from uosinterface.webapp.database.models import UserKeys
 from uosinterface.webapp.database.models import UserPrivilege
 
 
-def get_user(session: Session, user_value: Union[int, str], user_field=User.id) -> User:
+def get_user(
+    session: Session, user_value: Union[int, str] = None, user_field=User.id
+) -> Union[User, list[User]]:
     """
     get a user object via username or id.
 
     :param session: The session_maker object to obtain a session from.
-    :param user_value: Identifying parameter for looking up the user.
+    :param user_value: Identifier for looking up the user, all if None. (default None).
     :param user_field: The field to compare to the value parameter (default id).
-    :return: User object if found otherwise None.
+    :return: User object if found otherwise None, list of users if user_value None.
 
     """
+    if user_value is None:  # return a list of all users
+        return session.query(User).all()
     if user_field == UserKeys.user_id:  # Lookup user via api key.
         return (
             session.query(User).join(UserKeys).filter(user_field == user_value).first()

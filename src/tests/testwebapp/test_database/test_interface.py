@@ -30,6 +30,10 @@ def test_get_user(db_session: Session, db_user: User):
     assert user == get_user(db_session, db_user.name, User.name)
     # lookup via user api key
     assert user == get_user(db_session, user_key.user_id, UserKeys.user_id)
+    # lookup list of all users
+    users = get_user(db_session)
+    assert isinstance(users, list)
+    assert len(users) > 0 and users[0] == user
     # lookup on non-existent user should return None
     assert not get_user(db_session, "InvalidUser", User.name)
 
