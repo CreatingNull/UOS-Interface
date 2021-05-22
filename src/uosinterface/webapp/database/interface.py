@@ -74,7 +74,9 @@ def get_user_privileges(
     :return: A tuple of privileges or a single privilege object depending on input.
 
     """
-    user_privileges = session.query(Privilege).filter(user_field == user_value)
+    user_privileges = (
+        session.query(Privilege).join(User).filter(user_field == user_value)
+    )
     if privilege_field and privilege_value:
         # Looking for a specific privilege.
         user_privileges = user_privileges.filter(privilege_field == privilege_value)
