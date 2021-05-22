@@ -1,7 +1,6 @@
 """Unit tests for the webapp database package."""
 import pytest
 from sqlalchemy.orm import Session
-from tests.testwebapp.test_database.conftest import test_user
 from uosinterface.webapp.database import hash_pass
 from uosinterface.webapp.database import KeyTypes
 from uosinterface.webapp.database import verify_pass
@@ -12,15 +11,16 @@ from uosinterface.webapp.database.models import UserKeys
 from uosinterface.webapp.database.models import UserPrivilege
 
 
-def test_user_cascades(db_session: Session):
+def test_user_cascades(db_session: Session, db_user: User):
     """
     Checks the test data exists and cascades correctly on removal.
 
     :param db_session: Pytest fixture allocated session.
+    :param db_user: Default test user object.
     :return:
 
     """
-    user = db_session.query(User).filter(User.name == test_user["name"]).first()
+    user = db_session.query(User).filter(User.id == db_user.id).first()
     assert user  # check user populated at start
     user_key = db_session.query(UserKeys).filter(UserKeys.user_id == user.id).first()
     assert user_key  # check api key is populated at start
