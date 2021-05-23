@@ -85,9 +85,15 @@ def __populate_test_data(db_session: Session):
     # Populate a test user.
     db_session.add(User(**test_user))
     db_session.flush()
-    user_id = db_session.query(User.id).filter(User.name == test_user["name"]).scalar()
-    privilege_id = db_session.query(Privilege.id).filter(
-        Privilege.name == test_privilege["name"]
+    user_id = (
+        db_session.query(User.id)
+        .filter(User.name == test_user["name"])
+        .scalar_subquery()
+    )
+    privilege_id = (
+        db_session.query(Privilege.id)
+        .filter(Privilege.name == test_privilege["name"])
+        .scalar_subquery()
     )
     # Populate a relationship between jane and tester.
     db_session.add(UserPrivilege(user_id=user_id, privilege_id=privilege_id))
@@ -99,7 +105,7 @@ def __populate_test_data(db_session: Session):
         APIPrivilege(
             key_id=db_session.query(UserKeys.id)
             .filter(UserKeys.user_id == user_id)
-            .scalar(),
+            .scalar_subquery(),
             privilege_id=privilege_id,
         )
     )
