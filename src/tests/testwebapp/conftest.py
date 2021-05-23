@@ -80,26 +80,27 @@ def db_privilege(db_session):
 
 def __populate_test_data(db_session: Session):
     """Populates a test dataset across all tables."""
-    with db_session as session:
-        # Add an test privilege.
-        db_session.add(Privilege(**test_privilege))
-        # Populate a test user.
-        db_session.add(User(**test_user))
-        session.flush()
-        user_id = session.query(User.id).filter(User.name == test_user["name"])
-        privilege_id = session.query(Privilege.id).filter(
-            Privilege.name == test_privilege["name"]
+    # Add an test privilege.
+    db_session.add(Privilege(**test_privilege))
+    # Populate a test user.
+    db_session.add(User(**test_user))
+    db_session.flush()
+    user_id = db_session.query(User.id).filter(User.name == test_user["name"]).scalar()
+    privilege_id = db_session.query(Privilege.id).filter(
+        Privilege.name == test_privilege["name"]
+    )
+    # Populate a relationship between jane and tester.
+    db_session.add(UserPrivilege(user_id=user_id, privilege_id=privilege_id))
+    # Add an api key for the user.
+    db_session.add(UserKeys(key_length=64, user_id=user_id, key_type=KeyTypes.api))
+    db_session.flush()
+    # Populate a relationship between jane's API key and tester.
+    db_session.add(
+        APIPrivilege(
+            key_id=db_session.query(UserKeys.id)
+            .filter(UserKeys.user_id == user_id)
+            .scalar(),
+            privilege_id=privilege_id,
         )
-        # Populate a relationship between jane and tester.
-        db_session.add(UserPrivilege(user_id=user_id, privilege_id=privilege_id))
-        # Add an api key for the user.
-        db_session.add(UserKeys(key_length=64, user_id=user_id, key_type=KeyTypes.api))
-        session.flush()
-        # Populate a relationship between jane's API key and tester.
-        db_session.add(
-            APIPrivilege(
-                key_id=session.query(UserKeys.id).filter(UserKeys.user_id == user_id),
-                privilege_id=privilege_id,
-            )
-        )
-        session.commit()
+    )
+    db_session.commit()

@@ -4,7 +4,6 @@ from typing import Union
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from uosinterface import UOSDatabaseError
-from uosinterface.webapp.database.models import APIPrivilege
 from uosinterface.webapp.database.models import Privilege
 from uosinterface.webapp.database.models import User
 from uosinterface.webapp.database.models import UserKeys
@@ -13,7 +12,7 @@ from uosinterface.webapp.database.models import UserPrivilege
 
 def get_user(
     session: Session, user_value: Union[int, str] = None, user_field=User.id
-) -> Union[User, list[User]]:
+) -> Union[User, list]:
     """
     get a user object via username or id.
 
