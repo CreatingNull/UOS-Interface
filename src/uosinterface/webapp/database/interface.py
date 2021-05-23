@@ -75,7 +75,10 @@ def get_user_privileges(
 
     """
     user_privileges = (
-        session.query(Privilege).join(User).filter(user_field == user_value)
+        session.query(Privilege)
+        .join(UserPrivilege)
+        .join(User)
+        .filter(user_field == user_value)
     )
     if privilege_field and privilege_value:
         # Looking for a specific privilege.

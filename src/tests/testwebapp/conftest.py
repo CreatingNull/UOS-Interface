@@ -24,12 +24,13 @@ test_privilege = {"id": 9999, "name": "tester", "description": "Unit-test privil
 
 
 @pytest.fixture(scope="package")
-def client():
+def client(database: sessionmaker):
     """Web-app fixture to use for test coverage."""
     parser = ConfigParser()
     parser["Flask Config"] = {
         "TESTING": "True",
         "SECRET_KEY": "Testing",
+        "DATABASE": {"SESSION": database},
     }
     base_dir = Path(__file__).resolve().parents[3]
     static_dir = base_dir.joinpath("src/uosinterface/webapp/static/")
