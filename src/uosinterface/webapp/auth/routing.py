@@ -1,3 +1,4 @@
+"""Flask webapp routing module for authentication functionality."""
 from flask import current_app
 from flask import flash
 from flask import redirect
@@ -55,4 +56,5 @@ def route_logout():
 @blueprint.route("/error")
 @blueprint.errorhandler(404)
 def route_error(error):
+    """Route for managing templated http error responses."""
     return f"error {error}"

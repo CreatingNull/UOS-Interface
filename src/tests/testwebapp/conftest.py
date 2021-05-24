@@ -15,6 +15,9 @@ from uosinterface.webapp.database.models import User
 from uosinterface.webapp.database.models import UserKeys
 from uosinterface.webapp.database.models import UserPrivilege
 
+# pylint: disable=redefined-outer-name
+# This is because wrapped pytest fixtures share the namespace by default.
+
 test_user = {
     "name": "JaneDoe",
     "passwd": "jane.test",
@@ -56,7 +59,7 @@ def database():
 
 
 @pytest.fixture(scope="function")
-def db_session(database):
+def db_session(database: sessionmaker):
     """Creates a session for use against the test database."""
     with database.begin():
         with database() as session:
@@ -65,13 +68,13 @@ def db_session(database):
 
 
 @pytest.fixture(scope="function")
-def db_user(db_session):
+def db_user(db_session: Session):
     """Returns the test user object for reference in tests."""
     yield db_session.query(User).filter(User.name == test_user["name"]).first()
 
 
 @pytest.fixture(scope="function")
-def db_privilege(db_session):
+def db_privilege(db_session: Session):
     """Returns the test user object for reference in tests."""
     yield db_session.query(Privilege).filter(
         Privilege.name == test_privilege["name"]

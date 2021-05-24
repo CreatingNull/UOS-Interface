@@ -20,6 +20,7 @@ blueprint = Blueprint(
 
 
 class PrivilegeNames(Enum):
+    """Enum class of all the privileges supported by the web-app."""
 
     ADMIN = 1  # Full System Privileges
     VIEW = 2  # Can navigate and view but not adjust settings.
@@ -47,7 +48,7 @@ def privileged_route(privilege_names: [PrivilegeNames] = ()):
             """
             with current_app.config["DATABASE"]["SESSION"]() as session:
                 if check_privileges(privilege_names, session, current_user):
-                    Log(__name__).debug(f"Authenticated {current_user.name}")
+                    Log(__name__).debug(f"Authenticated %s.", current_user.name)
                     return func(*args, **kwargs)
             Log(__name__).info(
                 f"Attempt to access {func.__name__} protected route while not logged in."
@@ -61,9 +62,10 @@ def privileged_route(privilege_names: [PrivilegeNames] = ()):
 
 def check_privileges(privilege_names: [], session, user) -> bool:
     """
-    Function for checking a user's privileges match requirements. Authorised if
-    no privilege names in argument and user is logged in. Authorised if user
-    has listed privilege or admin.
+    Function for checking a user's privileges match requirements.
+
+    Authorised if no privilege names in argument and user is logged in.
+    Authorised if user has listed privilege or admin.
 
     :param: List of names of privileges with access, empty means logged in.
     :param: SQLAlchemy session instance to lookup user privileges.

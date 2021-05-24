@@ -1,3 +1,4 @@
+"""Test module for the high common function interface for the database."""
 import pytest
 from sqlalchemy import and_
 from sqlalchemy.orm import Session

@@ -1,3 +1,4 @@
+"""Declarative models for webapp's SQLAlchemy database ORM."""
 from secrets import token_urlsafe
 
 from flask_login import UserMixin
@@ -12,6 +13,9 @@ from sqlalchemy.types import String
 from uosinterface.webapp.database import Base
 from uosinterface.webapp.database import hash_pass
 from uosinterface.webapp.database import KeyTypes
+
+# pylint: disable = too-few-public-methods
+# It is normal for SQLAlchemy models to have a low number of methods.
 
 
 class User(Base, UserMixin):

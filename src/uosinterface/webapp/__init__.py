@@ -24,7 +24,6 @@ from uosinterface.webapp.database.interface import add_user_privilege
 from uosinterface.webapp.database.interface import get_user
 from uosinterface.webapp.database.interface import init_privilege
 from uosinterface.webapp.database.models import Privilege
-from uosinterface.webapp.database.models import User
 from uosinterface.webapp.database.models import UserKeys
 from uosinterface.webapp.database.models import UserPrivilege
 
@@ -47,6 +46,10 @@ def register_logs(level, base_path: Path):
 
 def register_database(app):
     """Initialise the database and login manager the web-app package."""
+
+    # pylint: disable = unused-variable
+    # This is required for false reporting on functions triggered via callback.
+
     app.config["DATABASE"] = {
         "ENGINE": engine,
         # Unique requests should get unique sessions.
@@ -87,7 +90,10 @@ def register_database(app):
                         privilege=PrivilegeNames.ADMIN.name,
                     )
             except SQLAlchemyError as exception:
-                Log(__name__).error("Failed to populate defaults into database.")
+                Log(__name__).error(
+                    f"Failed to populate defaults into database %s.",
+                    exception.__str__(),
+                )
                 db_session.rollback()
             else:
                 db_session.commit()

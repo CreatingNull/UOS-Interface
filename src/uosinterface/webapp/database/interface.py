@@ -14,7 +14,7 @@ def get_user(
     session: Session, user_value: Union[int, str] = None, user_field=User.id
 ) -> Union[User, list]:
     """
-    get a user object via username or id.
+    Get a user object via username or id.
 
     :param session: The session_maker object to obtain a session from.
     :param user_value: Identifier for looking up the user, all if None. (default None).
@@ -28,8 +28,8 @@ def get_user(
         return (
             session.query(User).join(UserKeys).filter(user_field == user_value).first()
         )
-    else:  # Lookup via user table parameters.
-        return session.query(User).filter(user_field == user_value).first()
+    # Lookup via user table parameters.
+    return session.query(User).filter(user_field == user_value).first()
 
 
 def add_user(session: Session, name: str, passwd: str, **kwargs):
@@ -146,7 +146,7 @@ def init_privilege(session: Session, id_: int, name: str, description: str):
     """
     # Check privilege doesn't already exist.
     if session.query(Privilege).filter(Privilege.name == name).first():
-        raise UOSDatabaseError("Privilege %s already exists in the database.", name)
+        raise UOSDatabaseError(f"Privilege {name} already exists in the database.")
     new_privilege = Privilege(id=id_, name=name, description=description)
     session.add(new_privilege)
     session.flush()

@@ -40,7 +40,7 @@ class NPCStub(UOSInterface):
                     for rx_packet in UOS_SCHEMA[function].rx_packets_expected:
                         self.__packet_buffer.append(
                             self.get_npc_packet(
-                                0, address, tuple([0 for _ in range(rx_packet)])
+                                0, address, tuple(0 for _ in range(rx_packet))
                             )
                         )
                     return COMresult(True)
