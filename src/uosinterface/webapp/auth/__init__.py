@@ -48,10 +48,11 @@ def privileged_route(privilege_names: [PrivilegeNames] = ()):
             """
             with current_app.config["DATABASE"]["SESSION"]() as session:
                 if check_privileges(privilege_names, session, current_user):
-                    Log(__name__).debug(f"Authenticated %s.", current_user.name)
+                    Log(__name__).debug("Authenticated %s.", current_user.name)
                     return func(*args, **kwargs)
             Log(__name__).info(
-                f"Attempt to access {func.__name__} protected route while not logged in."
+                "Attempt to access %s protected route while not logged in.",
+                func.__name__,
             )
             return url_for("auth_blueprint.route_error", error=401)
 
@@ -75,18 +76,17 @@ def check_privileges(privilege_names: [], session, user) -> bool:
     """
     if not user.is_authenticated:
         return False
-    Log(__name__).debug(f"Checking user privileges for {user.name}")
+    Log(__name__).debug("Checking user privileges for %s", user.name)
     if len(privilege_names) == 0:  # essentially just login_required
         return True
     # iterate through privileges of user and check for a match
     user_privileges = get_user_privileges(session, user.id)
     Log(__name__).debug(
-        f"Has privileges {[user_privilege.name for user_privilege in user_privileges]}"
+        "Has privileges {[user_privilege.name for user_privilege in user_privileges]}"
     )
     for user_privilege in user_privileges:
         if (
-            user_privilege.name
-            in [privilege_name for privilege_name in privilege_names]
+            user_privilege.name in privilege_names
             or user_privilege.name == PrivilegeNames.ADMIN.name
         ):
             return True

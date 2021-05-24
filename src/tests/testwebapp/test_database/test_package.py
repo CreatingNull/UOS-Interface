@@ -24,7 +24,7 @@ def test_user_cascades(db_session: Session, db_user: User):
     assert user  # check user populated at start
     user_key = db_session.query(UserKeys).filter(UserKeys.user_id == user.id).first()
     assert user_key  # check api key is populated at start
-    assert user_key.key_type == KeyTypes.api
+    assert user_key.key_type == KeyTypes.API
     api_privilege = (
         db_session.query(APIPrivilege)
         .filter(APIPrivilege.key_id == user_key.id)

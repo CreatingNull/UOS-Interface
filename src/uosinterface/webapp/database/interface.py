@@ -61,7 +61,7 @@ def get_user_privileges(
     user_field=User.id,
     privilege_value: Union[str, int] = None,
     privilege_field=None,
-) -> Union[list[Privilege], Privilege]:
+) -> Union[list, Privilege]:
     """
     Get user privileges can limit search to object if privilege arguments set.
 

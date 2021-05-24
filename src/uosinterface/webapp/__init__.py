@@ -46,7 +46,6 @@ def register_logs(level, base_path: Path):
 
 def register_database(app):
     """Initialise the database and login manager the web-app package."""
-
     # pylint: disable = unused-variable
     # This is required for false reporting on functions triggered via callback.
 
@@ -89,10 +88,10 @@ def register_database(app):
                         user_value="nulltek",
                         privilege=PrivilegeNames.ADMIN.name,
                     )
-            except SQLAlchemyError as exception:
+            except SQLAlchemyError as sql_exception:
                 Log(__name__).error(
-                    f"Failed to populate defaults into database %s.",
-                    exception.__str__(),
+                    "Failed to populate defaults into database %s.",
+                    sql_exception.__str__(),
                 )
                 db_session.rollback()
             else:

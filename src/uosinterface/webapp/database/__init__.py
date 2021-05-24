@@ -28,7 +28,7 @@ session_maker = sessionmaker(
 class KeyTypes(Enum):
     """Class describing the variation in user keys."""
 
-    api = 0
+    API = 0
 
 
 def hash_pass(passwd: str) -> bytes:

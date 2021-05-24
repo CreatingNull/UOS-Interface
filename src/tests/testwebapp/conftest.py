@@ -101,7 +101,7 @@ def __populate_test_data(db_session: Session):
     # Populate a relationship between jane and tester.
     db_session.add(UserPrivilege(user_id=user_id, privilege_id=privilege_id))
     # Add an api key for the user.
-    db_session.add(UserKeys(key_length=64, user_id=user_id, key_type=KeyTypes.api))
+    db_session.add(UserKeys(key_length=64, user_id=user_id, key_type=KeyTypes.API))
     db_session.flush()
     # Populate a relationship between jane's API key and tester.
     db_session.add(
