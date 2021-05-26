@@ -168,12 +168,11 @@ def test_add_user_privilege(
     assert confirm_query.first()
 
 
-def test_init_privilege(db_session: Session, db_user: User, db_privilege: Privilege):
+def test_init_privilege(db_session: Session, db_privilege: Privilege):
     """
     Tests privileges are created and fail cases are triggered correctly.
 
     :param db_session: Pytest fixture allocated session.:
-    :param db_user: Default test user object.
     :param db_privilege: Default test privilege object.
     :return:
 

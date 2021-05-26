@@ -1,4 +1,4 @@
-"""Package is used to start a simple web-server UOS interface."""
+"""Package contains callable methods for launching the server."""
 import secrets
 from logging import DEBUG
 from logging import getLogger as Log
