@@ -52,21 +52,24 @@ def test_add_user(db_session: Session, db_user: User):
     # test user add
     confirm_query = db_session.query(User).filter(User.name == "NormalAdd")
     assert not confirm_query.first()  # sanity check
-    add_user(db_session, name="NormalAdd", passwd="NormalAdd")
+    # Bandit should ignore hardcoded passwords in test contexts
+    add_user(db_session, name="NormalAdd", passwd="NormalAdd")  # nosec
     assert confirm_query.first()
     # test a user can be added with an email
     confirm_query = db_session.query(User).filter(User.name == "WithEmailAdd")
     assert not confirm_query.first()  # sanity check
+    # Bandit should ignore hardcoded passwords in test contexts
     add_user(
         db_session,
         name="WithEmailAdd",
         passwd="WithEmailAdd",
         email="withemailadd@nulltek.xyz",
-    )
+    )  # nosec
     assert confirm_query.first()
     # test adding a duplicate user throws error
     with pytest.raises(UOSDatabaseError):
-        add_user(db_session, db_user.name, passwd="test")
+        # Bandit should ignore hardcoded passwords in test contexts
+        add_user(db_session, db_user.name, passwd="test")  # nosec
 
 
 def test_get_user_privileges(
