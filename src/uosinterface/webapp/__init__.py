@@ -69,12 +69,9 @@ def register_database(app):
             try:
                 # Add in any program privileges.
                 for privilege_name in list(PrivilegeNames):
-                    try:
-                        init_privilege(
-                            db_session, privilege_name.value, privilege_name.name, ""
-                        )
-                    except UOSDatabaseError:
-                        pass  # already exists
+                    init_privilege(
+                        db_session, privilege_name.value, privilege_name.name
+                    )
                 # If there is no admin in the database, add the default admin.
                 if not (
                     db_session.query(UserPrivilege)

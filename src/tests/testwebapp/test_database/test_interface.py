@@ -124,8 +124,8 @@ def test_add_user_privilege(
     :return:
 
     """
-    db_session.add(Privilege(name="NewPrivilege", description="A test privilege"))
-    db_session.add(Privilege(name="NewerPrivilege", description="A test privilege"))
+    db_session.add(Privilege(name="NewPrivilege"))
+    db_session.add(Privilege(name="NewerPrivilege"))
     db_session.flush()
     newer_privilege = (
         db_session.query(Privilege).filter(Privilege.name == "NewerPrivilege").first()
@@ -168,12 +168,11 @@ def test_add_user_privilege(
     assert confirm_query.first()
 
 
-def test_init_privilege(db_session: Session, db_privilege: Privilege):
+def test_init_privilege(db_session: Session):
     """
     Tests privileges are created and fail cases are triggered correctly.
 
     :param db_session: Pytest fixture allocated session.:
-    :param db_privilege: Default test privilege object.
     :return:
 
     """
@@ -186,10 +185,12 @@ def test_init_privilege(db_session: Session, db_privilege: Privilege):
         db_session,
         PrivilegeNames.ADMIN.value,
         PrivilegeNames.ADMIN.name,
-        "A test privilege.",
     )
-    assert confirm_query.first()
-    # Check duplication of privilege raises error correctly
-    with pytest.raises(UOSDatabaseError) as exception:
-        init_privilege(db_session, 100, db_privilege.name, db_privilege.description)
-    assert "already exists" in str(exception.value)
+    assert confirm_query.count() == 1
+    # Check duplication returns without duplicating
+    init_privilege(
+        db_session,
+        100,  # un-consumed privilege.id
+        PrivilegeNames.ADMIN.name,
+    )
+    assert confirm_query.count() == 1

@@ -61,7 +61,6 @@ class Privilege(Base):
     __tablename__ = "Privilege"
     id = Column(INTEGER, primary_key=True)
     name = Column(String(20), unique=True)
-    description = Column(String(200))
 
 
 class UserPrivilege(Base):

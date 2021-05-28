@@ -23,7 +23,7 @@ test_user = {
     "passwd": "jane.test",
     "email_address": "jane.doe@nulltek.xyz",
 }
-test_privilege = {"id": 9999, "name": "tester", "description": "Unit-test privilege."}
+test_privilege = {"id": 9999, "name": "tester"}
 
 
 @pytest.fixture(scope="package")

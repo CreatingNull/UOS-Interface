@@ -22,7 +22,7 @@ def test_check_privileges(db_session, db_user: User, db_privilege: Privilege):
     # Test logged in user can access if named in privilege list.
     assert check_privileges([db_privilege.name], db_session, db_user)
     # Test admin can access all views without explicitly defined.
-    admin_privilege = Privilege(id=999, name=PrivilegeNames.ADMIN.name, description="")
+    admin_privilege = Privilege(id=999, name=PrivilegeNames.ADMIN.name)
     db_session.add(admin_privilege)
     db_session.add(UserPrivilege(user_id=db_user.id, privilege_id=admin_privilege.id))
     db_session.flush()

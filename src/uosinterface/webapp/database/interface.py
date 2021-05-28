@@ -133,20 +133,19 @@ def add_user_privilege(
     session.flush()
 
 
-def init_privilege(session: Session, id_: int, name: str, description: str):
+def init_privilege(session: Session, id_: int, name: str):
     """
     Function for adding privilege types available in the program.
 
     :param session: The session_maker object to obtain a session from.
     :param id_: Primary key from the enum index for the privilege.
     :param name: The privilege name used for lookup, cannot already exist in db.
-    :param description: A brief description of the privilege's use.
     :return:
 
     """
     # Check privilege doesn't already exist.
     if session.query(Privilege).filter(Privilege.name == name).first():
-        raise UOSDatabaseError(f"Privilege {name} already exists in the database.")
-    new_privilege = Privilege(id=id_, name=name, description=description)
+        return
+    new_privilege = Privilege(id=id_, name=name)
     session.add(new_privilege)
     session.flush()
