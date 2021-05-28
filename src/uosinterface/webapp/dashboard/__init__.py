@@ -15,7 +15,7 @@ blueprint = Blueprint(
 
 def shutdown_server():
     """Function stops the server execution."""
-    func = request.environ.get("werkzeug.server.shutdown")
+    func = request.environ.get("werkzeug.server.shutdown")  # todo this is depreciated
     if func is None:
         raise RuntimeError("Not running with the Werkzeug Server")
     func()
