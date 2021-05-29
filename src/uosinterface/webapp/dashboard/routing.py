@@ -76,5 +76,5 @@ def route_settings():
 @privileged_route([PrivilegeNames.ADMIN])
 def route_shutdown():
     """Terminates the server execution / interface process."""
-    shutdown_server()
+    shutdown_server.set()
     return "UOS Interface server shutting down..."

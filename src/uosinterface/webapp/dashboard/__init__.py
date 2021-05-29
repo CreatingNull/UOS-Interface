@@ -3,6 +3,9 @@ from datetime import datetime
 
 from flask import Blueprint
 from flask import request
+from gevent.event import Event
+
+shutdown_server = Event()
 
 blueprint = Blueprint(
     "dashboard_blueprint",
@@ -11,14 +14,6 @@ blueprint = Blueprint(
     template_folder="templates",
     static_folder="static",
 )
-
-
-def shutdown_server():
-    """Function stops the server execution."""
-    func = request.environ.get("werkzeug.server.shutdown")  # todo this is depreciated
-    if func is None:
-        raise RuntimeError("Not running with the Werkzeug Server")
-    func()
 
 
 def get_site_info() -> {}:
