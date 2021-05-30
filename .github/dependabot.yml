@@ -1,0 +1,9 @@
+version: 2
+
+updates:
+
+  # Maintain the dependencies for pip
+  - package-ecosystem: "pip"
+    directory: "/resources"
+    schedule:
+      interval: "daily"
