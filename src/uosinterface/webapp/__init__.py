@@ -13,6 +13,7 @@ from sqlalchemy.orm import scoped_session
 from uosinterface import UOSDatabaseError
 from uosinterface.util import configure_logs
 from uosinterface.webapp.api import routing as api_routing
+from uosinterface.webapp.auth import default_user
 from uosinterface.webapp.auth import PrivilegeNames
 from uosinterface.webapp.auth import routing as auth_routing
 from uosinterface.webapp.dashboard import routing as dashboard_routing
@@ -24,6 +25,7 @@ from uosinterface.webapp.database.interface import add_user_privilege
 from uosinterface.webapp.database.interface import get_user
 from uosinterface.webapp.database.interface import init_privilege
 from uosinterface.webapp.database.models import Privilege
+from uosinterface.webapp.database.models import User
 from uosinterface.webapp.database.models import UserKeys
 from uosinterface.webapp.database.models import UserPrivilege
 
@@ -79,13 +81,15 @@ def register_database(app):
                     .filter(Privilege.name == PrivilegeNames.ADMIN.name)
                     .first()
                 ):
-                    add_user(db_session, "nulltek", "nulltek")
+                    db_session.add(User(**default_user))
                     add_user_privilege(
                         db_session,
-                        user_value="nulltek",
+                        user_value=default_user["name"],
+                        user_field=User.name,
                         privilege=PrivilegeNames.ADMIN.name,
+                        privilege_field=Privilege.name,
                     )
-            except SQLAlchemyError as sql_exception:
+            except (SQLAlchemyError, UOSDatabaseError) as sql_exception:
                 Log(__name__).error(
                     "Failed to populate defaults into database %s.",
                     sql_exception.__str__(),
