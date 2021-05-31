@@ -4,6 +4,8 @@ from typing import Union
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from uosinterface import UOSDatabaseError
+from uosinterface.webapp.database import KeyTypes
+from uosinterface.webapp.database.models import APIPrivilege
 from uosinterface.webapp.database.models import Privilege
 from uosinterface.webapp.database.models import User
 from uosinterface.webapp.database.models import UserKeys

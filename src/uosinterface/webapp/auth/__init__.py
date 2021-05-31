@@ -18,12 +18,21 @@ blueprint = Blueprint(
     static_folder="static",
 )
 
+default_user = {"name": "nulltek", "passwd": "nulltek"}
+
 
 class PrivilegeNames(Enum):
     """Enum class of all the privileges supported by the web-app."""
 
     ADMIN = 1  # Full System Privileges
-    VIEW = 2  # Can navigate and view but not adjust settings.
+    READ = 2  # Can navigate and view but not adjust settings.
+    WRITE = 3  # Can adjust settings on the device.
+
+
+class KeyTypes(Enum):
+    """Class describing the variation in user keys."""
+
+    API = 0
 
 
 def privileged_route(privilege_names: [PrivilegeNames] = ()):
