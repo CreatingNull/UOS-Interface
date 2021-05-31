@@ -31,4 +31,4 @@ def test_check_privileges(db_session, db_user: User, db_privilege: Privilege):
     # Test not logged in user is denied with empty privilege list.
     assert not check_privileges([], db_session, AnonymousUserMixin())
     # Test logged in user blocked if not named in privilege list.
-    assert not check_privileges([PrivilegeNames.VIEW], db_session, db_user)
+    assert not check_privileges([PrivilegeNames.READ], db_session, db_user)
