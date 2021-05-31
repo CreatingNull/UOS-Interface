@@ -91,7 +91,8 @@ def check_privileges(privilege_names: [], session, user) -> bool:
     # iterate through privileges of user and check for a match
     user_privileges = get_user_privileges(session, user.id)
     Log(__name__).debug(
-        "Has privileges {[user_privilege.name for user_privilege in user_privileges]}"
+        f"Has privileges %s",
+        [user_privilege.name for user_privilege in user_privileges],
     )
     for user_privilege in user_privileges:
         if (
