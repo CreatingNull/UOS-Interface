@@ -89,31 +89,29 @@ def get_user_privileges(
 
 
 def add_user_privilege(
-    session: Session, user_value: [int, str], privilege: Union[int, str]
+    session: Session,
+    user_value: [int, str],
+    user_field,
+    privilege: Union[int, str],
+    privilege_field,
 ):
     """
     Function for linking a user to a privilege.
 
     :param session: The session_maker object to obtain a session from.
     :param user_value: The name or id of the user add the privilege to.
+    :param user_field: The field to compare to the value parameter (default id).
     :param privilege: The name or id of the privilege.
+
+    :param privilege_field: The field to compare to the value parameter (default None).
     :return:
 
     """
-    linked_user = get_user(
-        session=session,
-        user_value=user_value,
-        user_field=User.id if isinstance(user_value, int) else User.name,
-    )
+    linked_user = get_user(session, user_value, user_field)
     if not linked_user:
         raise UOSDatabaseError("User must exist for privileges to be added.")
     linked_privilege = (
-        session.query(Privilege)
-        .filter(
-            (Privilege.id if isinstance(privilege, int) else Privilege.name)
-            == privilege
-        )
-        .first()
+        session.query(Privilege).filter(privilege_field == privilege).first()
     )
     if not linked_privilege:
         raise UOSDatabaseError("Privilege must exist to be added to user.")

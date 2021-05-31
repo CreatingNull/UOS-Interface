@@ -132,15 +132,21 @@ def test_add_user_privilege(
     )
     # Test error raised with bad user
     with pytest.raises(UOSDatabaseError) as exception:
-        add_user_privilege(db_session, "InvalidUser", "NewPrivilege")
+        add_user_privilege(
+            db_session, "InvalidUser", User.name, "NewPrivilege", Privilege.name
+        )
     assert "User must exist" in str(exception.value)
     # Test error raised with bad privilege
     with pytest.raises(UOSDatabaseError) as exception:
-        add_user_privilege(db_session, db_user.id, "InvalidPrivilege")
+        add_user_privilege(
+            db_session, db_user.id, User.id, "InvalidPrivilege", Privilege.name
+        )
     assert "Privilege must exist" in str(exception.value)
     # Test error raised with duplicate user_privilege.
     with pytest.raises(UOSDatabaseError) as exception:
-        add_user_privilege(db_session, db_user.name, db_privilege.name)
+        add_user_privilege(
+            db_session, db_user.name, User.name, db_privilege.name, Privilege.name
+        )
     assert "duplicate" in str(exception.value)
     # Tests normal case with lookup via names
     confirm_query = (
@@ -154,7 +160,9 @@ def test_add_user_privilege(
         )
     )
     assert not confirm_query.first()  # sanity check
-    add_user_privilege(db_session, db_user.name, "NewPrivilege")
+    add_user_privilege(
+        db_session, db_user.name, User.name, "NewPrivilege", Privilege.name
+    )
     assert confirm_query.first()
     # Tests normal case with lookup via ids
     confirm_query = db_session.query(UserPrivilege).filter(
@@ -164,7 +172,9 @@ def test_add_user_privilege(
         )
     )
     assert not confirm_query.first()  # sanity check
-    add_user_privilege(db_session, db_user.id, newer_privilege.id)
+    add_user_privilege(
+        db_session, db_user.id, User.id, newer_privilege.id, Privilege.id
+    )
     assert confirm_query.first()
 
 
