@@ -11,7 +11,7 @@ from uosinterface.webapp.database.interface import get_user_privileges
 from uosinterface.webapp.database.interface import init_privilege
 from uosinterface.webapp.database.models import Privilege
 from uosinterface.webapp.database.models import User
-from uosinterface.webapp.database.models import UserKeys
+from uosinterface.webapp.database.models import UserKey
 from uosinterface.webapp.database.models import UserPrivilege
 
 
@@ -25,13 +25,13 @@ def test_get_user(db_session: Session, db_user: User):
 
     """
     user = db_session.query(User).filter(User.name == db_user.name).first()
-    user_key = db_session.query(UserKeys).filter(UserKeys.user_id == user.id).first()
+    user_key = db_session.query(UserKey).filter(UserKey.user_id == user.id).first()
     # lookup via user id
     assert user == get_user(db_session, db_user.id)
     # lookup via user name
     assert user == get_user(db_session, db_user.name, User.name)
     # lookup via user api key
-    assert user == get_user(db_session, user_key.user_id, UserKeys.user_id)
+    assert user == get_user(db_session, user_key.user_id, UserKey.user_id)
     # lookup list of all users
     users = get_user(db_session)
     assert isinstance(users, list)

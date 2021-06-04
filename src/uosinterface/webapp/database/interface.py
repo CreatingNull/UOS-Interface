@@ -8,7 +8,7 @@ from uosinterface.webapp.database import KeyTypes
 from uosinterface.webapp.database.models import APIPrivilege
 from uosinterface.webapp.database.models import Privilege
 from uosinterface.webapp.database.models import User
-from uosinterface.webapp.database.models import UserKeys
+from uosinterface.webapp.database.models import UserKey
 from uosinterface.webapp.database.models import UserPrivilege
 
 
@@ -26,9 +26,9 @@ def get_user(
     """
     if user_value is None:  # return a list of all users
         return session.query(User).all()
-    if user_field == UserKeys.user_id:  # Lookup user via api key.
+    if user_field == UserKey.user_id:  # Lookup user via api key.
         return (
-            session.query(User).join(UserKeys).filter(user_field == user_value).first()
+            session.query(User).join(UserKey).filter(user_field == user_value).first()
         )
     # Lookup via user table parameters.
     return session.query(User).filter(user_field == user_value).first()
@@ -100,7 +100,7 @@ def add_user_privilege(
 
     :param session: The session_maker object to obtain a session from.
     :param user_value: The name or id of the user add the privilege to.
-    :param user_field: The field to compare to the value parameter (default id).
+    :param user_field: The field to compare to the value parameter.
     :param privilege: The name or id of the privilege.
 
     :param privilege_field: The field to compare to the value parameter (default None).

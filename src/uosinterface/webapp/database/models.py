@@ -28,7 +28,7 @@ class User(Base, UserMixin):
     pass_hash = Column(BINARY)
     # Defining behaviour for linked tables
     user_privileges = relationship("UserPrivilege", cascade="all, delete-orphan")
-    user_keys = relationship("UserKeys", cascade="all, delete-orphan")
+    user_keys = relationship("UserKey", cascade="all, delete-orphan")
 
     def __init__(self, name: str, passwd: str, **kwargs):
         """
@@ -77,14 +77,14 @@ class APIPrivilege(Base):
 
     __tablename__ = "APIPrivilege"
     id = Column(INTEGER, primary_key=True)
-    key_id = Column(INTEGER, ForeignKey("UserKeys.id"))
+    key_id = Column(INTEGER, ForeignKey("UserKey.id"))
     privilege_id = Column(INTEGER, ForeignKey("Privilege.id", ondelete="CASCADE"))
 
 
-class UserKeys(Base):
+class UserKey(Base):
     """Model for generating secret keys related to a user."""
 
-    __tablename__ = "UserKeys"
+    __tablename__ = "UserKey"
 
     id = Column(INTEGER, primary_key=True)
     user_id = Column(INTEGER, ForeignKey("User.id", ondelete="CASCADE"))

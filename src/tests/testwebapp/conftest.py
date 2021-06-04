@@ -12,7 +12,7 @@ from uosinterface.webapp.database import KeyTypes
 from uosinterface.webapp.database.models import APIPrivilege
 from uosinterface.webapp.database.models import Privilege
 from uosinterface.webapp.database.models import User
-from uosinterface.webapp.database.models import UserKeys
+from uosinterface.webapp.database.models import UserKey
 from uosinterface.webapp.database.models import UserPrivilege
 
 # pylint: disable=redefined-outer-name
@@ -101,13 +101,13 @@ def __populate_test_data(db_session: Session):
     # Populate a relationship between jane and tester.
     db_session.add(UserPrivilege(user_id=user_id, privilege_id=privilege_id))
     # Add an api key for the user.
-    db_session.add(UserKeys(key_length=64, user_id=user_id, key_type=KeyTypes.API))
+    db_session.add(UserKey(key_length=64, user_id=user_id, key_type=KeyTypes.API))
     db_session.flush()
     # Populate a relationship between jane's API key and tester.
     db_session.add(
         APIPrivilege(
-            key_id=db_session.query(UserKeys.id)
-            .filter(UserKeys.user_id == user_id)
+            key_id=db_session.query(UserKey.id)
+            .filter(UserKey.user_id == user_id)
             .scalar_subquery(),
             privilege_id=privilege_id,
         )

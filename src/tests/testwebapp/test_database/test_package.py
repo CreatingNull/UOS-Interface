@@ -7,7 +7,7 @@ from uosinterface.webapp.database import verify_pass
 from uosinterface.webapp.database.models import APIPrivilege
 from uosinterface.webapp.database.models import Privilege
 from uosinterface.webapp.database.models import User
-from uosinterface.webapp.database.models import UserKeys
+from uosinterface.webapp.database.models import UserKey
 from uosinterface.webapp.database.models import UserPrivilege
 
 
@@ -22,7 +22,7 @@ def test_user_cascades(db_session: Session, db_user: User):
     """
     user = db_session.query(User).filter(User.id == db_user.id).first()
     assert user  # check user populated at start
-    user_key = db_session.query(UserKeys).filter(UserKeys.user_id == user.id).first()
+    user_key = db_session.query(UserKey).filter(UserKey.user_id == user.id).first()
     assert user_key  # check api key is populated at start
     assert user_key.key_type == KeyTypes.API
     api_privilege = (
@@ -38,7 +38,7 @@ def test_user_cascades(db_session: Session, db_user: User):
     db_session.delete(user)
     db_session.flush()
     # Check deletion of the user cascades as expected
-    user_key = db_session.query(UserKeys).first()
+    user_key = db_session.query(UserKey).first()
     assert not user_key
     api_privilege = db_session.query(APIPrivilege).first()
     assert not api_privilege

@@ -26,7 +26,7 @@ from uosinterface.webapp.database.interface import get_user
 from uosinterface.webapp.database.interface import init_privilege
 from uosinterface.webapp.database.models import Privilege
 from uosinterface.webapp.database.models import User
-from uosinterface.webapp.database.models import UserKeys
+from uosinterface.webapp.database.models import UserKey
 from uosinterface.webapp.database.models import UserPrivilege
 
 login_manager = LoginManager()
@@ -115,7 +115,7 @@ def register_database(app):
         api_key = request.args.get("api_key")
         if api_key:
             with app.config["DATABASE"]["SESSION"]() as db_session:
-                return get_user(db_session, user_value=api_key, user_field=UserKeys.key)
+                return get_user(db_session, user_value=api_key, user_field=UserKey.key)
         return None  # no auth
 
 
