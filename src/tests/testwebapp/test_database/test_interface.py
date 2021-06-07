@@ -1,9 +1,13 @@
 """Test module for the high common function interface for the database."""
+from datetime import timedelta
+from time import sleep
+
 import pytest
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from uosinterface import UOSDatabaseError
 from uosinterface.webapp.auth import PrivilegeNames
+from uosinterface.webapp.database.interface import add_api_key
 from uosinterface.webapp.database.interface import add_user
 from uosinterface.webapp.database.interface import add_user_privilege
 from uosinterface.webapp.database.interface import get_user
@@ -176,6 +180,32 @@ def test_add_user_privilege(
         db_session, db_user.id, User.id, newer_privilege.id, Privilege.id
     )
     assert confirm_query.first()
+
+
+def test_add_api_key(db_session: Session, db_user: User):
+    """
+    Tests api keys are created, expire and fail cases are triggered correctly.
+
+    :param db_session: Pytest fixture allocated session.
+    :param db_user: Default test user object.
+    :return:
+
+    """
+    # Check adding key with no expiry.
+    api_key = add_api_key(db_session, db_user.id, User.id)
+    assert len(api_key) == 32
+    assert db_session.query(UserKey).filter(UserKey.key == api_key).first()
+    # Check adding key with expiry and check it expires.
+    api_key = add_api_key(db_session, db_user.id, User.id, expires=timedelta(seconds=1))
+    api_key = db_session.query(UserKey).filter(UserKey.key == api_key).first()
+    assert api_key
+    assert not api_key.expired()
+    sleep(1)
+    assert api_key.expired()
+    # Check adding a key to a non-existent user errors correctly.
+    with pytest.raises(UOSDatabaseError) as exception:
+        add_api_key(db_session, "InvalidUser", User.name)
+    assert "User must exist" in str(exception.value)
 
 
 def test_init_privilege(db_session: Session):

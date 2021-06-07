@@ -1,4 +1,6 @@
 """Declarative models for webapp's SQLAlchemy database ORM."""
+from datetime import datetime
+from datetime import timedelta
 from secrets import token_urlsafe
 
 from flask_login import UserMixin
@@ -94,14 +96,29 @@ class UserKey(Base):
     # Defining behaviour for linked tables
     api_privileges = relationship("APIPrivilege", cascade="all, delete-orphan")
 
-    def __init__(self, key_length: int = 32, **kwargs):
+    def __init__(self, key_length: int = 32, expires: timedelta = None, **kwargs):
         """
         Constructor for generating a random user key.
 
-        :param key_length: Length of the key to generate in bytes.
+        :param key_length: Length of the key to generate in characters.
+        :param expires: Timedelta defining when to expire the key, None is never. (default=None)
         :param kwargs: Attributes to populate in the model.
 
         """
-        self.key = token_urlsafe(key_length)
+        # Byte resolves to ~1.3 chars
+        self.key = token_urlsafe(key_length)[:key_length]
+        if expires:
+            self.expiry_date = datetime.now() + expires
         for attr in kwargs:
             setattr(self, attr, kwargs[attr])
+
+    def expired(self) -> bool:
+        """
+        Check if expired. Expired keys should be removed.
+
+        :return: Boolean describing if the key is active, if true should be removed.
+
+        """
+        if not self.expired or self.expiry_date > datetime.now():
+            return False
+        return True

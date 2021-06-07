@@ -1,4 +1,5 @@
 """Common high-level database interaction functionality."""
+from datetime import timedelta
 from typing import Union
 
 from sqlalchemy import and_
@@ -131,6 +132,28 @@ def add_user_privilege(
     )
     session.add(user_privilege)
     session.flush()
+
+
+def add_api_key(
+    session: Session, user_value: Union[int, str], user_field, expires: timedelta = None
+) -> str:
+    """
+    Generate a new API key and link it to a user.
+
+    :param session: The session_maker object to obtain a session from.
+    :param user_value: The name or id of the user add the privilege to.
+    :param user_field: The field to compare to the value parameter.
+    :param expires: Timedelta defining when to expire the key, None is never. (default=None)
+    :return: The generated API key string.
+
+    """
+    linked_user = get_user(session, user_value, user_field)
+    if not linked_user:
+        raise UOSDatabaseError("User must exist for API key to be added.")
+    api_key = UserKey(user_id=linked_user.id, key_type=KeyTypes.API, expires=expires)
+    session.add(api_key)
+    session.flush()
+    return api_key.key
 
 
 def init_privilege(session: Session, id_: int, name: str):
