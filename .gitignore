@@ -20,6 +20,11 @@ bin/
 __pycache__/
 .pytest_cache/
 
+# Ignore sphinx build data
+docs/_build/
+docs/_static/
+docs/_templates/
+
 # 3RD party dependant code
 src/uosinterface/webapp/static/lib/
 
