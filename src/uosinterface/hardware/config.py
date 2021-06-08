@@ -5,6 +5,8 @@ from dataclasses import fields
 from typing import Dict
 from typing import List
 
+from uosinterface import UOSUnsupportedError
+
 INTERFACE_USB = "USB"
 INTERFACE_STUB = "STUB"
 
@@ -75,10 +77,6 @@ class Pin:
     spi: {} = field(default_factory=dict)
     i2c: {} = field(default_factory=dict)
 
-    def get_dict(self):
-        """Returns the dataclass attributes as a dictionary."""
-        return {attrib.name: getattr(self, attrib.name) for attrib in fields(self)}
-
 
 @dataclass
 class Device:
@@ -91,21 +89,25 @@ class Device:
     analogue_pins: {int: Pin} = field(default_factory=dict)
     aux_params: Dict = field(default_factory=dict)
 
-    def get_compatible_pins(self, function_name: str) -> []:
-        """Returns a list of pins that are suitable for a function."""
-        requirements = (
-            UOS_SCHEMA[function_name].pin_requirements
-            if function_name in UOS_SCHEMA
-            else []
-        )
-        if requirements is None:  # pin is not relevant
-            return []
+    def get_compatible_pins(self, function_name: str) -> {}:
+        """
+        Returns a dict of pin objects that are suitable for a function.
+
+        :param function_name: the string name of the UOS Schema function.
+        :return: Dict of pin objects, keyed on pin index.
+
+        """
+        if function_name not in UOS_SCHEMA:
+            raise UOSUnsupportedError(f"UOS function {function_name} doesn't exist.")
+        requirements = UOS_SCHEMA[function_name].pin_requirements
+        if requirements is None:  # pins are not relevant to this function
+            return {}
         pin_dict = self.analogue_pins if "adc_in" in requirements else self.digital_pins
-        return [
-            pin
+        return {
+            pin: pin_dict[pin]
             for pin in pin_dict
-            if (getattr(pin_dict[pin], requirement) for requirement in requirements)
-        ]
+            if all(hasattr(pin_dict[pin], requirement) for requirement in requirements)
+        }
 
 
 ARDUINO_NANO_3 = Device(
