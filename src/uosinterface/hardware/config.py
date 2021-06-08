@@ -1,7 +1,6 @@
 """Passive configuration file for the UOS Interface Hardware Layer."""
 from dataclasses import dataclass
 from dataclasses import field
-from dataclasses import fields
 from typing import Dict
 from typing import List
 
