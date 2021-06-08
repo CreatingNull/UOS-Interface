@@ -225,7 +225,9 @@ class NPCSerialPort(UOSInterface):
         )
 
     @staticmethod
-    def decode_and_capture(byte_index: int, byte_in: bytes, packet: []) -> (int, []):
+    def decode_and_capture(
+        byte_index: int, byte_in: bytes, packet: list
+    ) -> (int, list):
         """
         Parser takes in a byte and vets it against UOS packet.
 

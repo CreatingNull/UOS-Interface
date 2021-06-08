@@ -114,7 +114,7 @@ class UOSInterface(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def enumerate_devices() -> [SystemDevice]:
+    def enumerate_devices() -> list[SystemDevice]:
         """
         Static method that should be functional if possible.
 
@@ -151,7 +151,7 @@ class UOSInterface(metaclass=ABCMeta):
         return bytes([])
 
     @staticmethod
-    def get_npc_checksum(packet_data: [int]) -> int:
+    def get_npc_checksum(packet_data: list[int]) -> int:
         """
         Static method to generate a NPC LRC checksum.
 

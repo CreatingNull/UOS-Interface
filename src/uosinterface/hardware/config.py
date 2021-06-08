@@ -1,8 +1,6 @@
 """Passive configuration file for the UOS Interface Hardware Layer."""
 from dataclasses import dataclass
 from dataclasses import field
-from typing import Dict
-from typing import List
 
 from uosinterface import UOSUnsupportedError
 
@@ -14,11 +12,11 @@ INTERFACE_STUB = "STUB"
 class UOSFunction:
     """Defines auxiliary information for UOS commands in the schema."""
 
-    address_lut: Dict
+    address_lut: dict
     ack: bool
-    rx_packets_expected: List = field(default_factory=list)
-    required_arguments: List = None
-    pin_requirements: List = None
+    rx_packets_expected: list = field(default_factory=list)
+    required_arguments: list = None
+    pin_requirements: list = None
 
 
 UOS_SCHEMA = {
@@ -71,10 +69,10 @@ class Pin:
     pull_down: bool = False
     pc_int: bool = False
     hw_int: bool = False
-    timer: {} = field(default_factory=dict)
-    comp: {} = field(default_factory=dict)
-    spi: {} = field(default_factory=dict)
-    i2c: {} = field(default_factory=dict)
+    timer: dict = field(default_factory=dict)
+    comp: dict = field(default_factory=dict)
+    spi: dict = field(default_factory=dict)
+    i2c: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -83,10 +81,10 @@ class Device:
 
     name: str
     interfaces: list
-    functions_enabled: Dict
-    digital_pins: {int: Pin} = field(default_factory=dict)
-    analogue_pins: {int: Pin} = field(default_factory=dict)
-    aux_params: Dict = field(default_factory=dict)
+    functions_enabled: dict
+    digital_pins: dict = field(default_factory=dict)
+    analogue_pins: dict = field(default_factory=dict)
+    aux_params: dict = field(default_factory=dict)
 
     def get_compatible_pins(self, function_name: str) -> {}:
         """
