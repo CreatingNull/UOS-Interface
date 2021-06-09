@@ -16,6 +16,8 @@ formats:
 # >= docker image 7.0.7 should have support for 3.9
 build:
   image: testing
+  apt_packages:
+    - openssl
 
 # Optionally set the version of Python and requirements required to build your docs
 python:
