@@ -91,7 +91,7 @@ def get_user_privileges(
 
 def add_user_privilege(
     session: Session,
-    user_value: [int, str],
+    user_value: Union[int, str],
     user_field,
     privilege: Union[int, str],
     privilege_field,

@@ -5,5 +5,4 @@ src
    :maxdepth: 4
 
    app
-   tests
    uosinterface

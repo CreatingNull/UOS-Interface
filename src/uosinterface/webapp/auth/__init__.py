@@ -35,7 +35,7 @@ class KeyTypes(Enum):
     API = 0
 
 
-def privileged_route(privilege_names: [PrivilegeNames] = ()):
+def privileged_route(privilege_names: list[PrivilegeNames] = ()):
     """
     Flask route decorator to check user / API access.
 
@@ -70,7 +70,7 @@ def privileged_route(privilege_names: [PrivilegeNames] = ()):
     return decorator
 
 
-def check_privileges(privilege_names: [], session, user) -> bool:
+def check_privileges(privilege_names: list, session, user) -> bool:
     """
     Function for checking a user's privileges match requirements.
 

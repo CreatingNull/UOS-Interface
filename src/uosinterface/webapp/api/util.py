@@ -24,8 +24,10 @@ class APIresult:
 
 
 def check_required_args(
-    possible_arguments: {APIargument}, arguments_found: {}, add_device: bool = False
-) -> (APIresult, {}):
+    possible_arguments: dict[APIargument],
+    arguments_found: dict,
+    add_device: bool = False,
+) -> (APIresult, dict):
     """Adds common arguments and vets user request against parameters."""
     if add_device:
         possible_arguments = dict(
