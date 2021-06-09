@@ -17,6 +17,9 @@ formats:
 build:
   image: testing
   apt_packages:
+    - build-essential
+    - python-dev
+    - python-dev
     - openssl
 
 # Optionally set the version of Python and requirements required to build your docs
