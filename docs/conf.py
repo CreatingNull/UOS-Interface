@@ -10,8 +10,15 @@
 #
 import os
 import sys
+from unittest import mock
+
 
 sys.path.insert(0, os.path.abspath("../src"))
+
+# Mock Scrypt because of its OpenSSL OS dependency.
+MOCKED_MODULES = ["hashlib.scrypt"]
+for module_name in MOCKED_MODULES:
+    sys.modules[module_name] = mock.Mock()
 
 
 # -- Project information -----------------------------------------------------
