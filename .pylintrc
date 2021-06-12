@@ -139,7 +139,9 @@ disable=print-statement,
         deprecated-sys-function,
         exception-escape,
         comprehension-escape,
-        bad-continuation  # conflicts with black formatting
+        bad-continuation,  # conflicts with black formatting
+		unsubscriptable-object  # false calls made on python3.9 due to PEP 585. Remove once implemented in pylint.
+
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
