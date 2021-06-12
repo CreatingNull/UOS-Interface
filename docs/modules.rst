@@ -1,8 +1,7 @@
-src
-===
+uosinterface
+============
 
 .. toctree::
    :maxdepth: 4
 
-   app
    uosinterface
