@@ -10,8 +10,7 @@ sphinx:
    configuration: docs/conf.py
 
 # Optionally build your docs in additional formats such as PDF
-formats:
-   - pdf
+formats: all
 
 # >= docker image 7.0.7 should have support for 3.9
 build:
