@@ -10,10 +10,11 @@
 #
 import os
 import sys
+from re import match
 from unittest import mock
 
-
 sys.path.insert(0, os.path.abspath("../src"))
+from uosinterface import __version__  # noqa: E402
 
 # Mock Scrypt because of its OpenSSL OS dependency.
 MOCKED_MODULES = ["hashlib.scrypt"]
@@ -27,11 +28,10 @@ project = "UOS Interface"
 copyright = "2021, Creating Null (Steve Richardson)"
 author = "Creating Null (Steve Richardson)"
 
-# The short X.Y version.
-version = "0.0"
+# The short MAJOR.MINOR version.
+version = match(r"^[\d].[\d]", __version__).group(0)
 # The full version, including alpha/beta/rc tags.
-release = "0.0.0"
-release_date = "8-June-2021"
+release = __version__
 
 # -- General configuration ---------------------------------------------------
 

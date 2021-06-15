@@ -2,6 +2,9 @@
 import sys
 from pathlib import Path
 
+# Semantic Versioning, MAJOR.MINOR.PATCH[-'pre-release'.'num']
+__version__ = "0.0.0-alpha.1"
+
 # path used to refer to the root directory of the app.
 if getattr(sys, "frozen", False):  # in deployment
     base_dir = Path(sys.executable).parent
