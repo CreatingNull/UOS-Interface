@@ -7,7 +7,7 @@ from time import time_ns
 import serial
 from serial.serialutil import SerialException
 from serial.tools import list_ports
-from uosinterface.hardware.uosabstractions import COMresult
+from uosinterface.hardware.uosabstractions import ComResult
 from uosinterface.hardware.uosabstractions import SystemDevice
 from uosinterface.hardware.uosabstractions import UOSInterface
 
@@ -124,7 +124,7 @@ class NPCSerialPort(UOSInterface):
 
         """
         if not self.check_open():
-            return COMresult(False, exception="Connection must be opened first.")
+            return ComResult(False, exception="Connection must be opened first.")
         packet = self.get_npc_packet(to_addr=address, from_addr=0, payload=payload)
         Log(__name__).debug("packet formed %s", packet)
         try:  # Send the packet.
@@ -132,10 +132,10 @@ class NPCSerialPort(UOSInterface):
             self._device.flush()
             Log(__name__).debug("Sent %s bytes of data", num_bytes)
         except serial.SerialException as exception:
-            return COMresult(False, exception=str(exception))
+            return ComResult(False, exception=str(exception))
         finally:
             self._device.reset_output_buffer()
-        return COMresult(num_bytes == len(packet))
+        return ComResult(num_bytes == len(packet))
 
     def read_response(self, expect_packets: int, timeout_s: float):
         """
@@ -143,10 +143,10 @@ class NPCSerialPort(UOSInterface):
 
         :param expect_packets: How many packets including ACK to expect.
         :param timeout_s: The maximum time this function will wait for data.
-        :return: COMresult object.
+        :return: ComResult object.
 
         """
-        response_object = COMresult(False)
+        response_object = ComResult(False)
         if not self.check_open():
             return response_object
         start_ns = time_ns()
@@ -194,12 +194,12 @@ class NPCSerialPort(UOSInterface):
 
         """
         if not self.check_open():
-            return COMresult(False, exception="Connection must be open first.")
+            return ComResult(False, exception="Connection must be open first.")
         Log(__name__).debug("Resetting the device using the DTR line")
         self._device.dtr = not self._device.dtr
         sleep(0.2)
         self._device.dtr = not self._device.dtr
-        return COMresult(True)
+        return ComResult(True)
 
     def check_open(self) -> bool:
         """

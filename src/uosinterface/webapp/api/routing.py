@@ -3,7 +3,7 @@ import inspect
 
 from flask import jsonify
 from flask import request
-from uosinterface.hardware import COMresult
+from uosinterface.hardware import ComResult
 from uosinterface.hardware import UOSDevice
 from uosinterface.webapp.api import API_VERSIONS
 from uosinterface.webapp.api import blueprint
@@ -15,7 +15,7 @@ def route_hardware_function(api_version: str, function: str):
     """Can be used to execute standard UOS IO functions."""
     if api_version not in API_VERSIONS:
         return jsonify(
-            COMresult(
+            ComResult(
                 False,
                 exception=f"'{function}' not supported in api version {api_version}.",
             )
@@ -24,7 +24,7 @@ def route_hardware_function(api_version: str, function: str):
         arguments = inspect.signature(getattr(UOSDevice, function))
     except AttributeError as exception:
         return jsonify(
-            COMresult(
+            ComResult(
                 False,
                 exception=f"API call on '{function}' threw error {exception.__str__()}.",
             )

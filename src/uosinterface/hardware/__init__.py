@@ -11,7 +11,7 @@ from uosinterface.hardware.config import INTERFACE_STUB
 from uosinterface.hardware.config import INTERFACE_USB
 from uosinterface.hardware.config import UOS_SCHEMA
 from uosinterface.hardware.stub import NPCStub
-from uosinterface.hardware.uosabstractions import COMresult
+from uosinterface.hardware.uosabstractions import ComResult
 from uosinterface.hardware.uosabstractions import InstructionArguments
 from uosinterface.hardware.usbserial import NPCSerialPort
 from uosinterface.util import configure_logs
@@ -128,14 +128,14 @@ class UOSDevice:
 
     def set_gpio_output(
         self, pin: int, level: int, volatility: int = SUPER_VOLATILE
-    ) -> COMresult:
+    ) -> ComResult:
         """
         Sets a pin to digital output mode and sets a level on that pin.
 
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: The output level, 0 - low, 1 - High.
         :param volatility: How volatile should the command be, use constants from HardwareCOM.
-        :return: COMresult object.
+        :return: ComResult object.
 
         """
         return self.__execute_instruction(
@@ -150,14 +150,14 @@ class UOSDevice:
 
     def get_gpio_input(
         self, pin: int, level: int, volatility: int = SUPER_VOLATILE
-    ) -> COMresult:
+    ) -> ComResult:
         """
         Reads a GPIO pins level from device and returns the value.
 
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: Not used currently, future will define pull-up state.
         :param volatility: How volatile should the command be, use constants from HardwareCOM.
-        :return: COMresult object.
+        :return: ComResult object.
 
         """
         return self.__execute_instruction(
@@ -176,14 +176,14 @@ class UOSDevice:
         pin: int,
         level: int,
         volatility: int = SUPER_VOLATILE,
-    ) -> COMresult:
+    ) -> ComResult:
         """
         Reads the current 10 bit ADC value.
 
         :param pin: The index of the analogue pin to read
         :param level: Reserved for future use.
         :param volatility: How volatile should the command be, use constants from HardwareCOM.
-        :return: COMresult object containing the ADC readings.
+        :return: ComResult object containing the ADC readings.
 
         """
         return self.__execute_instruction(
@@ -197,12 +197,12 @@ class UOSDevice:
             ),
         )
 
-    def get_system_info(self, **kwargs) -> COMresult:
+    def get_system_info(self, **kwargs) -> ComResult:
         """
         Reads the UOS version and device type.
 
         :param kwargs: Control arguments, accepts volatility.
-        :return: COMResult object containing the system information.
+        :return: ComResult object containing the system information.
 
         """
         return self.__execute_instruction(
@@ -214,13 +214,13 @@ class UOSDevice:
             ),
         )
 
-    def get_gpio_config(self, pin: int, **kwargs) -> COMresult:
+    def get_gpio_config(self, pin: int, **kwargs) -> ComResult:
         """
         Reads the configuration for a digital pin on the device.
 
         :param pin: Defines the pin for config querying.
         :param kwargs: Control arguments accepts volatility.
-        :return: COMResult object containing the system information.
+        :return: ComResult object containing the system information.
 
         """
         return self.__execute_instruction(
@@ -234,7 +234,7 @@ class UOSDevice:
             ),
         )
 
-    def reset_all_io(self, **kwargs) -> COMresult:
+    def reset_all_io(self, **kwargs) -> ComResult:
         """Executes the reset IO at the defined volatility level."""
         return self.__execute_instruction(
             UOSDevice.reset_all_io.__name__,
@@ -242,7 +242,7 @@ class UOSDevice:
             InstructionArguments(device_function_lut=self.system_lut.functions_enabled),
         )
 
-    def hard_reset(self, **kwargs) -> COMresult:
+    def hard_reset(self, **kwargs) -> ComResult:
         """Hard reset functionality for the UOS Device."""
         return self.__execute_instruction(
             UOSDevice.hard_reset.__name__,
@@ -280,7 +280,7 @@ class UOSDevice:
         volatility,
         instruction_data: InstructionArguments,
         retry: bool = True,
-    ) -> COMresult:
+    ) -> ComResult:
         """
         Common functionality for execution of all UOS instructions.
 
@@ -288,7 +288,7 @@ class UOSDevice:
         :param volatility: How volatile should the command be, use constants in HardwareCOM.
         :param instruction_data: device_functions from the LUT, payload ect.
         :param retry: Allows the instruction to retry execution when fails.
-        :return: COMresult object
+        :return: ComResult object
         :raises: UOSUnsupportedError if function is not possible on the loaded device.
 
         """
@@ -307,7 +307,7 @@ class UOSDevice:
             raise UOSUnsupportedError(
                 f"{function_name}({volatility}) has not been implemented for {self.identity}"
             )
-        rx_response = COMresult(False)
+        rx_response = ComResult(False)
         if self.is_lazy():  # Lazy loaded
             self.open()
         if (

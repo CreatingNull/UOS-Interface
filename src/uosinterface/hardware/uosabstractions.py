@@ -12,7 +12,7 @@ from uosinterface import UOSUnsupportedError
 
 
 @dataclass
-class COMresult:
+class ComResult:
     """Containing the data structure used to capture UOS results."""
 
     status: bool
@@ -45,13 +45,13 @@ class UOSInterface(metaclass=ABCMeta):
     """Base class for low level UOS interfaces classes to inherit."""
 
     @abstractmethod
-    def execute_instruction(self, address: int, payload: Tuple[int, ...]) -> COMresult:
+    def execute_instruction(self, address: int, payload: Tuple[int, ...]) -> ComResult:
         """
         Abstract method for executing instructions on UOSInterfaces.
 
         :param address: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
         :param payload: A tuple containing the uint8 parameters of the UOS instruction.
-        :returns: COM Result object.
+        :returns: ComResult object.
         :raises: UOSUnsupportedError if the interface hasn't been built correctly.
 
         """
@@ -60,7 +60,7 @@ class UOSInterface(metaclass=ABCMeta):
         )
 
     @abstractmethod
-    def read_response(self, expect_packets: int, timeout_s: float) -> COMresult:
+    def read_response(self, expect_packets: int, timeout_s: float) -> ComResult:
         """
         Abstract method for reading ACK and Data packets from a UOSInterface.
 
@@ -75,7 +75,7 @@ class UOSInterface(metaclass=ABCMeta):
         )
 
     @abstractmethod
-    def hard_reset(self) -> COMresult:
+    def hard_reset(self) -> ComResult:
         """
         UOS loop reset functionality should be as hard a reset as possible.
 
