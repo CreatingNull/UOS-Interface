@@ -13,7 +13,7 @@ import sys
 from re import match
 from unittest import mock
 
-sys.path.insert(0, os.path.abspath("../src"))
+sys.path.insert(0, os.path.abspath("../../src"))
 from uosinterface import __version__  # noqa: E402
 
 # Mock Scrypt because of its OpenSSL OS dependency.
@@ -25,8 +25,8 @@ for module_name in MOCKED_MODULES:
 # -- Project information -----------------------------------------------------
 
 project = "UOS Interface"
-copyright = "2021, Creating Null (Steve Richardson)"
-author = "Creating Null (Steve Richardson)"
+copyright = "2021, Steve Richardson"
+author = "Steve Richardson"
 
 # The short MAJOR.MINOR version.
 version = match(r"^[\d].[\d]", __version__).group(0)
@@ -40,6 +40,7 @@ release = __version__
 # ones.
 extensions = ["sphinx.ext.autodoc"]
 master_doc = "index"
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
@@ -55,7 +56,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
-html_logo = "../resources/UOSLogoSmall.png"
+html_logo = "../../resources/UOSLogoSmall.png"
+
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
