@@ -1,5 +1,5 @@
-uosinterface.hardware.stub package
-==================================
+hardware.stub package
+=====================
 
 Module contents
 ---------------

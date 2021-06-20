@@ -1,19 +1,19 @@
-uosinterface.webapp.dashboard package
-=====================================
+webapp.dashboard package
+========================
 
 Submodules
 ----------
 
-uosinterface.webapp.dashboard.routing module
---------------------------------------------
+dashboard.routing module
+------------------------
 
 .. automodule:: uosinterface.webapp.dashboard.routing
    :members:
    :undoc-members:
    :show-inheritance:
 
-uosinterface.webapp.dashboard.shim module
------------------------------------------
+dashboard.shim module
+---------------------
 
 .. automodule:: uosinterface.webapp.dashboard.shim
    :members:

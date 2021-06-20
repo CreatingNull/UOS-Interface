@@ -1,19 +1,19 @@
-uosinterface.webapp.database package
-====================================
+webapp.database package
+=======================
 
 Submodules
 ----------
 
-uosinterface.webapp.database.interface module
----------------------------------------------
+database.interface module
+-------------------------
 
 .. automodule:: uosinterface.webapp.database.interface
    :members:
    :undoc-members:
    :show-inheritance:
 
-uosinterface.webapp.database.models module
-------------------------------------------
+database.models module
+----------------------
 
 .. automodule:: uosinterface.webapp.database.models
    :members:

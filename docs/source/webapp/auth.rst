@@ -1,11 +1,11 @@
-uosinterface.webapp.auth package
-================================
+webapp.auth package
+===================
 
 Submodules
 ----------
 
-uosinterface.webapp.auth.routing module
----------------------------------------
+auth.routing module
+-------------------
 
 .. automodule:: uosinterface.webapp.auth.routing
    :members:

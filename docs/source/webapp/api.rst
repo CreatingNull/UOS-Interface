@@ -1,19 +1,19 @@
-uosinterface.webapp.api package
-===============================
+webapp.api package
+==================
 
 Submodules
 ----------
 
-uosinterface.webapp.api.routing module
---------------------------------------
+api.routing module
+------------------
 
 .. automodule:: uosinterface.webapp.api.routing
    :members:
    :undoc-members:
    :show-inheritance:
 
-uosinterface.webapp.api.util module
------------------------------------
+api.util module
+---------------
 
 .. automodule:: uosinterface.webapp.api.util
    :members:

@@ -1,5 +1,5 @@
-uosinterface.hardware.usbserial package
-=======================================
+hardware.usbserial package
+==========================
 
 Module contents
 ---------------

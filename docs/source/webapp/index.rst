@@ -1,22 +1,22 @@
-uosinterface.webapp package
-===========================
+webapp package
+==============
 
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
-   uosinterface.webapp.api
-   uosinterface.webapp.auth
-   uosinterface.webapp.dashboard
-   uosinterface.webapp.database
+   api
+   auth
+   dashboard
+   database
 
 Submodules
 ----------
 
-uosinterface.webapp.forms module
---------------------------------
+forms module
+------------
 
 .. automodule:: uosinterface.webapp.forms
    :members:

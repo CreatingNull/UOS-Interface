@@ -1,28 +1,28 @@
-uosinterface.hardware package
-=============================
+hardware package
+================
 
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
-   uosinterface.hardware.stub
-   uosinterface.hardware.usbserial
+   stub
+   usbserial
 
 Submodules
 ----------
 
-uosinterface.hardware.config module
------------------------------------
+hardware.config module
+----------------------
 
 .. automodule:: uosinterface.hardware.config
    :members:
    :undoc-members:
    :show-inheritance:
 
-uosinterface.hardware.uosabstractions module
---------------------------------------------
+hardware.uosabstractions module
+-------------------------------
 
 .. automodule:: uosinterface.hardware.uosabstractions
    :members:
