@@ -5,7 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
 
    stub
    usbserial
@@ -19,7 +19,6 @@ hardware.config module
 .. automodule:: uosinterface.hardware.config
    :members:
    :undoc-members:
-   :show-inheritance:
 
 hardware.uosabstractions module
 -------------------------------

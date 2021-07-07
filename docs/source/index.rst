@@ -12,7 +12,7 @@ The uosinterface tooling source code is divided into two packages:
 *	:doc:`webapp/index` - Containing a high level web server which can be used to provide network access to a uos controller via a dashboard or API requests.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
    :titlesonly:
 
