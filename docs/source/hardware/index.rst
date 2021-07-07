@@ -1,5 +1,5 @@
-hardware package
-================
+Hardware Abstraction
+====================
 
 Subpackages
 -----------
