@@ -14,7 +14,6 @@ The uosinterface tooling source code is divided into two packages:
 .. toctree::
    :maxdepth: 4
    :caption: Contents:
-   :titlesonly:
 
    hardware/index
    webapp/index

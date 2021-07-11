@@ -1,37 +1,46 @@
 Hardware Abstraction
 ====================
 
-Subpackages
------------
+The UOS interface hardware abstraction layer provides a common interface for control of UOS devices.
 
-.. toctree::
-   :maxdepth: 3
+Supported Hardware
+------------------
 
-   stub
-   usbserial
+Supported devices are enumerated and defined in `uosinterface.hardware.config.py`.
 
-Submodules
-----------
+All devices are defined using the `Devices` dataclass.
 
-hardware.config module
-----------------------
+.. autoclass:: uosinterface.hardware.config.Device
+	:members:
 
-.. automodule:: uosinterface.hardware.config
-   :members:
-   :undoc-members:
+Abstraction Layer
+-----------------
 
-hardware.uosabstractions module
--------------------------------
+Devices can be accessed through the hardware layer by instantiating a `UOSDevice`.
+By default the device is used in a lazy manner, where references to the interface opened and closed automatically as required for functions.
 
-.. automodule:: uosinterface.hardware.uosabstractions
-   :members:
-   :undoc-members:
-   :show-inheritance:
+Example usage:
 
-Module contents
----------------
+.. code-block:: python
 
-.. automodule:: uosinterface.hardware
-   :members:
-   :undoc-members:
-   :show-inheritance:
+	from uosinterface.hardware import UOSDevice
+	from uosinterface.hardware.config import ARDUINO_NANO_3
+	from uosinterface.hardware.config import INTERFACE
+
+	device = UOSDevice(
+		identity = ARDUINO_NANO_3,
+		address = "/dev/ttyUSB0",
+		interface = INTERFACE.USB
+	)
+	device.set_gpio_output(pin=13, level=1)  # switch on LED
+
+Note: that individual pins and functions must be enabled and supported by the `Device`.
+
+.. autoclass:: uosinterface.hardware.__init__.UOSDevice
+	:members:
+
+Hardware Interfaces
+-------------------
+
+*	Stub
+*	USB Serial
