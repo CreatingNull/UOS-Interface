@@ -32,15 +32,6 @@ class InstructionArguments:
     check_pin: int = None
 
 
-@dataclass
-class SystemDevice:
-    """Structure of the connection string components of a system device."""
-
-    connection: str
-    interface: str
-    port: str
-
-
 class UOSInterface(metaclass=ABCMeta):
     """Base class for low level UOS interfaces classes to inherit."""
 
@@ -114,11 +105,11 @@ class UOSInterface(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def enumerate_devices() -> list[SystemDevice]:
+    def enumerate_devices() -> []:
         """
         Static method that should be functional if possible.
 
-        :return: A list of possible SystemDevices on the server.
+        :return: A list of possible UOSInterfaces on the server.
         :raises: UOSUnsupportedError if the interface hasn't been built correctly.
 
         """

@@ -1,4 +1,5 @@
 """The high level interface for communicating with UOS devices."""
+import sys
 from logging import getLogger as Log
 from pathlib import Path
 from typing import Union
@@ -52,15 +53,23 @@ def get_device_definition(identity: str) -> Device:
     return device
 
 
-def enumerate_devices() -> []:
-    """Returns a list of all devices from all implemented interfaces."""
-    output = []
-    for interface in (
-        NPCSerialPort,
-        NPCStub,
-    ):  # todo generalise interface clustering
-        output.extend(interface.enumerate_devices())
-    return output
+def enumerate_system_devices(interface_filter: Interface = None) -> []:
+    """
+    Iterates through all interfaces and locates available devices.
+
+    :param interface_filter: Interface enum to limit the search to a single interface type.
+    :return: A list of uosinterface objects.
+
+    """
+    devices = []
+    for interface in Interface:  # enum object
+        if not interface_filter or interface_filter == interface:
+            devices.extend(
+                getattr(sys.modules[__name__], interface).enumerate_devices()
+            )
+        if interface_filter is not None:
+            break
+    return devices
 
 
 class UOSDevice:

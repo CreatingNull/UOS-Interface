@@ -5,7 +5,7 @@ from logging import getLogger
 from flask import make_response
 from flask import render_template
 from flask import request
-from uosinterface.hardware import enumerate_devices
+from uosinterface.hardware import enumerate_system_devices
 from uosinterface.hardware import get_device_definition
 from uosinterface.webapp.auth import privileged_route
 from uosinterface.webapp.auth import PrivilegeNames
@@ -49,7 +49,7 @@ def route_device():
     resp = make_response(
         render_template(
             "dashboard/device.html",
-            devices=enumerate_devices(),
+            devices=enumerate_system_devices(),
             uos_data=uos_data,
             digital_pins=device.digital_pins if device else None,
             connect_device_form=connect_device_form,
@@ -67,7 +67,7 @@ def route_settings():
     """Settings control page for the interface."""
     return render_template(
         "dashboard/settings.html",
-        devices=enumerate_devices(),
+        devices=enumerate_system_devices(),
         site_info=get_site_info(),
     )
 

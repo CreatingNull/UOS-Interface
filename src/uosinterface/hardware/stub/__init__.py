@@ -4,7 +4,6 @@ from typing import Tuple
 from uosinterface.hardware.config import UOS_SCHEMA
 from uosinterface.hardware.config import UOSFunction
 from uosinterface.hardware.uosabstractions import ComResult
-from uosinterface.hardware.uosabstractions import SystemDevice
 from uosinterface.hardware.uosabstractions import UOSInterface
 
 
@@ -81,13 +80,9 @@ class NPCStub(UOSInterface):
         return self.errored == 0
 
     @staticmethod
-    def enumerate_devices():
+    def enumerate_devices() -> []:
         """Returns a list of test stubs implemented in the interface."""
-        return [
-            SystemDevice(
-                connection="STUB|Test stub", interface="STUB", port="Test stub"
-            )
-        ]
+        return [NPCStub("STUB")]  # The test stub is always available
 
     @staticmethod
     def __check_required_args(payload: Tuple[int, ...], function: UOSFunction) -> bool:

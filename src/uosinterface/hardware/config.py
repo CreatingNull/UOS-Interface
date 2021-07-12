@@ -7,8 +7,10 @@ from uosinterface import UOSUnsupportedError
 
 
 class Interface(Enum):
-    STUB = 0
-    USB = 1
+    """Enumerates interfaces and their reference package names."""
+
+    STUB = "NPCStub"
+    USB = "NPCSerialPort"
 
 
 @dataclass

@@ -8,7 +8,6 @@ import serial
 from serial.serialutil import SerialException
 from serial.tools import list_ports
 from uosinterface.hardware.uosabstractions import ComResult
-from uosinterface.hardware.uosabstractions import SystemDevice
 from uosinterface.hardware.uosabstractions import UOSInterface
 
 if platform.system() == "Linux":
@@ -260,12 +259,7 @@ class NPCSerialPort(UOSInterface):
     @staticmethod
     def enumerate_devices():
         """Get the available ports on the system."""
-        return [
-            SystemDevice(
-                connection=f"USB|{port.device}", interface="USB", port=port.device
-            )
-            for port in list_ports.comports()
-        ]
+        return [NPCSerialPort(port.device) for port in list_ports.comports()]
 
     @staticmethod
     def check_port_exists(device: str):
