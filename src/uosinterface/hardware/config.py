@@ -1,11 +1,14 @@
 """Passive configuration file for the UOS Interface Hardware Layer."""
 from dataclasses import dataclass
 from dataclasses import field
+from enum import Enum
 
 from uosinterface import UOSUnsupportedError
 
-INTERFACE_USB = "USB"
-INTERFACE_STUB = "STUB"
+
+class Interface(Enum):
+    STUB = 0
+    USB = 1
 
 
 @dataclass
@@ -109,7 +112,7 @@ class Device:
 
 ARDUINO_NANO_3 = Device(
     name="Arduino Nano 3",
-    interfaces=[INTERFACE_USB, INTERFACE_STUB],
+    interfaces=[Interface.USB, Interface.STUB],
     functions_enabled={
         "set_gpio_output": {0: True},
         "get_gpio_input": {0: True},

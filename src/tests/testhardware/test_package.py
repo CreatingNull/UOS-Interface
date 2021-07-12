@@ -5,6 +5,7 @@ from uosinterface import UOSConfigurationError
 from uosinterface import UOSUnsupportedError
 from uosinterface.hardware import uosabstractions
 from uosinterface.hardware import UOSDevice
+from uosinterface.hardware.config import Interface
 from uosinterface.hardware.config import UOS_SCHEMA
 
 
@@ -12,10 +13,14 @@ class TestHardwareCOMInterface:
     """Tests for the object orientated abstraction layer."""
 
     @staticmethod
-    def test_implemented_devices(uos_identities: ()):
+    def test_implemented_devices(uos_identities: {}):
         """Checks devices in config can init without error."""
         assert (
-            UOSDevice(identity=uos_identities[0], connection=uos_identities[1])
+            UOSDevice(
+                identity=uos_identities["identity"],
+                address=uos_identities["address"],
+                interface=uos_identities["interface"],
+            )
             is not None
         )
 
@@ -23,16 +28,18 @@ class TestHardwareCOMInterface:
     def test_unimplemented_devices():
         """Checks an un-implemented device throws the correct error."""
         with pytest.raises(UOSUnsupportedError):
-            UOSDevice(identity="Not Implemented", connection="")
+            UOSDevice(identity="Not Implemented", address="", interface=Interface.STUB)
 
     @staticmethod
-    def test_bad_connection(uos_identities: ()):
+    @pytest.mark.parametrize("interface", Interface)  # checks all interfaces
+    def test_bad_connection(uos_identities: {}, interface: Interface):
         """Checks that bad connections fail sensibly."""
-        with pytest.raises(UOSConfigurationError):  # incorrect connection formatting
-            UOSDevice(uos_identities[0], "bad connection", loading=uos_identities[2])
         with pytest.raises(UOSCommunicationError):
             device = UOSDevice(
-                uos_identities[0], "USB|connection", loading=uos_identities[2]
+                uos_identities["identity"],
+                "",
+                interface=interface,
+                loading=uos_identities["loading"],
             )
             if device.is_lazy():  # lazy connection so manually open
                 device.open()
@@ -42,11 +49,11 @@ class TestHardwareCOMInterface:
     def test_device_function(uos_device, function_name):
         """Checks the UOS functions respond correctly."""
         for volatility in [0, 1, 2]:
-            pins = uos_device.system_lut.get_compatible_pins(function_name)
+            pins = uos_device.device.get_compatible_pins(function_name)
             if pins is None or len(pins) == 0:
                 pins = [0]  # insert a dummy pin for non-pinned functions.
             for pin in pins:
-                if volatility in uos_device.system_lut.functions_enabled[function_name]:
+                if volatility in uos_device.device.functions_enabled[function_name]:
                     result = getattr(uos_device, function_name)(
                         pin=pin, level=1, volatility=volatility
                     )

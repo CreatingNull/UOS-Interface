@@ -1,14 +1,14 @@
 """The high level interface for communicating with UOS devices."""
 from logging import getLogger as Log
 from pathlib import Path
+from typing import Union
 
 from uosinterface import UOSCommunicationError
 from uosinterface import UOSConfigurationError
 from uosinterface import UOSUnsupportedError
 from uosinterface.hardware.config import Device
 from uosinterface.hardware.config import DEVICES
-from uosinterface.hardware.config import INTERFACE_STUB
-from uosinterface.hardware.config import INTERFACE_USB
+from uosinterface.hardware.config import Interface
 from uosinterface.hardware.config import UOS_SCHEMA
 from uosinterface.hardware.stub import NPCStub
 from uosinterface.hardware.uosabstractions import ComResult
@@ -67,60 +67,56 @@ class UOSDevice:
     """
     Class for high level object-orientated control of UOS devices.
 
-    :ivar identity: The type of device, this is must have a valid section in the system_lut.
+    :ivar identity: The type of device, this is must have a valid device in the config.
     :ivar connection: Compliant connection string for identifying the device and interface.
-    :ivar system_lut: Device definitions as parsed from a compatible ini.
+    :ivar device: Device definitions as parsed from a compatible ini.
     :ivar __kwargs: Connection specific / optional parameters.
     :ivar __device_interface: Lower level communication protocol layer.
 
     """
 
     identity = ""
-    connection = ""
-    system_lut = Device
+    address = ""
+    device = Device
     __kwargs = {}
     __device_interface = None
 
-    def __init__(self, identity: str, connection: str = "", **kwargs):
+    def __init__(
+        self, identity: Union[str, Device], address: str, interface: Interface, **kwargs
+    ):
         """
         Instantiate a UOS device instance for communication.
 
         :param identity: Specify the type of device, this must exist in the device dictionary.
-        :param connection: Compliant connection string for identifying the device and interface.
+        :param address: Compliant connection string for identifying the device and interface.
+        :param interface: Set the type of interface to use for communication.
         :param kwargs: Additional optional connection parameters as defined in documentation.
 
         """
         self.identity = identity
-        self.connection = connection
-        self.system_lut = get_device_definition(identity)
+        self.address = address
+        if isinstance(identity, str):
+            self.device = get_device_definition(identity)
+        else:
+            self.device = identity
         self.__kwargs = kwargs
-        if self.system_lut is None:
+        if self.device is None:
             raise UOSUnsupportedError(
                 f"'{self.identity}' does not have a valid look up table"
             )
-        connection_params = self.connection.split("|")
-        if len(connection_params) != 2:
-            raise UOSConfigurationError(
-                f"NPC connection string was incorrectly formatted, length={len(connection_params)}"
-            )
-        if (
-            connection_params[0].upper() == INTERFACE_USB
-            and INTERFACE_USB in self.system_lut.interfaces
-        ):
+        if interface == Interface.USB and Interface.USB in self.device.interfaces:
             self.__device_interface = NPCSerialPort(
-                connection_params[1],
-                baudrate=self.system_lut.aux_params["default_baudrate"],
+                address,
+                baudrate=self.device.aux_params["default_baudrate"],
             )
-        elif (
-            connection_params[0].upper() == INTERFACE_STUB
-            and INTERFACE_STUB in self.system_lut.interfaces
-        ):
+        elif interface == Interface.STUB and Interface.STUB in self.device.interfaces:
             self.__device_interface = NPCStub(
-                errored=(kwargs["errored"] if "errored" in kwargs else False)
+                connection=address,
+                errored=(kwargs["errored"] if "errored" in kwargs else False),
             )
         else:
             raise UOSCommunicationError(
-                f"Could not correctly open a connection to {self.identity} - {self.connection}"
+                f"Could not correctly open a connection to {self.identity} - {self.address}"
             )
         if not self.is_lazy():  # eager connections open when they are created
             self.open()
@@ -142,7 +138,7 @@ class UOSDevice:
             UOSDevice.set_gpio_output.__name__,
             volatility,
             InstructionArguments(
-                device_function_lut=self.system_lut.functions_enabled,
+                device_function_lut=self.device.functions_enabled,
                 payload=(pin, 0, level),
                 check_pin=pin,
             ),
@@ -164,7 +160,7 @@ class UOSDevice:
             UOSDevice.get_gpio_input.__name__,
             volatility,
             InstructionArguments(
-                device_function_lut=self.system_lut.functions_enabled,
+                device_function_lut=self.device.functions_enabled,
                 payload=(pin, 1, level),
                 expected_rx_packets=2,
                 check_pin=pin,
@@ -190,7 +186,7 @@ class UOSDevice:
             UOSDevice.get_adc_input.__name__,
             volatility,
             InstructionArguments(
-                device_function_lut=self.system_lut.functions_enabled,
+                device_function_lut=self.device.functions_enabled,
                 payload=tuple([pin]),
                 expected_rx_packets=2,
                 check_pin=pin,
@@ -209,7 +205,7 @@ class UOSDevice:
             UOSDevice.get_system_info.__name__,
             kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
             InstructionArguments(
-                device_function_lut=self.system_lut.functions_enabled,
+                device_function_lut=self.device.functions_enabled,
                 expected_rx_packets=2,
             ),
         )
@@ -227,7 +223,7 @@ class UOSDevice:
             UOSDevice.get_gpio_config.__name__,
             kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
             InstructionArguments(
-                device_function_lut=self.system_lut.functions_enabled,
+                device_function_lut=self.device.functions_enabled,
                 payload=tuple([pin]),
                 expected_rx_packets=2,
                 check_pin=pin,
@@ -239,7 +235,7 @@ class UOSDevice:
         return self.__execute_instruction(
             UOSDevice.reset_all_io.__name__,
             kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
-            InstructionArguments(device_function_lut=self.system_lut.functions_enabled),
+            InstructionArguments(device_function_lut=self.device.functions_enabled),
         )
 
     def hard_reset(self, **kwargs) -> ComResult:
@@ -247,7 +243,7 @@ class UOSDevice:
         return self.__execute_instruction(
             UOSDevice.hard_reset.__name__,
             kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
-            InstructionArguments(device_function_lut=self.system_lut.functions_enabled),
+            InstructionArguments(device_function_lut=self.device.functions_enabled),
         )
 
     def open(self):
@@ -293,16 +289,16 @@ class UOSDevice:
 
         """
         if (
-            function_name not in self.system_lut.functions_enabled
-            or volatility not in self.system_lut.functions_enabled[function_name]
+            function_name not in self.device.functions_enabled
+            or volatility not in self.device.functions_enabled[function_name]
             or (
                 instruction_data.check_pin is not None
                 and instruction_data.check_pin
-                not in self.system_lut.get_compatible_pins(function_name)
+                not in self.device.get_compatible_pins(function_name)
             )
         ):
             Log(__name__).debug(
-                "Known functions %s", self.system_lut.functions_enabled.keys().__str__()
+                "Known functions %s", self.device.functions_enabled.keys().__str__()
             )
             raise UOSUnsupportedError(
                 f"{function_name}({volatility}) has not been implemented for {self.identity}"
@@ -371,7 +367,7 @@ class UOSDevice:
 
         """
         return (
-            f"<UOSDevice(connection='{self.connection}', identity='{self.identity}', "
-            f"system_lut={self.system_lut}, __device_interface='{self.__device_interface}', "
+            f"<UOSDevice(address='{self.address}', identity='{self.identity}', "
+            f"device={self.device}, __device_interface='{self.__device_interface}', "
             f"__kwargs={self.__kwargs})>"
         )

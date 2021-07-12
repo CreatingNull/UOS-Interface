@@ -56,7 +56,7 @@ def get_system_config(device_identity: str, device_connection):
             identity=device_identity,
             connection=device_connection,
         )
-        for digital_pin in device.system_lut.digital_pins:
+        for digital_pin in device.device.digital_pins:
             pin_config = device.get_gpio_config(digital_pin)
             getLogger(__name__).debug("Shim queried device info %s", str(pin_config))
             if pin_config.status:
