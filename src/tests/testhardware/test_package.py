@@ -1,12 +1,13 @@
 """Unit tests for the HardwareCOM package."""
 import pytest
 from uosinterface import UOSCommunicationError
-from uosinterface import UOSConfigurationError
 from uosinterface import UOSUnsupportedError
+from uosinterface.hardware import enumerate_system_devices
 from uosinterface.hardware import uosabstractions
 from uosinterface.hardware import UOSDevice
 from uosinterface.hardware.config import Interface
 from uosinterface.hardware.config import UOS_SCHEMA
+from uosinterface.hardware.stub import NPCStub
 
 
 class TestHardwareCOMInterface:
@@ -87,6 +88,19 @@ class TestHardwareCOMInterface:
         """Checks error is thrown correctly on close."""
         with pytest.raises(UOSCommunicationError):
             uos_errored_device.close()
+
+    @staticmethod
+    def test_enumerate_devices():
+        """Checks at least the stub is returned by the enumeration func."""
+        devices = enumerate_system_devices()
+        assert isinstance(devices, list)
+        assert len(devices) > 0
+        assert all(
+            isinstance(device, uosabstractions.UOSInterface) for device in devices
+        )
+        devices = enumerate_system_devices(Interface.STUB)
+        assert len(devices) == 1
+        assert isinstance(devices[0], NPCStub)
 
 
 class TestHardwareCOMAbstractions:

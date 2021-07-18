@@ -65,7 +65,7 @@ def enumerate_system_devices(interface_filter: Interface = None) -> []:
     for interface in Interface:  # enum object
         if not interface_filter or interface_filter == interface:
             devices.extend(
-                getattr(sys.modules[__name__], interface).enumerate_devices()
+                getattr(sys.modules[__name__], interface.value).enumerate_devices()
             )
         if interface_filter is not None:
             break
