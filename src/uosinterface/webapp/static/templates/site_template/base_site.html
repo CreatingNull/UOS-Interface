@@ -37,7 +37,7 @@
 							<select id="device-select" class="nav top-nav" onchange="persistDeviceSelection()">
 									<option disabled selected hidden>Select Device</option>
 									{% for device in devices %}
-									<option value="{{ device.connection }}">{{ device.port }}</option>
+									<option value="{{ device.__class__.__name__ }}">{{ device.connection }}</option>
 									{% endfor %}
 							</select>
 							<a href="javascript:void(0);" class="nav top-nav icon" onclick="dynamicNavigation()">
