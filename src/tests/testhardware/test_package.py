@@ -5,9 +5,9 @@ from uosinterface import UOSUnsupportedError
 from uosinterface.hardware import enumerate_system_devices
 from uosinterface.hardware import uosabstractions
 from uosinterface.hardware import UOSDevice
-from uosinterface.hardware.config import Interface
-from uosinterface.hardware.config import UOS_SCHEMA
+from uosinterface.hardware.devices import Interface
 from uosinterface.hardware.stub import NPCStub
+from uosinterface.hardware.uosabstractions import UOS_SCHEMA
 
 
 class TestHardwareCOMInterface:

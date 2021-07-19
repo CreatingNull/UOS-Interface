@@ -24,13 +24,13 @@ Example usage:
 .. code-block:: python
 
 	from uosinterface.hardware import UOSDevice
-	from uosinterface.hardware.config import ARDUINO_NANO_3
-	from uosinterface.hardware.config import INTERFACE
+	from uosinterface.hardware.devices import ARDUINO_NANO_3
+	from uosinterface.hardware.devices import Interface
 
 	device = UOSDevice(
 		identity = ARDUINO_NANO_3,
 		address = "/dev/ttyUSB0",
-		interface = INTERFACE.USB
+		interface = Interface.USB
 	)
 	device.set_gpio_output(pin=13, level=1)  # switch on LED
 

@@ -7,13 +7,13 @@ from typing import Union
 from uosinterface import UOSCommunicationError
 from uosinterface import UOSConfigurationError
 from uosinterface import UOSUnsupportedError
-from uosinterface.hardware.config import Device
-from uosinterface.hardware.config import DEVICES
-from uosinterface.hardware.config import Interface
-from uosinterface.hardware.config import UOS_SCHEMA
+from uosinterface.hardware.devices import DEVICES
+from uosinterface.hardware.devices import Interface
 from uosinterface.hardware.stub import NPCStub
 from uosinterface.hardware.uosabstractions import ComResult
+from uosinterface.hardware.uosabstractions import Device
 from uosinterface.hardware.uosabstractions import InstructionArguments
+from uosinterface.hardware.uosabstractions import UOS_SCHEMA
 from uosinterface.hardware.usbserial import NPCSerialPort
 from uosinterface.util import configure_logs
 

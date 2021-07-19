@@ -3,7 +3,7 @@ from logging import getLogger
 
 from flask import flash
 from uosinterface.hardware import UOSDevice
-from uosinterface.hardware.config import DEVICES
+from uosinterface.hardware.devices import DEVICES
 
 
 def get_system_info(device_identity, device_connection: str) -> {}:
@@ -83,7 +83,7 @@ def execute_digital_instruction(
     try:
         device = UOSDevice(
             identity=device_identity,
-            connection=device_connection,
+            address=device_connection,
         )
         # result = device.set_gpio_output()
         device.close()

@@ -1,9 +1,9 @@
 """Package is used as a simulated UOSInteface for test purposes."""
 from typing import Tuple
 
-from uosinterface.hardware.config import UOS_SCHEMA
-from uosinterface.hardware.config import UOSFunction
 from uosinterface.hardware.uosabstractions import ComResult
+from uosinterface.hardware.uosabstractions import UOS_SCHEMA
+from uosinterface.hardware.uosabstractions import UOSFunction
 from uosinterface.hardware.uosabstractions import UOSInterface
 
 
