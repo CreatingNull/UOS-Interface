@@ -6,11 +6,11 @@ The UOS interface hardware abstraction layer provides a common interface for con
 Supported Hardware
 ------------------
 
-Supported devices are enumerated and defined in `uosinterface.hardware.config.py`.
+Supported devices are enumerated and defined in `uosinterface.hardware.devices.py`.
 
-All devices are defined using the `Devices` dataclass.
+All devices are defined using the `Devices` abstraction class.
 
-.. autoclass:: uosinterface.hardware.config.Device
+.. autoclass:: uosinterface.hardware.uosabstractions.Device
 	:members:
 
 Abstraction Layer
