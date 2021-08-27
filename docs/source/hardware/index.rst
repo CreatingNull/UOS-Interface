@@ -21,17 +21,15 @@ By default the device is used in a lazy manner, where references to the interfac
 
 Example usage:
 
+This is the `hello world` usage for turning on the arduino on-board pin 13 LED.
+
 .. code-block:: python
 
 	from uosinterface.hardware import UOSDevice
 	from uosinterface.hardware.devices import ARDUINO_NANO_3
 	from uosinterface.hardware.devices import Interface
 
-	device = UOSDevice(
-		identity = ARDUINO_NANO_3,
-		address = "/dev/ttyUSB0",
-		interface = Interface.USB
-	)
+	device = UOSDevice(identity = ARDUINO_NANO_3, address = "/dev/ttyUSB0")
 	device.set_gpio_output(pin=13, level=1)  # switch on LED
 
 Note: that individual pins and functions must be enabled and supported by the `Device`.

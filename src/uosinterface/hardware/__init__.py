@@ -61,15 +61,15 @@ def enumerate_system_devices(interface_filter: Interface = None) -> []:
     :return: A list of uosinterface objects.
 
     """
-    devices = []
+    system_devices = []
     for interface in Interface:  # enum object
         if not interface_filter or interface_filter == interface:
-            devices.extend(
+            system_devices.extend(
                 getattr(sys.modules[__name__], interface.value).enumerate_devices()
             )
         if interface_filter is not None:
             break
-    return devices
+    return system_devices
 
 
 class UOSDevice:
@@ -91,7 +91,11 @@ class UOSDevice:
     __device_interface = None
 
     def __init__(
-        self, identity: Union[str, Device], address: str, interface: Interface, **kwargs
+        self,
+        identity: Union[str, Device],
+        address: str,
+        interface: Interface = Interface.USB,
+        **kwargs,
     ):
         """
         Instantiate a UOS device instance for communication.
