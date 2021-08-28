@@ -41,8 +41,8 @@ def get_device_definition(identity: str) -> Device:
     :return: Device Object or None if not found
 
     """
-    if identity is not None and identity.upper() in DEVICES:
-        device = DEVICES[identity.upper()]
+    if identity is not None and identity.lower() in DEVICES:
+        device = DEVICES[identity.lower()]
         for function_enabled in device.functions_enabled:
             device.functions_enabled[function_enabled] = {
                 vol: UOS_SCHEMA[function_enabled].address_lut[vol]

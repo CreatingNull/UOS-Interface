@@ -42,7 +42,7 @@ def route_hardware_function(api_version: str, function: str):
     if response.status:
         device = UOSDevice(
             identity=required_args["identity"].arg_value,
-            connection=required_args["connection"].arg_value,
+            address=required_args["address"].arg_value,
         )
         if function in dir(UOSDevice):
             instr_response = getattr(device, function)(

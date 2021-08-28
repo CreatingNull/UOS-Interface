@@ -126,7 +126,6 @@ ARDUINO_NANO_3 = Device(
 
 
 DEVICES = {
-    "HWID0": ARDUINO_NANO_3,
-    "ARDUINO NANO 3": ARDUINO_NANO_3,
-    "ARDUNIO NANO": ARDUINO_NANO_3,
+    "hwid0": ARDUINO_NANO_3,
+    "arduino_nano": ARDUINO_NANO_3,
 }  # define aliases

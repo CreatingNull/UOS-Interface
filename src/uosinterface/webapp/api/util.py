@@ -34,7 +34,7 @@ def check_required_args(
             possible_arguments,
             **{
                 "identity": APIargument(True, str, None),
-                "connection": APIargument(True, str, None),
+                "address": APIargument(True, str, None),
             },
         )
     for argument in possible_arguments:
