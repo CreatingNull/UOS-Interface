@@ -5,13 +5,13 @@ from uosinterface.hardware.devices import Interface
 
 DEVICES = {
     "Arduino Nano 3 LAZY": {
-        "identity": "Arduino Nano 3",
+        "identity": "arduino_nano",
         "address": "/dev/ttyUSB0",
         "interface": Interface.STUB,
         "loading": "LAZY",
     },
     "Arduino Nano 3 EAGER": {
-        "identity": "Arduino Nano 3",
+        "identity": "arduino_nano",
         "address": "/dev/ttyUSB0",
         "interface": Interface.STUB,
         "loading": "EAGER",
