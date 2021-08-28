@@ -6,12 +6,12 @@ from uosinterface.hardware import UOSDevice
 from uosinterface.hardware.devices import DEVICES
 
 
-def get_system_info(device_identity, device_connection: str) -> {}:
+def get_system_info(device_identity, device_address: str) -> {}:
     """
     Gets the 'version', 'type' and 'connection' and formats into dict.
 
     :param device_identity: Class of device being connected to.
-    :param device_connection: Connection string to the device.
+    :param device_address: Connection string to the device.
     :return: Dictionary containing system data.
 
     """
@@ -19,7 +19,7 @@ def get_system_info(device_identity, device_connection: str) -> {}:
     try:
         device = UOSDevice(
             identity=device_identity,
-            connection=device_connection,
+            address=device_address,
         )
         result = device.get_system_info()
         getLogger(__name__).debug("Shim queried device info %s", str(result))
@@ -29,24 +29,26 @@ def get_system_info(device_identity, device_connection: str) -> {}:
                 f"V{result.rx_packets[0][4]}.{result.rx_packets[0][5]}."
                 f"{result.rx_packets[0][6]}"
             )
-            sys_data["connection"] = device.connection
-            if f"HWID{result.rx_packets[0][7]}" in DEVICES:
-                sys_data["type"] = f"{DEVICES[f'HWID{result.rx_packets[0][7]}'].name}"
+            sys_data["address"] = device.address
+            if f"hwid{result.rx_packets[0][7]}" in DEVICES:
+                sys_data["type"] = f"{DEVICES[f'hwid{result.rx_packets[0][7]}'].name}"
             else:
                 sys_data["type"] = "Unknown"
     except (AttributeError, ValueError, NotImplementedError, RuntimeError) as exception:
-        message = f"Cannot open connection to '{device_connection}', info: {exception.__str__()}"
+        message = (
+            f"Cannot open connection to '{device_address}', info: {exception.__str__()}"
+        )
         flash(message, "error")
         getLogger(__name__).error(message)
     return sys_data
 
 
-def get_system_config(device_identity: str, device_connection):
+def get_system_config(device_identity: str, device_address):
     """
     Gets the mode and level of all gpio configured on the device.
 
     :param device_identity: Class of device being connected to.
-    :param device_connection: Connection string to the device.
+    :param device_address: Connection string to the device.
     :return: Dictionary containing 'gpioX' with 'mode'/'level' for each pin index X.
 
     """
@@ -54,7 +56,7 @@ def get_system_config(device_identity: str, device_connection):
     try:
         device = UOSDevice(
             identity=device_identity,
-            connection=device_connection,
+            address=device_address,
         )
         for digital_pin in device.device.digital_pins:
             pin_config = device.get_gpio_config(digital_pin)
@@ -69,26 +71,30 @@ def get_system_config(device_identity: str, device_connection):
                     "eeprom_level": pin_config.rx_packets[0][9],
                 }
     except (AttributeError, ValueError, NotImplementedError, RuntimeError) as exception:
-        message = f"Cannot open connection to '{device_connection}', info: {exception.__str__()}"
+        message = (
+            f"Cannot open connection to '{device_address}', info: {exception.__str__()}"
+        )
         flash(message, "error")
         getLogger(__name__).error(message)
     return uos_data
 
 
 def execute_digital_instruction(
-    device_identity: str, device_connection: str, set_output: bool, set_level: bool
+    device_identity: str, device_address: str, set_output: bool, set_level: bool
 ) -> {}:
     """Configs the pin from form data and formats response into dict."""
     uos_data = {}
     try:
         device = UOSDevice(
             identity=device_identity,
-            address=device_connection,
+            address=device_address,
         )
         # result = device.set_gpio_output()
         device.close()
     except (AttributeError, ValueError, NotImplementedError, RuntimeError) as exception:
-        message = f"Cannot open connection to '{device_connection}', info: {exception.__str__()}"
+        message = (
+            f"Cannot open connection to '{device_address}', info: {exception.__str__()}"
+        )
         flash(message, "error")
         getLogger(__name__).error(message)
     return uos_data
