@@ -6,21 +6,19 @@ from uosinterface.hardware import UOSDevice
 from uosinterface.hardware.devices import DEVICES
 
 
-def get_system_info(device_identity, device_address: str) -> {}:
+def get_system_info(device_identity, device_address: str, **kwargs) -> {}:
     """
     Gets the 'version', 'type' and 'connection' and formats into dict.
 
     :param device_identity: Class of device being connected to.
     :param device_address: Connection string to the device.
+    :param kwargs: Additional arguments that can be supplied to the UOS device.
     :return: Dictionary containing system data.
 
     """
     sys_data = {}
     try:
-        device = UOSDevice(
-            identity=device_identity,
-            address=device_address,
-        )
+        device = UOSDevice(identity=device_identity, address=device_address, **kwargs)
         result = device.get_system_info()
         getLogger(__name__).debug("Shim queried device info %s", str(result))
         device.close()

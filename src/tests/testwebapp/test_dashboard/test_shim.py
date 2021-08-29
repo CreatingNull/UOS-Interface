@@ -9,6 +9,7 @@ def test_get_system_info(uos_identities: ()):
         response = get_system_info(
             device_identity=uos_identities["identity"],
             device_address=uos_identities["address"],
+            interface=uos_identities["interface"],
         )
         assert len(response) == 3
         assert "version" in response and "address" in response and "type" in response
