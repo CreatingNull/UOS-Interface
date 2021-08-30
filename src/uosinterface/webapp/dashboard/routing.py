@@ -36,7 +36,7 @@ def route_device():
         )
         sys_data = get_system_info(  # get the system type and version info
             device_identity="Arduino Nano 3",
-            device_connection=connect_device_form.device_connection.data,
+            device_address=connect_device_form.device_connection.data,
         )
         uos_data.update(sys_data)
     elif digital_instruction_form.is_submitted():  # execute a digital_instruction]
