@@ -2,7 +2,6 @@
 from datetime import datetime
 
 from flask import Blueprint
-from flask import request
 from gevent.event import Event
 
 shutdown_server = Event()
