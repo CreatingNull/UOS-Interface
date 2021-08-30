@@ -71,8 +71,7 @@ class NPCStub(UOSInterface):
         if len(self.connection) > 0:
             self.__open = True
             return True
-        else:
-            return False
+        return False
 
     def close(self) -> bool:
         """Over-riding base prototype, simulates close a connection."""
