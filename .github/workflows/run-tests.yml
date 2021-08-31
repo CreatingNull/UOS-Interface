@@ -10,6 +10,7 @@ jobs:
     name: ${{ matrix.python-version }}-${{ matrix.build-type }}-${{ matrix.architecture }}-${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os:
           - "ubuntu-latest"
@@ -19,6 +20,11 @@ jobs:
         architecture:
           - x64
           - x86
+
+        exclude:
+          # linux does not have x86 python.
+          - os: "ubuntu-latest"
+            architecture: x86
 
     steps:
       - name: Checkout repo
