@@ -1,10 +1,10 @@
 # ![NullTek Documentation](resources/UOSLogoSmall.png) UOS Interface
 
-[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE.md) 
+[![License](https://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE.md) 
 [![Codacy Inspection](https://app.codacy.com/project/badge/Grade/8a24020489ee4638aa10449e3f1cc0cd)](https://www.codacy.com/gh/CreatingNull/UOS-Interface/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CreatingNull/UOS-Interface&amp;utm_campaign=Badge_Grade)
 [![Codacy Converge](https://app.codacy.com/project/badge/Coverage/8a24020489ee4638aa10449e3f1cc0cd)](https://www.codacy.com/gh/CreatingNull/UOS-Interface/dashboard?utm_source=github.com&utm_medium=referral&utm_content=CreatingNull/UOS-Interface&utm_campaign=Badge_Coverage)
-[![Build Status](https://travis-ci.com/CreatingNull/UOS-Interface.svg?branch=master)](https://travis-ci.com/CreatingNull/UOS-Interface)
 [![Documentation Status](https://readthedocs.org/projects/uos-interface/badge/?version=latest)](https://uos-interface.nulltek.xyz/en/latest/?badge=latest)
+[![Tests Badge](https://github.com/CreatingNull/UOS-Interface/actions/workflows/run-tests.yml/badge.svg)](https://github.com/CreatingNull/UOS-Interface/actions/workflows/run-tests.yml)
 
 Python Interface for remote communication and control of a UOS Compliant Microcontroller.
 
