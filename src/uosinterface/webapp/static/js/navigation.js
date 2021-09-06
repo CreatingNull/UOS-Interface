@@ -24,25 +24,35 @@ function stickNavbar() {
   }
 }
 
-/**
- * Go to tab by name.
- * @param {object} tab Header button object.
- * */
-function switchTab(tab) {
-  const tabHeaders = tab.parentElement.getElementsByClassName('tab-nav-links');
-  const tabs = tab.parentElement.parentElement.getElementsByClassName(
-    'tab-nav-content',
-  );
-  for (let i = 0; i < tabHeaders.length; i++) {
-    if (tabHeaders[i] === tab && !tabHeaders[i].classList.contains('active')) {
-      tabHeaders[i].classList.add('active');
-      tabs[i].classList.add('active');
-    } else if (
-      tabHeaders[i] !== tab &&
-      tabHeaders[i].classList.contains('active')
-    ) {
-      tabHeaders[i].classList.remove('active');
-      tabs[i].classList.remove('active');
+window.addEventListener('load', function (event) {
+  // Add switch tab event listeners to any defined tab buttons.
+  let tabButtons = document.getElementsByClassName('tab-nav-links');
+  for (let i = 0; i < tabButtons.length; i++) {
+    tabButtons[i].addEventListener('click', switchTab, false);
+  }
+
+  /** Go to tab by name, added to buttons with tab-nav-links */
+  function switchTab(event) {
+    const tabHeaders = event.target.parentElement.getElementsByClassName(
+      'tab-nav-links',
+    );
+    const tabs = event.target.parentElement.parentElement.getElementsByClassName(
+      'tab-nav-content',
+    );
+    for (let i = 0; i < tabHeaders.length; i++) {
+      if (
+        tabHeaders[i] === event.target &&
+        !tabHeaders[i].classList.contains('active')
+      ) {
+        tabHeaders[i].classList.add('active');
+        tabs[i].classList.add('active');
+      } else if (
+        tabHeaders[i] !== event.target &&
+        tabHeaders[i].classList.contains('active')
+      ) {
+        tabHeaders[i].classList.remove('active');
+        tabs[i].classList.remove('active');
+      }
     }
   }
-}
+});
