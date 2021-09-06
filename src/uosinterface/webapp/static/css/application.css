@@ -41,6 +41,11 @@ form {
   padding: 0;
 }
 
+/* Stop icons triggering event watchers by default */
+i {
+  pointer-events: none;
+}
+
 /* Remove spinner buttons Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
