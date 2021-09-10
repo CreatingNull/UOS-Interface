@@ -41,6 +41,11 @@ form {
   padding: 0;
 }
 
+/* Allow pointer events if clickable */
+.clickable {
+  pointer-events: auto;
+}
+
 /* Stop icons triggering event watchers by default */
 i {
   pointer-events: none;

@@ -1,80 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, user-scalable=no"
+  />
 
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>UOS Dashboard | {% block title %}{% endblock %}</title>
-				<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
-    <link href="{{ url_for("static", filename="css/application.css") }}" rel="stylesheet">
-    <link href="{{ url_for("static", filename="css/navigation.css") }}" rel="stylesheet">
-				<link href="{{ url_for("static", filename="css/controls.css") }}" rel="stylesheet">
-    <link href="{{ url_for("static", filename="lib/FontAwesome/css/all.css") }}" rel="stylesheet">
-    <script src="{{ url_for("static", filename="js/navigation.js") }}"></script>
-				<script src="{{ url_for("static", filename="js/application.js") }}"></script>
-				<script src="{{ url_for("static", filename="js/controls.js") }}"></script>
-    {# Any custom page stylesheets can be added in the dynamic block below #}
-    {% block stylesheets %}{% endblock stylesheets %}
-    {# Any custom page javascript can be added in the dynamic block below #}
-    {% block javascript %}{% endblock javascript %}
-</head>
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='img/favicon.ico') }}"
+    />
+    <link
+      href="{{ url_for('static', filename='css/application.css') }}"
+      rel="stylesheet"
+    />
+    <link
+      href="{{ url_for('static', filename='css/navigation.css') }}"
+      rel="stylesheet"
+    />
+    <link
+      href="{{ url_for('static', filename='css/controls.css') }}"
+      rel="stylesheet"
+    />
+    <link
+      href="{{ url_for('static', filename='lib/FontAwesome/css/all.css') }}"
+      rel="stylesheet"
+    />
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/navigation.js') }}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/application.js') }}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/controls.js') }}"
+    ></script>
+    {# Any custom page stylesheets can be added in the dynamic block below #} {%
+    block stylesheets %}{% endblock stylesheets %} {# Any custom page javascript
+    can be added in the dynamic block below #} {% block javascript %}{% endblock
+    javascript %}
+  </head>
 
-<body>
+  <body>
     <div class="nav top-nav nav-container" id="top-navigation">
-							{# macro finds active menu element based on routed endpoint #}
-							{% macro nav_link(endpoint) %}
-							{% if request.endpoint.endswith(endpoint) %}
-											active
-							{% endif %}
-							{% endmacro %}
-							<a class="nav top-nav {{ nav_link("device") }}" href="{{ url_for("dashboard_blueprint.route_device")}}" >
-							<i class="fa fa-microchip"></i>
-								Device
-							</a>
-							<a class="nav top-nav {{ nav_link("settings") }}" href="{{ url_for("dashboard_blueprint.route_settings")}}" >
-								<i class="fa fa-cog"></i>
-								Settings
-							</a>
-							<select id="device-select" class="nav top-nav" onchange="persistDeviceSelection()">
-									<option disabled selected hidden>Select Device</option>
-									{% for device in devices %}
-									<option value="{{ device.__class__.__name__ }}">{{ device.connection }}</option>
-									{% endfor %}
-							</select>
-							<a href="javascript:void(0);" class="nav top-nav icon" onclick="dynamicNavigation()">
-										<i class="fa fa-bars"></i>
-							</a>
+      {# macro finds active menu element based on routed endpoint #} {% macro
+      nav_link(endpoint) %} {% if request.endpoint.endswith(endpoint) %} active
+      {% endif %} {% endmacro %}
+      <a
+        class="nav top-nav {{ nav_link('device') }}"
+        href="{{ url_for('dashboard_blueprint.route_device')}}"
+      >
+        <i class="fa fa-microchip"></i>
+        Device
+      </a>
+      <a
+        class="nav top-nav {{ nav_link('settings') }}"
+        href="{{ url_for('dashboard_blueprint.route_settings')}}"
+      >
+        <i class="fa fa-cog"></i>
+        Settings
+      </a>
+      <select id="device-select" class="nav top-nav">
+        <option disabled selected hidden>Select Device</option>
+        {% for device in devices %}
+        <option value="{{ device.__class__.__name__ }}">
+          {{ device.connection }}
+        </option>
+        {% endfor %}
+      </select>
+      <a href="javascript:void(0);" class="nav top-nav icon">
+        <i class="fa fa-bars"></i>
+      </a>
     </div>
     <div class="content">
-							<div class="flex-container">
-									<div class="flex-item flex-item-ratio-0">
-											{% with messages = get_flashed_messages(with_categories=true) %}
-													{% if messages %}
-															<div class="app-container app-container-heading flash-message flash-info">
-															<h4>Messages:</h4>
-																	<i class="fa fa-times close-pane"></i>
-																	{% for category, message in messages %}
-																			<div>
-																			{% if category == "error" %}
-																					<i class="fa fa-times-circle flash-error"></i>
-																			{% elif category == "warning" %}
-																					<i class="fa fa-exclamation-circle flash-warning"></i>
-																			{% else %}
-																					<i class="fa fa-info-circle flash-warning"></i>
-																			{% endif %}
-																					<span class="flash-{{category}}">{{ message }}</span>
-																			</div>
-																	{% endfor %}
-															</div>
-													{% endif %}
-											{% endwith %}
-									</div>
-							</div>
-							{% block content %}{% endblock content %}
+      <div class="flex-container">
+        <div class="flex-item flex-item-ratio-0">
+          {% with messages = get_flashed_messages(with_categories=true) %} {% if
+          messages %}
+          <div
+            class="app-container app-container-heading flash-message flash-info"
+          >
+            <h4>Messages:</h4>
+            <i class="fa fa-times close-pane clickable"></i>
+            {% for category, message in messages %}
+            <div>
+              {% if category == "error" %}
+              <i class="fa fa-times-circle flash-error"></i>
+              {% elif category == "warning" %}
+              <i class="fa fa-exclamation-circle flash-warning"></i>
+              {% else %}
+              <i class="fa fa-info-circle flash-warning"></i>
+              {% endif %}
+              <span class="flash-{{category}}">{{ message }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %} {% endwith %}
+        </div>
+      </div>
+      {% block content %}{% endblock content %}
     </div>
-				<div class="footer">
-					<p>&copy {{ site_info["year"] }} <a href="https://nulltek.xyz">NullTek</a> <a href="https://github.com/CreatingNull/UART-Operating-System-Interface/blob/master/LICENSE.md">Open-source</a></p>
-				</div>
-</body>
-
+    <div class="footer">
+      <p>
+        &copy {{ site_info["year"] }} <a href="https://nulltek.xyz">NullTek</a>
+        <a
+          href="https://github.com/CreatingNull/UART-Operating-System-Interface/blob/master/LICENSE.md"
+          >Open-source</a
+        >
+      </p>
+    </div>
+  </body>
 </html>

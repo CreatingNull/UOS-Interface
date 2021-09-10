@@ -1,7 +1,22 @@
-/** When the user scrolls the page check if navbar needs to stick. */
-window.onscroll = function () {
-  stickNavbar();
-};
+/** Add event listeners to elements on page load. */
+window.addEventListener('load', function () {
+  // Add switch tab event listeners to any defined tab buttons.
+  document
+    .querySelectorAll('.tab-nav-links')
+    .forEach((tabButtons) =>
+      tabButtons.addEventListener('click', switchTab, false),
+    );
+  // Make the navbar sticky on the page.
+  window.onscroll = stickNavbar;
+  // Dynamic navigation event listener for mobile navigation
+  document
+    .querySelector('.nav.top-nav.icon')
+    .addEventListener('click', dynamicNavigation, false);
+  // Persist Device Selections
+  document
+    .querySelector('#device-select')
+    .addEventListener('click', persistDeviceSelection, false);
+});
 
 /** Toggles the responsive class on nav when user clicks on icon. */
 function dynamicNavigation() {
@@ -24,35 +39,27 @@ function stickNavbar() {
   }
 }
 
-window.addEventListener('load', function (event) {
-  // Add switch tab event listeners to any defined tab buttons.
-  let tabButtons = document.getElementsByClassName('tab-nav-links');
-  for (let i = 0; i < tabButtons.length; i++) {
-    tabButtons[i].addEventListener('click', switchTab, false);
-  }
-
-  /** Go to tab by name, added to buttons with tab-nav-links */
-  function switchTab(event) {
-    const tabHeaders = event.target.parentElement.getElementsByClassName(
-      'tab-nav-links',
-    );
-    const tabs = event.target.parentElement.parentElement.getElementsByClassName(
+/** Go to tab by name, added to buttons with tab-nav-links */
+function switchTab(event) {
+  const tabHeaders =
+    event.target.parentElement.getElementsByClassName('tab-nav-links');
+  const tabs =
+    event.target.parentElement.parentElement.getElementsByClassName(
       'tab-nav-content',
     );
-    for (let i = 0; i < tabHeaders.length; i++) {
-      if (
-        tabHeaders[i] === event.target &&
-        !tabHeaders[i].classList.contains('active')
-      ) {
-        tabHeaders[i].classList.add('active');
-        tabs[i].classList.add('active');
-      } else if (
-        tabHeaders[i] !== event.target &&
-        tabHeaders[i].classList.contains('active')
-      ) {
-        tabHeaders[i].classList.remove('active');
-        tabs[i].classList.remove('active');
-      }
+  for (let i = 0; i < tabHeaders.length; i++) {
+    if (
+      tabHeaders[i] === event.target &&
+      !tabHeaders[i].classList.contains('active')
+    ) {
+      tabHeaders[i].classList.add('active');
+      tabs[i].classList.add('active');
+    } else if (
+      tabHeaders[i] !== event.target &&
+      tabHeaders[i].classList.contains('active')
+    ) {
+      tabHeaders[i].classList.remove('active');
+      tabs[i].classList.remove('active');
     }
   }
-});
+}

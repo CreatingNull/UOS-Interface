@@ -1,16 +1,43 @@
+/** Add event listeners to elements on page load. */
+window.addEventListener('load', function () {
+  // Add spinner behaviour to tagged buttons.
+  document
+    .querySelectorAll('.control-numeric-spinner-right')
+    .forEach((rightButton) =>
+      rightButton.addEventListener(
+        'click',
+        function (event) {
+          incrementSpinner(event, false);
+        },
+        false,
+      ),
+    );
+  document
+    .querySelectorAll('.control-numeric-spinner-left')
+    .forEach((leftButton) =>
+      leftButton.addEventListener(
+        'click',
+        function (event) {
+          incrementSpinner(event, true);
+        },
+        false,
+      ),
+    );
+});
+
 /**
  * Increment Decrement Spinner.
- * @param {object} buttonElement Single button object in the spinner.
- * @param {boolean} decrement Boolean does button decrease value.
- * @param {number} limit Sets the bound for the count.
+ * @param {Event} event Single button object in the spinner.
+ * @param {boolean} decrement Set if incrementing down.
  * */
-function incrementSpinner(buttonElement, decrement, limit) {
-  const inputElement = buttonElement.parentElement.getElementsByTagName(
-    'input',
-  )[0];
+function incrementSpinner(event, decrement) {
+  let inputElement =
+    event.target.parentElement.getElementsByTagName('input')[0];
+  let limitLow = inputElement.dataset.limitLow;
+  let limitHigh = inputElement.dataset.limitHigh;
   let value = Math.round(parseFloat(inputElement.value));
-  if (decrement && value > limit) value--;
-  else if (!decrement && value < limit) value++;
+  if (decrement && value > limitLow) value--;
+  else if (!decrement && value < limitHigh) value++;
   inputElement.value = value.toString();
 }
 

@@ -20,7 +20,7 @@
       <div class="control control-button">
         <button
           type="submit"
-          onclick="getSelectedConnection('{{ connect_device_form.device_connection.id }}')"
+          data-device-persist="{{connect_device_form.device_connection.id}}"
         >
           <i class="fa fa-link"></i>
           Connect
@@ -81,20 +81,16 @@
     <div class="tab-nav-content app-container active">
       <form action="/" method="POST">
         {{ digital_instruction_form.hidden_tag() }}
-        <div class="control control-numeric-spinner">
-          <button
-            type="button"
-            class="control-numeric-spinner-left"
-            onclick="incrementSpinner(this, true, 0)"
-          >
+        <div
+          class="control control-numeric-spinner"
+          data-limit-low="0"
+          data-limit-high="100"
+        >
+          <button type="button" class="control-numeric-spinner-left">
             <i class="fa fa-minus"></i>
           </button>
           {{ digital_instruction_form.pin_index(value=1) }}
-          <button
-            type="button"
-            class="control-numeric-spinner-right"
-            onclick="incrementSpinner(this, false, 100)"
-          >
+          <button type="button" class="control-numeric-spinner-right">
             <i class="fa fa-plus"></i>
           </button>
           <div class="control-led"></div>
@@ -110,7 +106,7 @@
         <div class="control control-button">
           <button
             type="submit"
-            onclick="getSelectedConnection('{{ digital_instruction_form.device_connection.id }}')"
+            data-device-persist="{{connect_device_form.device_connection.id}}"
           >
             Execute Command
           </button>

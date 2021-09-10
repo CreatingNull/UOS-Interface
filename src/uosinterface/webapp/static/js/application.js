@@ -1,8 +1,15 @@
 /** When the page runs pre-emptive code. */
-window.onload = function () {
+window.addEventListener('load', function () {
   getPersistedDeviceSelection(); // device selection populates.
   setCloseableDivs(); // adds event listeners for closable divs.
-};
+  document
+    .querySelectorAll('button[data-device-submit]')
+    .forEach((submitButton) =>
+      submitButton.addEventListener('click', function () {
+        getSelectedConnection(submitButton.dataset.devicePersist);
+      }),
+    );
+});
 
 /** Set event listeners on all closable divs. */
 function setCloseableDivs() {
