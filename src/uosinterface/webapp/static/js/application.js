@@ -32,15 +32,6 @@ function getSelectedConnection(formId) {
   document.getElementById(formId).value = sel.options[sel.selectedIndex].value;
 }
 
-/** Saves device selection in nonvolatile location for the session. */
-function persistDeviceSelection() {
-  const sel = document.getElementById('device-select');
-  window.localStorage.setItem(
-    'device-selection',
-    sel.options[sel.selectedIndex].value,
-  );
-}
-
 /** Returns the previous device selection if it has been persisted. */
 function getPersistedDeviceSelection() {
   if (window.localStorage.getItem('device-selection') !== null) {

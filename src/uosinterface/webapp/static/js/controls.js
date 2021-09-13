@@ -31,10 +31,10 @@ window.addEventListener('load', function () {
  * @param {boolean} decrement Set if incrementing down.
  * */
 function incrementSpinner(event, decrement) {
-  let inputElement =
+  const inputElement =
     event.target.parentElement.getElementsByTagName('input')[0];
-  let limitLow = inputElement.dataset.limitLow;
-  let limitHigh = inputElement.dataset.limitHigh;
+  const limitLow = inputElement.dataset.limitLow;
+  const limitHigh = inputElement.dataset.limitHigh;
   let value = Math.round(parseFloat(inputElement.value));
   if (decrement && value > limitLow) value--;
   else if (!decrement && value < limitHigh) value++;

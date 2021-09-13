@@ -39,7 +39,19 @@ function stickNavbar() {
   }
 }
 
-/** Go to tab by name, added to buttons with tab-nav-links */
+/** Saves device selection in nonvolatile location for the session. */
+function persistDeviceSelection() {
+  const sel = document.getElementById('device-select');
+  window.localStorage.setItem(
+    'device-selection',
+    sel.options[sel.selectedIndex].value,
+  );
+}
+
+/**
+ * Go to tab by name, added to buttons with tab-nav-links *
+ * @param event {Event} Event for targeting against switch Tab action.
+ */
 function switchTab(event) {
   const tabHeaders =
     event.target.parentElement.getElementsByClassName('tab-nav-links');
