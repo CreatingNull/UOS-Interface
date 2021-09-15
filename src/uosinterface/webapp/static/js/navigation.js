@@ -50,7 +50,7 @@ function persistDeviceSelection() {
 
 /**
  * Go to tab by name, added to buttons with tab-nav-links *
- * @param event {Event} Event for targeting against switch Tab action.
+ * @param {Event} event object for determining the target of the switch Tab action.
  */
 function switchTab(event) {
   const tabHeaders =
