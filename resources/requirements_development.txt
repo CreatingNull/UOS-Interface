@@ -1,5 +1,5 @@
 black==21.9b0
-coverage==5.5
+coverage==6.1.2
 docformatter==1.4
 pipdeptree==2.1.0
 pytest==6.2.5
