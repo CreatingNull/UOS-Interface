@@ -4,7 +4,7 @@ from wtforms import BooleanField
 from wtforms import HiddenField
 from wtforms import PasswordField
 from wtforms import StringField
-from wtforms.fields.html5 import IntegerField
+from wtforms.fields import IntegerField
 from wtforms.validators import DataRequired
 from wtforms.validators import NumberRange
 
