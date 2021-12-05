@@ -6,12 +6,10 @@ from uosinterface.hardware.uosabstractions import Pin
 
 
 def test_get_compatible_pins(uos_device: UOSDevice):
-    """
-    Checks the device function for returning lists of compatible pins.
+    """Checks the device function for returning lists of compatible pins.
 
     :param uos_device:
     :return:
-
     """
     # Check lookup of digital pins works.
     if "set_gpio_output" in uos_device.device.functions_enabled:

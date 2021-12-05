@@ -9,7 +9,7 @@ class TestNPCSerialPort:
     """Test suite for the low level serial backend."""
 
     @staticmethod
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def npc_serial_port(usb_serial_argument):
         """Fixture to connect to a physical UOS device for testing."""
         serial_port = NPCSerialPort(usb_serial_argument, baudrate=115200)
@@ -17,7 +17,7 @@ class TestNPCSerialPort:
         serial_port.close()
 
     @staticmethod
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def invalid_serial_port():
         """Fixture to attempt a connection to an invalid device."""
         serial_port = NPCSerialPort("not_a_valid_connection")

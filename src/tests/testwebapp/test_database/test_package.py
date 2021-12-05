@@ -12,13 +12,11 @@ from uosinterface.webapp.database.models import UserPrivilege
 
 
 def test_user_cascades(db_session: Session, db_user: User):
-    """
-    Checks the test data exists and cascades correctly on removal.
+    """Checks the test data exists and cascades correctly on removal.
 
     :param db_session: Pytest fixture allocated session.
     :param db_user: Default test user object.
     :return:
-
     """
     user = db_session.query(User).filter(User.id == db_user.id).first()
     assert user  # check user populated at start
@@ -63,13 +61,11 @@ def test_user_cascades(db_session: Session, db_user: User):
     ],
 )
 def test_password_hashing(passwd: str, saved_hash: bytes):
-    """
-    Tests passwords against a known saved hash and a newly generated hash.
+    """Tests passwords against a known saved hash and a newly generated hash.
 
     :param passwd: An example string password.
     :param saved_hash: An example saved hash.
     :return:
-
     """
     new_hash = hash_pass(passwd)
     assert verify_pass(passwd, new_hash)

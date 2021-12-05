@@ -33,13 +33,11 @@ class User(Base, UserMixin):
     user_keys = relationship("UserKey", cascade="all, delete-orphan")
 
     def __init__(self, name: str, passwd: str, **kwargs):
-        """
-        Constructor for a user object.
+        """Constructor for a user object.
 
         :param name: String uniquely defining the user.
         :param passwd: String password to be hashed against the user object.
         :param kwargs: Keyword arguments, email_address may be provided.
-
         """
         self.name = name
         if "email_address" in kwargs and kwargs["email_address"]:
@@ -47,12 +45,10 @@ class User(Base, UserMixin):
         self.update_hash(passwd)
 
     def update_hash(self, passwd: str):
-        """
-        Helper used for setting and updating the user password hashes.
+        """Helper used for setting and updating the user password hashes.
 
         :param passwd: String password to be hashed against the user object.
         :return: None
-
         """
         self.pass_hash = hash_pass(passwd)
 
@@ -97,13 +93,11 @@ class UserKey(Base):
     api_privileges = relationship("APIPrivilege", cascade="all, delete-orphan")
 
     def __init__(self, key_length: int = 32, expires: timedelta = None, **kwargs):
-        """
-        Constructor for generating a random user key.
+        """Constructor for generating a random user key.
 
         :param key_length: Length of the key to generate in characters.
         :param expires: Timedelta defining when to expire the key, None is never. (default=None)
         :param kwargs: Attributes to populate in the model.
-
         """
         # Byte resolves to ~1.3 chars
         self.key = token_urlsafe(key_length)[:key_length]
@@ -113,11 +107,9 @@ class UserKey(Base):
             setattr(self, attr, kwargs[attr])
 
     def expired(self) -> bool:
-        """
-        Check if expired. Expired keys should be removed.
+        """Check if expired. Expired keys should be removed.
 
         :return: Boolean describing if the key is active, if true should be removed.
-
         """
         if not self.expired or self.expiry_date > datetime.now():
             return False

@@ -4,7 +4,6 @@ from logging import getLogger as Log
 from os import environ
 
 from gevent.pywsgi import WSGIServer
-
 from uosinterface import base_dir
 from uosinterface import static_dir
 from uosinterface.hardware import register_logs as register_hardware_logs

@@ -1,9 +1,7 @@
-black==21.9b0
 coverage==5.5
-docformatter==1.4
 pipdeptree==2.1.0
+pre-commit==2.16.0
+pylint==2.11.1
 pytest==6.2.5
 sphinx==4.2.0
-pylint==2.11.1
-reorder-python-imports==2.6.0
 sphinx_rtd_theme==1.0.0

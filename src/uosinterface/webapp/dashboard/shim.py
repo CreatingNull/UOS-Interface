@@ -7,14 +7,12 @@ from uosinterface.hardware.devices import DEVICES
 
 
 def get_system_info(device_identity, device_address: str, **kwargs) -> {}:
-    """
-    Gets the 'version', 'type' and 'connection' and formats into dict.
+    """Gets the 'version', 'type' and 'connection' and formats into dict.
 
     :param device_identity: Class of device being connected to.
     :param device_address: Connection string to the device.
     :param kwargs: Additional arguments that can be supplied to the UOS device.
     :return: Dictionary containing system data.
-
     """
     sys_data = {}
     try:
@@ -42,13 +40,11 @@ def get_system_info(device_identity, device_address: str, **kwargs) -> {}:
 
 
 def get_system_config(device_identity: str, device_address):
-    """
-    Gets the mode and level of all gpio configured on the device.
+    """Gets the mode and level of all gpio configured on the device.
 
     :param device_identity: Class of device being connected to.
     :param device_address: Connection string to the device.
     :return: Dictionary containing 'gpioX' with 'mode'/'level' for each pin index X.
-
     """
     uos_data = {}
     try:

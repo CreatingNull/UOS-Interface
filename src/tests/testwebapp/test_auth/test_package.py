@@ -8,14 +8,12 @@ from uosinterface.webapp.database.models import UserPrivilege
 
 
 def test_check_privileges(db_session, db_user: User, db_privilege: Privilege):
-    """
-    Checks the low level authentication checking responds as designed.
+    """Checks the low level authentication checking responds as designed.
 
     :param db_session: Pytest fixture allocated session.:
     :param db_user: Default test user object.
     :param db_privilege: Default test privilege object.
     :return:
-
     """
     # Test logged in user can access with empty privilege list.
     assert check_privileges([], db_session, db_user)

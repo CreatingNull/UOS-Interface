@@ -20,13 +20,11 @@ from uosinterface.webapp.database.models import UserPrivilege
 
 
 def test_get_user(db_session: Session, db_user: User):
-    """
-    Checks the interface function supports all lookup methods.
+    """Checks the interface function supports all lookup methods.
 
     :param db_session: Pytest fixture allocated session.
     :param db_user: Default test user object.
     :return:
-
     """
     user = db_session.query(User).filter(User.name == db_user.name).first()
     user_key = db_session.query(UserKey).filter(UserKey.user_id == user.id).first()
@@ -45,13 +43,11 @@ def test_get_user(db_session: Session, db_user: User):
 
 
 def test_add_user(db_session: Session, db_user: User):
-    """
-    Tests the function executes and fails as designed.
+    """Tests the function executes and fails as designed.
 
     :param db_session: Pytest fixture allocated session.
     :param db_user: Default test user object.
     :return:
-
     """
     # test user add
     confirm_query = db_session.query(User).filter(User.name == "NormalAdd")
@@ -79,14 +75,12 @@ def test_add_user(db_session: Session, db_user: User):
 def test_get_user_privileges(
     db_session: Session, db_user: User, db_privilege: Privilege
 ):
-    """
-    Tests the user privileges can be looked up as both list and object.
+    """Tests the user privileges can be looked up as both list and object.
 
     :param db_session: Pytest fixture allocated session.
     :param db_user: Default test user object.
     :param db_privilege: Default test privilege object.
     :return:
-
     """
     privilege = (
         db_session.query(Privilege).filter(Privilege.name == db_privilege.name).first()
@@ -119,14 +113,12 @@ def test_get_user_privileges(
 def test_add_user_privilege(
     db_session: Session, db_user: User, db_privilege: Privilege
 ):
-    """
-    Test call methods for adding a user to a group and failure cases.
+    """Test call methods for adding a user to a group and failure cases.
 
     :param db_session: Pytest fixture allocated session.
     :param db_user: Default test user object.
     :param db_privilege: Default test privilege object.
     :return:
-
     """
     db_session.add(Privilege(name="NewPrivilege"))
     db_session.add(Privilege(name="NewerPrivilege"))
@@ -183,13 +175,12 @@ def test_add_user_privilege(
 
 
 def test_add_api_key(db_session: Session, db_user: User):
-    """
-    Tests api keys are created, expire and fail cases are triggered correctly.
+    """Tests api keys are created, expire and fail cases are triggered
+    correctly.
 
     :param db_session: Pytest fixture allocated session.
     :param db_user: Default test user object.
     :return:
-
     """
     # Check adding key with no expiry.
     api_key = add_api_key(db_session, db_user.id, User.id)
@@ -209,12 +200,10 @@ def test_add_api_key(db_session: Session, db_user: User):
 
 
 def test_init_privilege(db_session: Session):
-    """
-    Tests privileges are created and fail cases are triggered correctly.
+    """Tests privileges are created and fail cases are triggered correctly.
 
     :param db_session: Pytest fixture allocated session.:
     :return:
-
     """
     # Check a normal create works as expected.
     confirm_query = db_session.query(Privilege).filter(

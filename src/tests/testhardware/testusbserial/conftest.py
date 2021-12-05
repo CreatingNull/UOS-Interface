@@ -1,8 +1,9 @@
-"""Module used for argument / test initialisation of low level serial driver."""
+"""Module used for argument / test initialisation of low level serial
+driver."""
 import pytest
 
 
-@pytest.fixture(scope='package')
+@pytest.fixture(scope="package")
 def usb_serial_argument(request):
     """Create a serial fixture if --usb-serial argument provided to CLI."""
     usb_serial_connection = request.config.option.usb_serial

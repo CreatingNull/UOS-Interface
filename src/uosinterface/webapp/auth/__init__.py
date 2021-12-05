@@ -36,24 +36,20 @@ class KeyTypes(Enum):
 
 
 def privileged_route(privilege_names: list[PrivilegeNames] = ()):
-    """
-    Flask route decorator to check user / API access.
+    """Flask route decorator to check user / API access.
 
     :param privilege_names: List of names of privileges with access, empty means logged in.
     :return: Wrapped function with authentication behaviour applied.
-
     """
 
     def decorator(func):
         @wraps(func)
         def wrapped_function(*args, **kwargs):
-            """
-            Handling web-app route selection for the wrapped route.
+            """Handling web-app route selection for the wrapped route.
 
             :param args: Wrapped function's positional arguments.
             :param kwargs: Wrapped function's keyword arguments.
             :return: Wrapped route if authorised, otherwise redirect to error.
-
             """
             with current_app.config["DATABASE"]["SESSION"]() as session:
                 if check_privileges(privilege_names, session, current_user):
@@ -71,8 +67,7 @@ def privileged_route(privilege_names: list[PrivilegeNames] = ()):
 
 
 def check_privileges(privilege_names: list, session, user) -> bool:
-    """
-    Function for checking a user's privileges match requirements.
+    """Function for checking a user's privileges match requirements.
 
     Authorised if no privilege names in argument and user is logged in.
     Authorised if user has listed privilege or admin.
@@ -81,7 +76,6 @@ def check_privileges(privilege_names: list, session, user) -> bool:
     :param: SQLAlchemy session instance to lookup user privileges.
     :param: User to check against privilege list.
     :return: True if authorised, False otherwise.
-
     """
     if not user.is_authenticated:
         return False

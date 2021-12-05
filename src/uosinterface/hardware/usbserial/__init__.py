@@ -17,14 +17,13 @@ else:
 
 
 class NPCSerialPort(UOSInterface):
-    """
-    Low level pyserial class that handles reading / writing to the serial port.
+    """Low level pyserial class that handles reading / writing to the serial
+    port.
 
     :ivar _device: Holds the pyserial device once opened. None if not opened.
     :ivar _connection: Holds the standard connection string 'Interface'|'OS Connection String.
     :ivar _port: Holds the port class, none type if device not instantiated.
     :ivar _kwargs: Additional keyword arguments as defined in the documentation.
-
     """
 
     _device = None
@@ -34,11 +33,9 @@ class NPCSerialPort(UOSInterface):
     _kwargs = {}
 
     def __init__(self, connection: str, **kwargs):
-        """
-        Constructor for a NPCSerialPort device.
+        """Constructor for a NPCSerialPort device.
 
         :param connection: OS connection string for the serial port.
-
         """
         self._connection = connection
         self._port = self.check_port_exists(connection)
@@ -49,11 +46,9 @@ class NPCSerialPort(UOSInterface):
             Log(__name__).debug("%s located", self._port)
 
     def open(self):
-        """
-        Opens a connection to the the port and creates the device object.
+        """Opens a connection to the the port and creates the device object.
 
         :return: Success boolean.
-
         """
         try:
             self._port = self.check_port_exists(self._connection)
@@ -93,11 +88,9 @@ class NPCSerialPort(UOSInterface):
             return False
 
     def close(self):
-        """
-        Closes the serial connection and clears the device.
+        """Closes the serial connection and clears the device.
 
         :return: Success boolean.
-
         """
         if not self.check_open():
             return True  # already closed
@@ -114,13 +107,11 @@ class NPCSerialPort(UOSInterface):
         return True
 
     def execute_instruction(self, address, payload):
-        """
-        Builds and executes a new packet.
+        """Builds and executes a new packet.
 
         :param address: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
         :param payload: A tuple containing the uint8 parameters of the UOS instruction.
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
-
         """
         if not self.check_open():
             return ComResult(False, exception="Connection must be opened first.")
@@ -137,13 +128,11 @@ class NPCSerialPort(UOSInterface):
         return ComResult(num_bytes == len(packet))
 
     def read_response(self, expect_packets: int, timeout_s: float):
-        """
-        Reads ACK and response packets from the serial device.
+        """Reads ACK and response packets from the serial device.
 
         :param expect_packets: How many packets including ACK to expect.
         :param timeout_s: The maximum time this function will wait for data.
         :return: ComResult object.
-
         """
         response_object = ComResult(False)
         if not self.check_open():
@@ -186,11 +175,9 @@ class NPCSerialPort(UOSInterface):
             return response_object
 
     def hard_reset(self):
-        """
-        Manually drives the DTR line low to reset the device.
+        """Manually drives the DTR line low to reset the device.
 
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
-
         """
         if not self.check_open():
             return ComResult(False, exception="Connection must be open first.")
@@ -201,22 +188,18 @@ class NPCSerialPort(UOSInterface):
         return ComResult(True)
 
     def check_open(self) -> bool:
-        """
-        Tests if the connection is open by validating an open device.
+        """Tests if the connection is open by validating an open device.
 
         :return: Boolean, true if open.
-
         """
         if self._device is None:
             return False
         return True
 
     def __repr__(self):
-        """
-        Over-rides the built in repr with something useful.
+        """Over-rides the built in repr with something useful.
 
         :return: String containing connection, port and device.
-
         """
         return (
             f"<NPCSerialPort(_connection='{self._connection}', _port={self._port}, "
@@ -227,14 +210,12 @@ class NPCSerialPort(UOSInterface):
     def decode_and_capture(
         byte_index: int, byte_in: bytes, packet: list
     ) -> (int, list):
-        """
-        Parser takes in a byte and vets it against UOS packet.
+        """Parser takes in a byte and vets it against UOS packet.
 
         :param byte_index: The index of the last 'valid' byte found.
         :param byte_in: The current byte for inspection.
         :param packet: The current packet of validated bytes.
         :return: Tuple containing the updated byte index and updated packet.
-
         """
         if byte_index == -1:  # start symbol
             if byte_in == b">":
@@ -263,12 +244,10 @@ class NPCSerialPort(UOSInterface):
 
     @staticmethod
     def check_port_exists(device: str):
-        """
-        Checks if serial device is available on system.
+        """Checks if serial device is available on system.
 
         :param device: OS connection string for the serial port.
         :return: The port device class if it exists, else None.
-
         """
         ports = list_ports.comports()
         for port in ports:

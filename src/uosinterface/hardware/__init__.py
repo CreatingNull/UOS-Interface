@@ -23,23 +23,19 @@ NON_VOLATILE = 2
 
 
 def register_logs(level, base_path: Path):
-    """
-    Configures the log files for the hardware COM package.
+    """Configures the log files for the hardware COM package.
 
     :param level: Set the logger level, debug ect. Use the constants from logging lib.
     :param base_path: Set the logging directory.
-
     """
     configure_logs(__name__, level=level, base_path=base_path)
 
 
 def get_device_definition(identity: str) -> Device:
-    """
-    Looks up the system config dictionary for the defined device mappings.
+    """Looks up the system config dictionary for the defined device mappings.
 
     :param identity: String containing the lookup key of the device in the dictionary.
     :return: Device Object or None if not found
-
     """
     if identity is not None and identity.lower() in DEVICES:
         device = DEVICES[identity.lower()]
@@ -54,12 +50,10 @@ def get_device_definition(identity: str) -> Device:
 
 
 def enumerate_system_devices(interface_filter: Interface = None) -> []:
-    """
-    Iterates through all interfaces and locates available devices.
+    """Iterates through all interfaces and locates available devices.
 
     :param interface_filter: Interface enum to limit the search to a single interface type.
     :return: A list of uosinterface objects.
-
     """
     system_devices = []
     for interface in Interface:  # enum object
@@ -73,15 +67,13 @@ def enumerate_system_devices(interface_filter: Interface = None) -> []:
 
 
 class UOSDevice:
-    """
-    Class for high level object-orientated control of UOS devices.
+    """Class for high level object-orientated control of UOS devices.
 
     :ivar identity: The type of device, this is must have a valid device in the config.
     :ivar connection: Compliant connection string for identifying the device and interface.
     :ivar device: Device definitions as parsed from a compatible ini.
     :ivar __kwargs: Connection specific / optional parameters.
     :ivar __device_interface: Lower level communication protocol layer.
-
     """
 
     identity = ""
@@ -97,14 +89,12 @@ class UOSDevice:
         interface: Interface = Interface.USB,
         **kwargs,
     ):
-        """
-        Instantiate a UOS device instance for communication.
+        """Instantiate a UOS device instance for communication.
 
         :param identity: Specify the type of device, this must exist in the device dictionary.
         :param address: Compliant connection string for identifying the device and interface.
         :param interface: Set the type of interface to use for communication.
         :param kwargs: Additional optional connection parameters as defined in documentation.
-
         """
         self.identity = identity
         self.address = address
@@ -138,14 +128,12 @@ class UOSDevice:
     def set_gpio_output(
         self, pin: int, level: int, volatility: int = SUPER_VOLATILE
     ) -> ComResult:
-        """
-        Sets a pin to digital output mode and sets a level on that pin.
+        """Sets a pin to digital output mode and sets a level on that pin.
 
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: The output level, 0 - low, 1 - High.
         :param volatility: How volatile should the command be, use constants from HardwareCOM.
         :return: ComResult object.
-
         """
         return self.__execute_instruction(
             UOSDevice.set_gpio_output.__name__,
@@ -160,14 +148,12 @@ class UOSDevice:
     def get_gpio_input(
         self, pin: int, level: int, volatility: int = SUPER_VOLATILE
     ) -> ComResult:
-        """
-        Reads a GPIO pins level from device and returns the value.
+        """Reads a GPIO pins level from device and returns the value.
 
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: Not used currently, future will define pull-up state.
         :param volatility: How volatile should the command be, use constants from HardwareCOM.
         :return: ComResult object.
-
         """
         return self.__execute_instruction(
             UOSDevice.get_gpio_input.__name__,
@@ -186,14 +172,12 @@ class UOSDevice:
         level: int,
         volatility: int = SUPER_VOLATILE,
     ) -> ComResult:
-        """
-        Reads the current 10 bit ADC value.
+        """Reads the current 10 bit ADC value.
 
         :param pin: The index of the analogue pin to read
         :param level: Reserved for future use.
         :param volatility: How volatile should the command be, use constants from HardwareCOM.
         :return: ComResult object containing the ADC readings.
-
         """
         return self.__execute_instruction(
             UOSDevice.get_adc_input.__name__,
@@ -207,12 +191,10 @@ class UOSDevice:
         )
 
     def get_system_info(self, **kwargs) -> ComResult:
-        """
-        Reads the UOS version and device type.
+        """Reads the UOS version and device type.
 
         :param kwargs: Control arguments, accepts volatility.
         :return: ComResult object containing the system information.
-
         """
         return self.__execute_instruction(
             UOSDevice.get_system_info.__name__,
@@ -224,13 +206,11 @@ class UOSDevice:
         )
 
     def get_gpio_config(self, pin: int, **kwargs) -> ComResult:
-        """
-        Reads the configuration for a digital pin on the device.
+        """Reads the configuration for a digital pin on the device.
 
         :param pin: Defines the pin for config querying.
         :param kwargs: Control arguments accepts volatility.
         :return: ComResult object containing the system information.
-
         """
         return self.__execute_instruction(
             UOSDevice.get_gpio_config.__name__,
@@ -260,11 +240,9 @@ class UOSDevice:
         )
 
     def open(self):
-        """
-        Connects to the device, explict calls are normally not required.
+        """Connects to the device, explict calls are normally not required.
 
         :raises: UOSCommunicationError - Problem opening a connection.
-
         """
         if not self.__device_interface.open():
             raise UOSCommunicationError(
@@ -272,11 +250,9 @@ class UOSDevice:
             )
 
     def close(self):
-        """
-        Releases connection, must be called explicitly if loading is eager.
+        """Releases connection, must be called explicitly if loading is eager.
 
         :raises: UOSCommunicationError - Problem closing the connection to an active device.
-
         """
         if not self.__device_interface.close():
             raise UOSCommunicationError(
@@ -290,8 +266,7 @@ class UOSDevice:
         instruction_data: InstructionArguments,
         retry: bool = True,
     ) -> ComResult:
-        """
-        Common functionality for execution of all UOS instructions.
+        """Common functionality for execution of all UOS instructions.
 
         :param function_name: The name of the function in the OOL.
         :param volatility: How volatile should the command be, use constants in HardwareCOM.
@@ -299,7 +274,6 @@ class UOSDevice:
         :param retry: Allows the instruction to retry execution when fails.
         :return: ComResult object
         :raises: UOSUnsupportedError if function is not possible on the loaded device.
-
         """
         if (
             function_name not in self.device.functions_enabled
@@ -362,22 +336,18 @@ class UOSDevice:
         return rx_response
 
     def is_lazy(self) -> bool:
-        """
-        Checks the loading type of the device lazy or eager.
+        """Checks the loading type of the device lazy or eager.
 
         :return: Boolean, true is lazy.
-
         """
         if "loading" not in self.__kwargs or self.__kwargs["loading"].upper() == "LAZY":
             return True
         return False
 
     def __repr__(self):
-        """
-        Over-rides the built in repr with something useful.
+        """Over-rides the built in repr with something useful.
 
         :return: String containing connection and identity of the device
-
         """
         return (
             f"<UOSDevice(address='{self.address}', identity='{self.identity}', "

@@ -36,4 +36,3 @@ Example Usage:
 This is the `hello world` usage for turning on the arduino on-board pin 13 LED.
 
 :code:`http://served-address/api/1.0/set_gpio_output?address=/dev/ttyUSB0&identity=arduino_nano&pin=13&level=1`
-
