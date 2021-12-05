@@ -25,7 +25,7 @@ Frontend requirements:
 
 ## Contributing
 
-For code formatting project uses [pre-commit](https://github.com/CreatingNull/UOS-Interface/actions/workflows/run-pre-commit.yml), see repo [hooks](.pre-commit-config.yaml).
+For code formatting this project uses [pre-commit](https://github.com/CreatingNull/UOS-Interface/actions/workflows/run-pre-commit.yml), see repo [hooks](.pre-commit-config.yaml).
 This code also uses a pytest [test suite](https://github.com/CreatingNull/UOS-Interface/actions/workflows/run-tests.yml).
 
 Both these actions are currently automated by GitHub actions CI, and run on pushes and pull-requests.
