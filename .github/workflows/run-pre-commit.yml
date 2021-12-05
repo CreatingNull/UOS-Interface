@@ -13,4 +13,4 @@ jobs:
     - uses: actions/setup-python@v2
     - uses: pre-commit/action@v2.0.3
       with:
-        extra-args: --config=pre-commit-config.yaml
+        extra_args: --config=pre-commit-config.yaml
