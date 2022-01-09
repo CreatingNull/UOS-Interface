@@ -1,10 +1,11 @@
 # ![NullTek Documentation](resources/UOSLogoSmall.png) UOS Interface
 
 [![License](https://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE.md)
-[![Codacy Inspection](https://app.codacy.com/project/badge/Grade/8a24020489ee4638aa10449e3f1cc0cd)](https://www.codacy.com/gh/CreatingNull/UOS-Interface/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CreatingNull/UOS-Interface&amp;utm_campaign=Badge_Grade)
-[![Codacy Converge](https://app.codacy.com/project/badge/Coverage/8a24020489ee4638aa10449e3f1cc0cd)](https://www.codacy.com/gh/CreatingNull/UOS-Interface/dashboard?utm_source=github.com&utm_medium=referral&utm_content=CreatingNull/UOS-Interface&utm_campaign=Badge_Coverage)
-[![Documentation Status](https://readthedocs.org/projects/uos-interface/badge/?version=latest)](https://uos-interface.nulltek.xyz/en/latest/?badge=latest)
-[![Tests Badge](https://github.com/CreatingNull/UOS-Interface/actions/workflows/run-tests.yml/badge.svg)](https://github.com/CreatingNull/UOS-Interface/actions/workflows/run-tests.yml)
+[![Codacy Grade](https://img.shields.io/codacy/grade/8a24020489ee4638aa10449e3f1cc0cd?logo=codacy&style=flat-square)](https://app.codacy.com/gh/CreatingNull/UOS-Interface/dashboard?branch=master)
+[![Codacy coverage](https://img.shields.io/codacy/coverage/8a24020489ee4638aa10449e3f1cc0cd?logo=codacy&style=flat-square)](https://www.codacy.com/gh/CreatingNull/UOS-Interface/dashboard?utm_source=github.com&utm_medium=referral&utm_content=CreatingNull/UOS-Interface&utm_campaign=Badge_Coverage)
+[![Read the Docs](https://img.shields.io/readthedocs/uos-interface?logo=read%20the%20docs&style=flat-square)](https://uos-interface.nulltek.xyz)
+[![Pre-commit](https://img.shields.io/github/workflow/status/CreatingNull/UOS-Interface/pre-commit?logo=pre-commit&style=flat-square&label=code%20format)](https://github.com/CreatingNull/UOS-Interface/actions/workflows/run-tests.yml)
+[![Tests](https://img.shields.io/github/workflow/status/CreatingNull/UOS-Interface/Tests?logo=github&style=flat-square&label=tests)](https://github.com/CreatingNull/UOS-Interface/actions/workflows/run-tests.yml)
 
 Python Interface for remote communication and control of a UOS Compliant Microcontroller.
 
@@ -40,5 +41,4 @@ I just do this stuff for fun in my spare time, but feel free to:
 
 ## License
 
-The source of this repo uses the MIT open-source license, for details on the current licensing see LICENSE.md or click the badge above.
-*   Copyright 2021 © <a href="https://nulltek.xyz" target="_blank">NullTek</a>.
+The source of this repo uses the MIT open-source license, for details on the current licensing see [LICENSE](LICENSE.md) or click the badge above.
