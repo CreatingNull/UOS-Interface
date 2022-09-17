@@ -7,9 +7,13 @@
 [![Pre-commit](https://img.shields.io/github/workflow/status/CreatingNull/UOS-Interface/pre-commit?logo=pre-commit&style=flat-square&label=code%20format)](https://github.com/CreatingNull/UOS-Interface/actions/workflows/run-tests.yml)
 [![Tests](https://img.shields.io/github/workflow/status/CreatingNull/UOS-Interface/Tests?logo=github&style=flat-square&label=tests)](https://github.com/CreatingNull/UOS-Interface/actions/workflows/run-tests.yml)
 
-Python Interface for remote communication and control of a UOS Compliant Microcontroller.
+This project is no longer maintained and superseded by:
 
-Status: Still under development, not ready for a release yet.
+* [uos-hardware](https://github.com/CreatingNull/UOS-Hardware) - Hardware abstraction layer for handling low-level devices and interfaces.
+
+---
+
+Python Interface for remote communication and control of a UOS Compliant Microcontroller.
 
 ---
 
